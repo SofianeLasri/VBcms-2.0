@@ -1,0 +1,16 @@
+<?php
+// Les noms des fonctions PRINCIPALES dans ce script doivent rester les même dans tous les cas
+// Initialisation du module
+function initModule(){
+	adminNavbarAddCategory("vbcms-gallery-system", "Média");
+	adminNavbarAddItem("vbcms-gallery-system", "fas fa-picture", "Gestionnaire de fichiers", "");
+}
+
+// Utilisation du module
+function moduleLoadPage($type, $params){
+	global $bdd, $http;
+	// On peut très bien procéder à l'éxecution des pages ici, mais c'est plus propre de le faire sur un autre script dédié
+	require "modulePageHandler.php";
+}
+
+?>

@@ -1,0 +1,4 @@
+<?php
+// Page d'initialisation
+
+?>

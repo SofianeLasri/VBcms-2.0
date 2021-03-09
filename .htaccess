@@ -1,0 +1,12 @@
+php_flag display_errors on
+Options +FollowSymLinks -MultiViews
+php_value upload_max_filesize 2048M
+php_value post_max_size 2048M
+
+
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+  	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^ index.php [L]
+</IfModule>

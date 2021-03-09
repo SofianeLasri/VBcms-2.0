@@ -1,0 +1,12 @@
+{
+  "workshopId" : "2",
+  "requiredModules" : "[]",
+  "name": "vbcms-gallery-system",
+  "showname": "Gestionnaire de fichiers (ou galerie) de base",
+  "version": "1.0",
+  "compatible": "2.0",
+  "author": "76561198148455403",
+  "description": "Il s'agit du gestionnaire de fichers inclu avec VBcms. Est nécessaire au bon fonctionne du panel.",
+  "clientAccess": "",
+  "adminAccess": "gallery"
+}
