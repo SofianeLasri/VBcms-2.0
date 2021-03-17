@@ -189,7 +189,7 @@
 				array.push(workshopId);
 				array.push(depedenciesId);
 				console.log(encodeURIComponent(JSON.stringify(array)));
-				$.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/backTasks/?enableWSAddon="+encodeURIComponent(JSON.stringify(array)), function(data) {
+				$.get("<?=$websiteUrl?>vbcms-admin/backTasks/?enableWSAddon="+encodeURIComponent(JSON.stringify(array)), function(data) {
 					if (data != "") {
 						SnackBar({
 							message: "<?=$translation['ws_errorEnableAddon']?>: "+data,
@@ -204,7 +204,7 @@
 		}
 
 		function disableAddon(workshopId, confirm){
-			$.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/backTasks/?checkIfModuleIsUsedByOthers="+workshopId, function(depedenciesId) {
+			$.get("<?=$websiteUrl?>vbcms-admin/backTasks/?checkIfModuleIsUsedByOthers="+workshopId, function(depedenciesId) {
 				if (depedenciesId!="[]"&&confirm==0) {
 					$("#depedenciesModalTitle").html("<?=$translation['ws_requireddependecies']?>");
 					$("#depedenciesModalDesc").html("<?=$translation['ws_disableRequireddependecies']?>");
@@ -215,8 +215,10 @@
 					var array = [];
 					array.push(workshopId);
 					array.push(depedenciesId);
-					console.log(encodeURIComponent(JSON.stringify(array)));
-					$.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/backTasks/?disableWSAddon="+encodeURIComponent(JSON.stringify(array)), function(data) {
+					console.log(workshopId);
+					console.log(depedenciesId);
+					console.log("<?=$websiteUrl?>vbcms-admin/backTasks/?disableWSAddon="+encodeURIComponent(JSON.stringify(array)));
+					$.get("<?=$websiteUrl?>vbcms-admin/backTasks/?disableWSAddon="+encodeURIComponent(JSON.stringify(array)), function(data) {
 						if (data != "") {
 							SnackBar({
 								message: "<?=$translation['ws_errorDisableAddon']?>: "+data,

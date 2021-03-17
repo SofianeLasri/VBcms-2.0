@@ -2,7 +2,7 @@
 // Je le remet car l'inclusion de header.php va causer plus de problèmes qu'autre chose
 if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 ?>
-<script src="<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/js/md5.js"></script>
+<script src="<?=$websiteUrl?>vbcms-admin/js/md5.js"></script>
 <script type="text/javascript">
 
 	/////////////////////////////
@@ -19,7 +19,7 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 	// Par Sofiane Lasri - https://sl-projects.com
 
 	const pageFileName = window.location.pathname;
-	const cdnUrl = "<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-content/uploads/";
+	const cdnUrl = "<?=$websiteUrl?>vbcms-content/uploads/";
 	if (pageFileName=="/vbcms-admin/gallery/browse") {
 		mode = "full-gallery"; // Ça signifie qu'il s'agit de la page de la galerie
 	} else{
@@ -115,7 +115,7 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 					structureCurent = structureCurent + "/" + subfolderList[i];
 				}
 
-				await $.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks/?folderContent="+structureCurent+"&folderOnly",async function(data) {// Affiche uniquement les dossiers
+				await $.get("<?=$websiteUrl?>vbcms-admin/gallery/backTasks/?folderContent="+structureCurent+"&folderOnly",async function(data) {// Affiche uniquement les dossiers
 					var folders = JSON.parse(data);
 					
 					if (nextParent != "") {//Détecte si on a trouvé le dossier parent
@@ -141,7 +141,7 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 
 						//Ajoute a conteneur principale
 						if (i+1 == subfolderList.length) {
-							$("#galleryContent").append('<div id="c'+id+'" type="folder" path="'+path+'/'+name+'" onclick="getChildDirectory(\''+folders[b]+'\', \''+id+'\', \'yes\')" class="col galleryItem"><div class="galleryItemIcon" style="background:url(\'<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-content/modules/gallery/assets/images/manager/folder.png\')"></div><div id="fileName">'+name+'</div></div>');
+							$("#galleryContent").append('<div id="c'+id+'" type="folder" path="'+path+'/'+name+'" onclick="getChildDirectory(\''+folders[b]+'\', \''+id+'\', \'yes\')" class="col galleryItem"><div class="galleryItemIcon" style="background:url(\'<?=$websiteUrl?>vbcms-content/modules/gallery/assets/images/manager/folder.png\')"></div><div id="fileName">'+name+'</div></div>');
 						}
 						
 						
@@ -150,7 +150,7 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 			}
 
 		} else {
-			await $.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks/?folderContent="+path+"&folderOnly", function(data) {// Affiche uniquement les dossiers
+			await $.get("<?=$websiteUrl?>vbcms-admin/gallery/backTasks/?folderContent="+path+"&folderOnly", function(data) {// Affiche uniquement les dossiers
 				jQuery.each(JSON.parse(data), function(index, val){ 
 					var ml = (parseInt($("#"+parent).css("margin-left").replace('px','')) + 10)+"px";
 					var name = val.match(/([^\/]*)\/*$/)[1];
@@ -165,13 +165,13 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 						}
 					}
 					
-					$("#galleryContent").append('<div id="c'+id+'" type="folder" path="'+path+'/'+name+'" unselectable="on" onselectstart="return false;" onmousedown="return false;" onclick="getChildDirectory(\''+val+'\', \''+id+'\', \'yes\')" class="col galleryItem"><div class="galleryItemIcon" style="background:url(\'<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-content/modules/gallery/assets/images/manager/folder.png\')"></div><div id="fileName">'+name+'</div>');
+					$("#galleryContent").append('<div id="c'+id+'" type="folder" path="'+path+'/'+name+'" unselectable="on" onselectstart="return false;" onmousedown="return false;" onclick="getChildDirectory(\''+val+'\', \''+id+'\', \'yes\')" class="col galleryItem"><div class="galleryItemIcon" style="background:url(\'<?=$websiteUrl?>vbcms-content/modules/gallery/assets/images/manager/folder.png\')"></div><div id="fileName">'+name+'</div>');
 					
 				});
 			});
 		}
 		
-		await $.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks/?folderContent="+path+"&filesOnly", function(data) {// Affiche uniquement les fichiers
+		await $.get("<?=$websiteUrl?>vbcms-admin/gallery/backTasks/?folderContent="+path+"&filesOnly", function(data) {// Affiche uniquement les fichiers
 			jQuery.each(JSON.parse(data), function(index, val){
 				var url = cdnUrl+val;
 				var name = val.match(/([^\/]*)\/*$/)[1];
@@ -179,9 +179,9 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 				if (name.endsWith(".png")||name.endsWith(".jpg")||name.endsWith(".gif")) {
 					$("#galleryContent").append('<div type="image" id="'+id+'" path="'+path+'/'+name+'" onclick="openViewer(\''+path+'/'+name+'\')" class="col galleryItem" unselectable="on" onselectstart="return false;" onmousedown="return false;"><div class="galleryItemIcon" style="background:url(\''+url+'\'),linear-gradient(180deg, rgba(65,65,65,1) 0%, rgba(1,1,1,1) 100%);border-radius:5px;"></div><div id="fileName">'+name+'</div>');
 				} else if (name.endsWith(".mp4")||name.endsWith(".webm")||name.endsWith(".avi")) {
-					$("#galleryContent").append('<div type="image" id="'+id+'" path="'+path+'/'+name+'" onclick="openVideo(\''+path+'/'+name+'\')" class="col galleryItem" unselectable="on" onselectstart="return false;" onmousedown="return false;"><div class="galleryItemIcon" style="background:url(\'<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-content/modules/gallery/assets//images/manager/video-camera.png\')"></div><div id="fileName">'+name+'</div>');
+					$("#galleryContent").append('<div type="image" id="'+id+'" path="'+path+'/'+name+'" onclick="openVideo(\''+path+'/'+name+'\')" class="col galleryItem" unselectable="on" onselectstart="return false;" onmousedown="return false;"><div class="galleryItemIcon" style="background:url(\'<?=$websiteUrl?>vbcms-content/modules/gallery/assets//images/manager/video-camera.png\')"></div><div id="fileName">'+name+'</div>');
 				} else {
-					$("#galleryContent").append('<div type="file" id="'+id+'" path="'+path+'/'+name+'" onclick="download(\''+path+'/'+name+'\')" class="col galleryItem" unselectable="on" onselectstart="return false;" onmousedown="return false;"><div class="galleryItemIcon" style="background:url(\'<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-content/modules/gallery/assets//images/manager/document.png\')"></div><div id="fileName">'+name+'</div>');
+					$("#galleryContent").append('<div type="file" id="'+id+'" path="'+path+'/'+name+'" onclick="download(\''+path+'/'+name+'\')" class="col galleryItem" unselectable="on" onselectstart="return false;" onmousedown="return false;"><div class="galleryItemIcon" style="background:url(\'<?=$websiteUrl?>vbcms-content/modules/gallery/assets//images/manager/document.png\')"></div><div id="fileName">'+name+'</div>');
 				}
 			});
 		});
@@ -248,7 +248,7 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 		    var url = new URL(window.location.href);
 			var search_params = url.searchParams;
 
-		    xhr.open("POST", "<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks", true);
+		    xhr.open("POST", "<?=$websiteUrl?>vbcms-admin/gallery/backTasks", true);
 		    xhr.onreadystatechange = function() {
 		        if (xhr.readyState == 4 && xhr.status == 200 && xhr.responseText != "") {
 		            // Handle response.
@@ -359,7 +359,7 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 			var url = new URL(window.location.href);
 			var search_params = url.searchParams;
 			path = search_params.get('path');
-			$.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks/?createFolder="+encodeURIComponent(path+"/"+folderName), function(data) {
+			$.get("<?=$websiteUrl?>vbcms-admin/gallery/backTasks/?createFolder="+encodeURIComponent(path+"/"+folderName), function(data) {
 				if (data != "") {
 					console.log(data);
 				} else {
@@ -430,7 +430,7 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 			path = $("#fileDetailsDiv").attr("path");
 			var details = [path, $("#fileTitle").val(), $("#fileDescription").val()];
 			$.ajax({
-			  url: "<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks/?updateFileDetails="+encodeURIComponent(JSON.stringify(details)),
+			  url: "<?=$websiteUrl?>vbcms-admin/gallery/backTasks/?updateFileDetails="+encodeURIComponent(JSON.stringify(details)),
 			});
 			
 		});
@@ -456,7 +456,7 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 		$("#explorerDelete").click(async function() {
 			path = $("#fileDetailsDiv").attr("path");
 			$.ajax({
-			  url: "<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks/?deleteFileFolder="+encodeURIComponent(path),
+			  url: "<?=$websiteUrl?>vbcms-admin/gallery/backTasks/?deleteFileFolder="+encodeURIComponent(path),
 			});
 		});
 
@@ -465,7 +465,7 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 			path = $("#fileDetailsDiv").attr("path");
 			var details = [path, $("#fileRenameValue").val()];
 			$.ajax({
-			  url: "<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks/?renameFile="+encodeURIComponent(JSON.stringify(details)),
+			  url: "<?=$websiteUrl?>vbcms-admin/gallery/backTasks/?renameFile="+encodeURIComponent(JSON.stringify(details)),
 			});
 		});
 
@@ -487,7 +487,7 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 			path = $("#"+$("#contextMenu").attr("itemId")).attr("path");
 			
 			if ($("#"+$("#contextMenu").attr("itemId")).attr("type") == "folder"){
-				await $.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks/?folderDetails="+path, function(data) {// Affiche uniquement les fichiers
+				await $.get("<?=$websiteUrl?>vbcms-admin/gallery/backTasks/?folderDetails="+path, function(data) {// Affiche uniquement les fichiers
 					var details = JSON.parse(data);
 					if (action == "rename") {
 						$(".detailHeader").html("<h5>Renommer</h5><div class=\"d-flex align-items-center\"><input type=\"text\" class=\"form-control\" id=\"fileRenameValue\" value=\""+details[0]+"\" required=\"\"><button id=\"saveFileRename\" type=\"button\" class=\"btn btn-brown float-sm-right ml-2\"><i class=\"fas fa-save\"></i></button></div>");
@@ -498,7 +498,7 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 					$("#fileDescription").val(details[4]);
 				});
 			} else {
-				await $.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks/?fileDetails="+path, function(data) {// Affiche uniquement les fichiers
+				await $.get("<?=$websiteUrl?>vbcms-admin/gallery/backTasks/?fileDetails="+path, function(data) {// Affiche uniquement les fichiers
 					var details = JSON.parse(data);
 					if (action == "rename") {
 						$(".detailHeader").html("<h5>Renommer</h5><div class=\"d-flex align-items-center\"><input type=\"text\" class=\"form-control\" id=\"fileRenameValue\" value=\""+details[0]+"\" required=\"\"><button id=\"saveFileRename\" type=\"button\" class=\"btn btn-brown float-sm-right ml-2\"><i class=\"fas fa-save\"></i></button></div>");
@@ -522,18 +522,34 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 			var name = path.replace(/^.*[\\\/]/, '');
 			var parametres = [path, search_params.get('path')+"/"+name, action];
 			$.ajax({
-			  url: "<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks/?copyMoveFile="+encodeURIComponent(JSON.stringify(parametres)),
+			  url: "<?=$websiteUrl?>vbcms-admin/gallery/backTasks/?copyMoveFile="+encodeURIComponent(JSON.stringify(parametres)),
 			});
 			$("#moveFile").css("display", "none");
 			$("#copyFile").css("display", "none");
 			getChildDirectory(search_params.get('path'),$("#galleryContent").attr("oldParent"), 'no');
+		}
+
+		function copyFileUrl(){
+			var fileUrl = "<?=$websiteUrl?>vbcms-content/uploads"+$("#fileDetailsDiv").attr("path");
+			navigator.clipboard.writeText(fileUrl).then(function() {
+			    SnackBar({
+                    message: "Lien copié",
+                    status: "success"
+                });
+			}, function() {
+			    SnackBar({
+                    message: "Impossible de copier le lien. :(",
+                    status: "danger",
+                    timeout: false
+                });
+			});
 		}
 		/////////////
 		// Events Explorer
 
 		$("#explorerDelete").click(function() {
 			path = $("#"+$("#contextMenu").attr("itemId")).attr("path");
-			$.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks/?deleteFileFolder="+encodeURIComponent(path), function(data) {
+			$.get("<?=$websiteUrl?>vbcms-admin/gallery/backTasks/?deleteFileFolder="+encodeURIComponent(path), function(data) {
 				if (data != "") {
 					console.log(data);
 				} else {
@@ -544,7 +560,7 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 		})
 
 		function openFileId(pathId){ // Check le type de fichier que c'est
-			$.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks/?fileDetails="+pathId, function(data) {
+			$.get("<?=$websiteUrl?>vbcms-admin/gallery/backTasks/?fileDetails="+pathId, function(data) {
 				var details = JSON.parse(data);
 				name = details[0];
 				if (name.endsWith(".png")||name.endsWith(".jpg")||name.endsWith(".gif")) {
@@ -570,7 +586,7 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 							<div class="icon"><i class="far fa-chevron-right"></i></div>\
 						</a>');
 			}
-			$.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks/?fileDetails="+pathId, function(data) {
+			$.get("<?=$websiteUrl?>vbcms-admin/gallery/backTasks/?fileDetails="+pathId, function(data) {
 				var details = JSON.parse(data);
 				var url = new URL(window.location.href);
 				var search_params = url.searchParams;
@@ -588,7 +604,7 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 				$("#galleryModal").attr("path", details[6]);
 
 				path = details[6].substring(0,details[6].lastIndexOf("\/")+1);
-				$.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks/?folderContent="+path+"&filesOnly", function(data) {
+				$.get("<?=$websiteUrl?>vbcms-admin/gallery/backTasks/?folderContent="+path+"&filesOnly", function(data) {
 					var fichiers = JSON.parse(data);
 					var i = 0;
 					var indexCorrect = 0;
@@ -617,7 +633,7 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 				$("#galleryModal").attr("type", "video");
 				$(".galleryModalContent").html('<video id="videoPlayer" class="video-player" autoplay controls preload="auto" ></video>');
 			}
-			$.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/gallery/backTasks/?fileDetails="+pathId, function(data) {
+			$.get("<?=$websiteUrl?>vbcms-admin/gallery/backTasks/?fileDetails="+pathId, function(data) {
 				var details = JSON.parse(data);
 				var url = new URL(window.location.href);
 				var search_params = url.searchParams;

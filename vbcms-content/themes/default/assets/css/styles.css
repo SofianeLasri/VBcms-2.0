@@ -1,0 +1,56 @@
+@import "../fonts/fonts.css";
+body {
+	margin: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Navbar */
+header{
+    position: absolute;
+    width: 100%;
+    z-index: 100;
+}
+.navbar{
+    padding: 10px 0px;
+}
+.navbar .navbar-brand img {
+    height: 1.5em;
+}
+.navbar .navbar-brand{
+    font-family: "Linotype Kaliber Bold";
+    color: white;
+}
+.navbar-light .navbar-nav .nav-link {
+    font-weight: 600;
+    color: #fff!important;
+}
+
+/* Contenu des pages */
+.index-presentationTop{
+    background: rgb(217,174,137);
+    height: 100vh;
+}
+.index-presentationTop .content{
+    position: absolute;
+    z-index: 10;
+    margin: 0 auto;
+    width: 100%;
+    margin-top: 50vh;
+    transform: translateY(-50%);
+
+    text-align: center;
+    color: white;
+}
+.index-presentationTop .backImage{
+    position: absolute;
+    z-index: 10;
+    margin: 0 auto;
+    width: 100%;
+    margin-top: 50vh;
+    transform: translateY(-50%);
+    z-index: 9;
+    text-align: center;
+}
+.txt-shadow{
+    text-shadow: 0px 3px 7px rgb(150 150 150);
+}

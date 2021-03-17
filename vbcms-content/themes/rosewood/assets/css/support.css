@@ -1,0 +1,13 @@
+.supportTopImage{
+  height: 25vh;
+  width: 100%;
+  background-image: url("https://api.rosewood-rp.net/upload/white-background-effect.jpg");
+  -webkit-box-shadow:inset 0px 0px 77px 1px #000000;
+  -moz-box-shadow:inset 0px 0px 77px 1px #000000;
+  box-shadow:inset 0px 0px 77px 1px #000000;
+}
+
+.supportTopTex{
+  color: black;
+  width: 80vw;
+}

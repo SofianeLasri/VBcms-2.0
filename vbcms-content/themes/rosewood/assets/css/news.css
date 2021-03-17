@@ -1,0 +1,66 @@
+.articleContainer{
+	width: 80vw;
+	position: relative;
+	left: 0;
+	right: 0;
+	margin: auto;
+	margin-top: 4vh;
+}
+.articleHeader {
+	width: 100%;
+	font-family: "HelveticaNeueLTW1G-Md";
+	font-size: 2em;
+}
+.articleHeader h1 h4{
+	font-weight: 700;
+}
+.articleHeader h4{
+	margin-top: -1vh;
+}
+.articleHeader img {
+	width: 50vw;
+}
+.subtitle{
+	margin-top: 0.5vh;
+	font-size: .8rem;
+    color: #646464;
+}
+.articleContent{
+	font-weight: 400;
+	margin-top: 2vh;
+	width: 50vw;
+	font-family: "HelveticaNeueLTW1G-Md";
+	text-align: left;
+}
+.articleContent p {
+	font-size: 20px;
+	line-height: 1.4em;
+	margin-bottom: 2vh;
+}
+.articleContent img{
+	max-width: 100%;
+	height: auto;
+}
+b, strong {
+    font-weight: bolder;
+}
+b {
+    font-weight: bold;
+}
+i {
+	font-family: "HelveticaNeueLTPro-It";
+}
+
+@media screen and (max-width: 1024px) {
+	.articleHeader img {
+		width: 90vw;
+	}
+	.articleContent{
+		font-weight: 400;
+		margin-top: 2vh;
+		width: 90vw;
+	}
+  	.articleContainer{
+		width: 90vw;
+	}
+}

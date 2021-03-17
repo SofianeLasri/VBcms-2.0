@@ -177,12 +177,17 @@ if (isset($_GET["session"])) {
 		`email` VARCHAR(256) NOT NULL,
 		`password` VARCHAR(255) NOT NULL,
 		PRIMARY KEY (`id`)
-		) ENGINE = InnoDB;
-
-	");
+		) ENGINE = InnoDB;");
+	
+	$requete = $bdd->exec("CREATE TABLE `vbcms-websiteStats` (
+		`id` INT NOT NULL AUTO_INCREMENT,
+		`date` DATETIME NOT NULL,
+		`page` VARCHAR(300) NOT NULL,
+		`ip` VARCHAR(64) NOT NULL,
+		PRIMARY KEY (`id`)
+		) ENGINE = InnoDB;");
 
 	/*
-	$requete = $bdd->exec("");
 	$requete = $bdd->exec("");
 	$requete = $bdd->exec("");
 	$requete = $bdd->exec("");

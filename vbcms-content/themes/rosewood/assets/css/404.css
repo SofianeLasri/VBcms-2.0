@@ -1,0 +1,13 @@
+.pageTopImage{
+  height: 90vh;
+  width: 100%;
+  background-image: url("../images/backgrounds/blue-background.jpg");
+  -webkit-box-shadow:inset 0px 0px 77px 1px #000000;
+  -moz-box-shadow:inset 0px 0px 77px 1px #000000;
+  box-shadow:inset 0px 0px 77px 1px #000000;
+}
+
+.pageTopTex{
+  color: white;
+  width: 80vw;
+}

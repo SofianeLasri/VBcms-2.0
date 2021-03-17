@@ -7,5 +7,4 @@ $adminPagesAssoc["404"] = "404.php";
 
 $adminPagesAssoc["backTasks"] = "backTasks.php";
 $adminPagesAssoc["workshop"] = "ws-handler.php";
-$adminPagesAssoc["personalize"] = "personalize-handler.php";
 ?>

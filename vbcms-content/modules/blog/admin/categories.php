@@ -10,7 +10,7 @@ if (isset($_POST["submit"])) {
 		$response = $bdd->prepare("DELETE FROM `vbcms-blogCategories` WHERE id = ?");
 		$response->execute([$_GET["delete"]]);
 	} else {
-		$errorMessage = ("La catégorie n°".$_GET["delete"]." n'existe pas.");
+		$errorMessage = ($translation["category_message_1"].$_GET["delete"]." ".$translation["dont_exist"].".");
 	}
 }
 ?>
@@ -74,7 +74,7 @@ if (isset($_POST["submit"])) {
 					$response = $response->fetch(PDO::FETCH_ASSOC); 
 					$parentName = $response["showName"];
 
-			  		echo ("<tr id='row".$row['id']."'><td><span id='showName".$row['id']."'>".$row['showName']."</span><br><div class='rowSubText'><a href='#' onclick='modifyButton(".$row['id'].", \"".$row['showName']."\", \"".$row['shortName']."\", \"".$parentName."\", false)'>Modifier</a> | <a class='text-danger' href='?delete=".$row['id']."'>Supprimer</a></div></td><td><span id='shortName".$row['id']."'>".$row['shortName']."</span></td><td><span id='parentName".$row['id']."'>".$parentName."</span></td></tr>");
+			  		echo ("<tr id='row".$row['id']."'><td><span id='showName".$row['id']."'>".$row['showName']."</span><br><div class='rowSubText'><a href='#' onclick='modifyButton(".$row['id'].", \"".$row['showName']."\", \"".$row['shortName']."\", \"".$parentName."\", false)'>".$translation["modify"]."</a> | <a class='text-danger' href='?delete=".$row['id']."'>".$translation["delete"]."</a></div></td><td><span id='shortName".$row['id']."'>".$row['shortName']."</span></td><td><span id='parentName".$row['id']."'>".$parentName."</span></td></tr>");
 			  	}
 			  	?>
 			  </tbody>
@@ -111,7 +111,7 @@ if (isset($_POST["submit"])) {
   			$.ajax({
 			  url: "<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/blog/backTask?updateCategory="+id+"&shortName="+$('#changeCategorySlug'+id).val()+"&showName="+encodeURIComponent($('#changeCategoryName'+id).val())+"&childOf="+$('#categoryParent'+id+' option:selected').val(),
 			});
-  			$('#row'+id).html('<td><span id="showName'+id+'">'+$('#changeCategoryName'+id).val()+'</span><br><div class="rowSubText"><a href="#" id="modify'+id+'" onclick="modifyButton('+id+', \''+$('#changeCategoryName'+id).val()+'\', \''+$('#changeCategorySlug'+id).val()+'\', \''+$('#categoryParent'+id+' option:selected').text()+'\', false)">Modifier</a> | <a class="text-danger" href="?delete='+id+'">Supprimer</a></div></td><td><span id="shortName'+id+'">'+$('#changeCategorySlug'+id).val()+'</span></td><td><span id="parentName'+id+'">'+$('#categoryParent'+id+' option:selected').text()+'</span></td>');
+  			$('#row'+id).html('<td><span id="showName'+id+'">'+$('#changeCategoryName'+id).val()+'</span><br><div class="rowSubText"><a href="#" id="modify'+id+'" onclick="modifyButton('+id+', \''+$('#changeCategoryName'+id).val()+'\', \''+$('#changeCategorySlug'+id).val()+'\', \''+$('#categoryParent'+id+' option:selected').text()+'\', false)">'.$translation["modify"].'</a> | <a class="text-danger" href="?delete='+id+'">'.$translation["delete"].'</a></div></td><td><span id="shortName'+id+'">'+$('#changeCategorySlug'+id).val()+'</span></td><td><span id="parentName'+id+'">'+$('#categoryParent'+id+' option:selected').text()+'</span></td>');
   			
   		}
   	}

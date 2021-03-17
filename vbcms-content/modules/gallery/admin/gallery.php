@@ -33,6 +33,7 @@
 			<textarea id="fileDescription" class="form-control mt-1" placeholder="Description du fichier"></textarea>
 			<button id="saveFileDetails" type="button" class="btn btn-brown float-sm-right mt-1">Enregistrer</button>
 		</div>
+		<button onclick="copyFileUrl()" class="rButton-black"><i class="fas fa-link"></i></button>
 	</div>
 </div>
 

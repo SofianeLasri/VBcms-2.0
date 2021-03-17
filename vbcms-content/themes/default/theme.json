@@ -1,6 +1,6 @@
 {
-  "workshopId" : "3",
-  "requiredModules" : "[]",
+  "workshopId" : "4",
+  "requiredModules" : "[1]",
   "name": "default-theme",
   "showname": "Thème par défaut",
   "version": "1.0",

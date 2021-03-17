@@ -27,6 +27,9 @@ function savePost($postData){
     $writtenOn = $postData[5];
     $modifiedOn = $postData[6];
     date_parse_from_format("Y-m-d G:i:s", $modifiedOn);
+    if ($postData[0] =='') {
+        $postData[0] = 0;
+    }
 
     $response = $bdd->prepare("INSERT INTO `vbcms-blogPosts` (id, categoryId, authorId, slug, title, content, headerImage, writtenOn, modifiedOn, description) VALUES (?,?,?,?,?,?,?,?,?,?)");
     $response->execute([null, $postData[0], $_SESSION['user_id'], $postData[1], utf8_encode($postData[2]), utf8_encode($postData[3]), $postData[4], $writtenOn, $modifiedOn, utf8_encode($postData[7])]);
@@ -43,6 +46,9 @@ function updatePost($postData){
     $response->execute([$postData[8]]);
     
     if (!empty($response->fetch())) {
+        if ($postData[0] =='') {
+            $postData[0] = 0;
+        }
         $response = $bdd->prepare("UPDATE `vbcms-blogPosts` SET categoryId=?, authorId=?, slug=?, title=?, content=?, headerImage=?, writtenOn=?, modifiedOn=?, description=? WHERE id=?");
         $response->execute([$postData[0], $_SESSION['user_id'], $postData[1], utf8_encode($postData[2]), utf8_encode($postData[3]), $postData[4], $writtenOn, $modifiedOn, utf8_encode($postData[7]), $postData[8]]);
     } else {

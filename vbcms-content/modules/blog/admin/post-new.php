@@ -13,12 +13,12 @@ if(isset($_GET["modifyDraft"]) && !empty($_GET["modifyDraft"])){
 ?>
 <!-- Contenu -->
 <div class="page-content" leftSidebar="240" rightSidebar="0">
-	<h3>Créer un nouvel article</h3>
+	<h3><?=$translation["blog_create2"]?></h3>
 
 	<div class="row">
 		<div class="col-sm-6 col-editor-content">
-			<input type="text" class="form-control my-2" id="articleTitle" <?php if($postContent) echo 'value="'.utf8_decode($postContent["title"]).'"'; ?> placeholder="Titre du nouvel article">
-			<div id="permalink-div" slug="<?php if($postContent) echo $postContent["slug"]; ?>" class="my-2"><strong>Permalien : </strong><a href="<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/blog/<?php if($postContent) echo $postContent["slug"]; ?>" target="_blank"><?=$http?>://<?=$_SERVER['HTTP_HOST']?>/blog/<?php if($postContent) echo $postContent["slug"]; ?></a></div>
+			<input type="text" class="form-control my-2" id="articleTitle" <?php if($postContent) echo 'value="'.utf8_decode($postContent["title"]).'"'; ?> placeholder="<?=$translation["blog_titleOfNewArticle"]?>">
+			<div id="permalink-div" slug="<?php if($postContent) echo $postContent["slug"]; ?>" class="my-2"><strong><?=$translation["permalink"]?> : </strong><a href="<?=$websiteUrl?>blog/<?php if($postContent) echo $postContent["slug"]; ?>" target="_blank"><?=$websiteUrl?>blog/<?php if($postContent) echo $postContent["slug"]; ?></a></div>
 			<textarea required id="summernote" name="articleContent"><?php if($postContent) echo utf8_decode($postContent["content"]); ?></textarea>
 		</div>
 		<div class="col-6 col-editor-sidebar">
@@ -41,19 +41,19 @@ if(isset($_GET["modifyDraft"]) && !empty($_GET["modifyDraft"])){
 			</div>
 
 			<div class="card vbcard mt-3">
-				<h6 class="card-header">Description</h6>
+				<h6 class="card-header"><?=$translation["description"]?></h6>
 				<div class="card-body">
-					<p class="card-text"><strong>Entrez une courte description de l'article</strong></p>
+					<p class="card-text"><strong><?=$translation["blog_message_1"]?></strong></p>
 					<textarea id="articleDescription" class="form-control"><?php if($postContent) echo utf8_decode($postContent["description"]); ?></textarea>
 				</div>
 			</div>
 
 			<div class="card vbcard mt-3">
-				<h6 class="card-header">Catégorie</h6>
+				<h6 class="card-header"><?=$translation["blog_category"]?></h6>
 				<div class="card-body">
 					<div class="form-group">
 					    <select multiple class="form-control" id="articleCategory">
-						    <option value="0">(aucune)</option>
+						    <option value="0">(<?=$translation["none-f"]?>)</option>
 						    <?php
 						  	$result = $bdd->query("SELECT * FROM `vbcms-blogCategories`");
 						  	foreach ($result as $row) {
@@ -74,7 +74,7 @@ if(isset($_GET["modifyDraft"]) && !empty($_GET["modifyDraft"])){
 						  	?>
 					    </select>
 					</div>
-					<a href="<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/blog/categories">Ajouter une catégorie</a>
+					<a href="<?=$websiteUrl?>vbcms-admin/blog/categories"><?=$translation["category_add"]?></a>
 				</div>
 			</div>
 		</div>
@@ -85,7 +85,7 @@ if(isset($_GET["modifyDraft"]) && !empty($_GET["modifyDraft"])){
 	<div class="modal-dialog galleryIncludeModal">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLabel">Choisir une image</h5>
+				<h5 class="modal-title" id="exampleModalLabel"><?=$translation["chooseAPicture"]?></h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -101,14 +101,14 @@ if(isset($_GET["modifyDraft"]) && !empty($_GET["modifyDraft"])){
 		</div>
 	</div>
 </div>
-<script src="<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/js/md5.js";?>"></script>
+<script src="<?=$websiteUrl?>vbcms-admin/js/md5.js";?>"></script>
 <script type="text/javascript">
 
 
 	// Initialise l'editeur
 	document.emojiButton = 'far fa-smile'; // default: fa fa-smile-o
 	document.emojiType = 'unicode'; // default: image
-	document.emojiSource = '<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-content/modules/blog/assets/vendors/tam-emoji/img';
+	document.emojiSource = '<?=$websiteUrl?>vbcms-content/modules/blog/assets/vendors/tam-emoji/img';
 
 	// ID unique du brouillon
 	draftId = getRandomString(4);
@@ -136,7 +136,7 @@ if(isset($_GET["modifyDraft"]) && !empty($_GET["modifyDraft"])){
 
 	$(document).ready(function() {
 		$('#summernote').summernote({
-        placeholder: "Ceci est un texte.",
+        placeholder: "<?=$translation["sampleText"]?>",
         tabsize: 2,
         height: 300,
         toolbar: [
@@ -153,21 +153,21 @@ if(isset($_GET["modifyDraft"]) && !empty($_GET["modifyDraft"])){
 	$("#articleTitle").on("change paste keyup", function() { 
 		var slug = $(this).val()
 		slug = slug.toLowerCase().replace(/ /g,'-').replace(/[^\w-]+/g,'');
-		$('#permalink-div>a').attr("href", "<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/blog/"+slug);
-		$('#permalink-div>a').html("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/blog/"+slug);
+		$('#permalink-div>a').attr("href", "<?=$websiteUrl?>blog/"+slug);
+		$('#permalink-div>a').html("<?=$websiteUrl?>blog/"+slug);
 		$('#permalink-div').attr("slug", slug);
 	});
 
 	function openGallery(){
 		$('#galleryModal').modal('toggle');
 		if ($('#includeGallery').html()=="")
-			$('#includeGallery').load('<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-content/modules/gallery/admin/gallery-include.php');
+			$('#includeGallery').load('<?=$websiteUrl?>vbcms-content/modules/gallery/admin/gallery-include.php');
 	}
 
 	// Contournement pour ne sélectionner que les images
 	function openViewer(path){
-		$("#editor-headerPic").css("background-image", "url(\"<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-content/uploads"+path+"\")");
-		$("#editor-headerPic").attr("path", "<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-content/uploads"+path);
+		$("#editor-headerPic").css("background-image", "url(\"<?=$websiteUrl?>vbcms-content/uploads"+path+"\")");
+		$("#editor-headerPic").attr("path", "<?=$websiteUrl?>vbcms-content/uploads"+path);
 		$("#editor-headerPic").html('<i class="fas fa-pencil-alt"></i> Modifier');
 		$('#galleryModal').modal('hide');
 	}
@@ -183,9 +183,9 @@ if(isset($_GET["modifyDraft"]) && !empty($_GET["modifyDraft"])){
 	}
 
 	function autoSave(autoOrNot){
-        if($("#summernote").val() != hash){
+        if(hex_md5($("#summernote").val()) != hash){
         	SnackBar({
-                message: "Sauvegarde automatique...",
+                message: "<?=$translation["auto-save"]?>...",
                 status: "info"
             });
 
@@ -201,18 +201,18 @@ if(isset($_GET["modifyDraft"]) && !empty($_GET["modifyDraft"])){
 		    var url = new URL(window.location.href);
 			var search_params = url.searchParams;
 
-		    xhr.open("POST", "<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/blog/backTasks", true);
+		    xhr.open("POST", "<?=$websiteUrl?>vbcms-admin/blog/backTasks", true);
 		    xhr.onreadystatechange = function() {
 		        if (xhr.readyState == 4 && xhr.status == 200) {
 		        	if(xhr.responseText!=""){
 		        		SnackBar({
-	                        message: "Impossible de sauvegarder: "+xhr.responseText,
+	                        message: "<?=$translation["error-saving"]?>: "+xhr.responseText,
 	                        status: "danger",
 	                        timeout: false
 	                    });
 		        	} else {
 		        		SnackBar({
-	                        message: "Sauvegarde réussie!",
+	                        message: "<?=$translation["success-saving"]?>!",
 	                        status: "success"
 	                    });
 		        	}
@@ -231,7 +231,7 @@ if(isset($_GET["modifyDraft"]) && !empty($_GET["modifyDraft"])){
 	function publish(autoOrNot){
         if($('#permalink-div').attr("slug") != "" || $("#summernote").val() != ""){
         	SnackBar({
-                message: "Publication de l'article...",
+                message: "<?=$translation["blog_publishingArticle"]?>...",
                 status: "info"
             });
 
@@ -247,18 +247,18 @@ if(isset($_GET["modifyDraft"]) && !empty($_GET["modifyDraft"])){
 		    var url = new URL(window.location.href);
 			var search_params = url.searchParams;
 
-		    xhr.open("POST", "<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/blog/backTasks", true);
+		    xhr.open("POST", "<?=$websiteUrl?>vbcms-admin/blog/backTasks", true);
 		    xhr.onreadystatechange = function() {
 		        if (xhr.readyState == 4 && xhr.status == 200) {
 		        	if(xhr.responseText!=""){
 		        		SnackBar({
-	                        message: "Impossible de sauvegarder: "+xhr.responseText,
+	                        message: "<?=$translation["error-saving"]?>: "+xhr.responseText,
 	                        status: "danger",
 	                        timeout: false
 	                    });
 		        	} else {
 		        		SnackBar({
-	                        message: "Sauvegarde réussie!",
+	                        message: "<?=$translation["success-saving"]?>!",
 	                        status: "success"
 	                    });
 		        	}
@@ -275,7 +275,7 @@ if(isset($_GET["modifyDraft"]) && !empty($_GET["modifyDraft"])){
 	function update(){
         if($('#permalink-div').attr("slug") != "" || $("#summernote").val() != ""){
         	SnackBar({
-                message: "Mise à jour de l'article...",
+                message: "<?=$translation["blog_updatingArticle"]?>...",
                 status: "info"
             });
 
@@ -291,18 +291,18 @@ if(isset($_GET["modifyDraft"]) && !empty($_GET["modifyDraft"])){
 		    var url = new URL(window.location.href);
 			var search_params = url.searchParams;
 
-		    xhr.open("POST", "<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/blog/backTasks", true);
+		    xhr.open("POST", "<?=$websiteUrl?>vbcms-admin/blog/backTasks", true);
 		    xhr.onreadystatechange = function() {
 		        if (xhr.readyState == 4 && xhr.status == 200) {
 		        	if(xhr.responseText!=""){
 		        		SnackBar({
-	                        message: "Impossible de sauvegarder: "+xhr.responseText,
+	                        message: "<?=$translation["error-saving"]?>: "+xhr.responseText,
 	                        status: "danger",
 	                        timeout: false
 	                    });
 		        	} else {
 		        		SnackBar({
-	                        message: "Sauvegarde réussie!",
+	                        message: "<?=$translation["success-saving"]?>!",
 	                        status: "success"
 	                    });
 		        	}

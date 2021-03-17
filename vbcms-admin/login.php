@@ -24,7 +24,7 @@ if (isset($_POST['login'])) { // Ne s'éxécute que si le formulaire de connexio
 				$_SESSION['loginType'] = "local";
 				$_SESSION['user_id'] = $user['id'];
 				$_SESSION['user_username'] = $user['username'];
-				$_SESSION['user_profilePic'] = "$http://$_SERVER[HTTP_HOST]/vbcms-admin/images/vbcms-logo/raccoon-in-box-512x.png";
+				$_SESSION['user_profilePic'] = "$http://$_SERVER[HTTP_HOST]/vbcms-admin/images/misc/programmer.png";
 				$geoPlugin_array = unserialize( file_get_contents('http://www.geoplugin.net/php.gp?ip=' . $_SERVER['REMOTE_ADDR']) );
 				$_SESSION['language'] = $geoPlugin_array['geoplugin_countryCode'];
 				header('Location: '.urldecode($redirect));

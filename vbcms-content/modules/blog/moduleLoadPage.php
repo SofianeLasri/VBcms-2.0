@@ -11,7 +11,7 @@ if ($type=="client") {
 
 		// Récupère la liste des posts
 		if (isset($_GET["getPostsList"]) AND !empty($_GET["getPostsList"])) {
-			$conditions = json_decode($_GET["getPostsList"]);
+			$conditions = json_decode(urldecode($_GET["getPostsList"]));
 			echo json_encode(getPostsList($conditions[0], $conditions[1]));
 		}
 	}elseif ($params[0]!=""){

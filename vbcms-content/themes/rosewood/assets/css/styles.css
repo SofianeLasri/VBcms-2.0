@@ -1,0 +1,16 @@
+@import url('navbar.css');
+
+:root{
+  --dark-blue: #1e2630;
+  --main-blue: #1f4396;
+  --main-blue2: #2C5FFF;
+  --light-blue: #40739e;
+}
+
+.whiteLink {
+    color: white; 
+}
+.whiteLink:Hover {
+    color: #e5e5e5;
+    text-decoration: none;  
+}

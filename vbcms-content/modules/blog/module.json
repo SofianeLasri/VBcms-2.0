@@ -1,6 +1,6 @@
 {
-  "workshopId" : "1",
-  "requiredModules" : "[2]",
+  "workshopId" : "2",
+  "requiredModules" : "[1,3]",
   "name": "vbcms-blog-system",
   "showname": "Système de blog de base",
   "version": "1.0",

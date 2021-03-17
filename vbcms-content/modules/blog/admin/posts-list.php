@@ -1,6 +1,6 @@
 <!-- Contenu -->
 <div class="page-content" leftSidebar="240" rightSidebar="0">
-	<h3>Liste des articles</h3>
+	<h3><?=$translation["blog_list"]?></h3>
 
 	<div class="d-flex flex-column">
 		<div class="posts-list-options">
@@ -61,9 +61,9 @@
 		var new_url = url.toString();
 		window.history.replaceState({}, '',new_url);
 
-		console.log("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/blog/backTasks/?getPostsList="+JSON.stringify(params));
+		console.log("<?=$websiteUrl?>blog/backTasks/?getPostsList="+encodeURI(JSON.stringify(params)));
 
-		await $.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/blog/backTasks/?getPostsList="+JSON.stringify(params), function(data) {
+		await $.get("<?=$websiteUrl?>blog/backTasks/?getPostsList="+encodeURI(JSON.stringify(params)), function(data) {
 			var postList = JSON.parse(data);
 			jQuery.each(JSON.parse(data), function(index){
 				if(postList[index]["type"]=="post"){
@@ -77,7 +77,7 @@
 							<p class="card-subtitle mb-2 text-muted">Par '+postList[index]["author"]+' - '+postList[index]["category"][1]+'</p>\
 							<p class="card-text">'+postList[index]["description"]+'</p>\
 							<a href="/vbcms-admin/blog/post-new?modifyPost='+postList[index]["id"]+'" class="btn btn-brown btn-sm"><i class="fas fa-pencil-alt"></i> Modifier l\'article</a>\
-							<a href="<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/blog/'+postList[index]["slug"]+'" target="_blank"  class="btn btn-success btn-sm"><i class="fas fa-eye"></i></a>\
+							<a href="<?=$websiteUrl?>blog/'+postList[index]["slug"]+'" target="_blank"  class="btn btn-success btn-sm"><i class="fas fa-eye"></i></a>\
 							<a href="#" onclick="deletePostDraft(\''+postList[index]["type"]+'\', \''+postList[index]["id"]+'\', false)" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>\
 						</div>\
 					</div>');
@@ -109,7 +109,7 @@
 			var params = [];
 			params.push(type);
 			params.push(id);
-			$.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-admin/blog/backTasks/?deletePostDraft="+JSON.stringify(params), function(data) {
+			$.get("<?=$websiteUrl?>vbcms-admin/blog/backTasks/?deletePostDraft="+JSON.stringify(params), function(data) {
 				if (data=="") {
 					SnackBar({
 						message: "Suprression réussie!",
