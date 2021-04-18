@@ -73,6 +73,18 @@ if (isset($_POST["submit"])) {
 
 			<button class="btn btn-brown" type="submit" name="submit">Sauvegarder les changements</button>
 		</form>
+		<div class="admin-tips">
+			<div class="tip">
+				<h5>À quoi servent ces paramètres?</h5>
+				<p><b>Ces paramètre permettent de donner une identité à votre site.</b> Ils permettent aux moteurs de recherches ainsi qu'aux applications de le reconnaître.<br><br>
+				<b>Il n'est pas primordial de les remplir si vous n'utilisez pas la fonction de site internet</b>, mais il reste préférable d'au moins renseigner le nom du serveur ainsi que son logo.</p>
+			</div>
+			<div class="tip">
+				<h5>À quoi sert la clé Steam API?</h5>
+				<p>La clé API Steam permet à certains addons de communiquer avec votre serveur, mais également à certaines interractions la nécessitant.<br><br>
+				<b>Vous pouvez l'obtenir ici:</b> <a href="https://steamcommunity.com/dev/apikey" class="text-brown">Clé API Steam Web</a></p>
+			</div>
+		</div>
 	</div>
 
 	<div class="modal fade" id="galleryModal" tabindex="-1">
@@ -104,7 +116,7 @@ if (isset($_POST["submit"])) {
 		function openGallery(){
 			$('#galleryModal').modal('toggle');
 			if ($('#includeGallery').html()=="")
-				$('#includeGallery').load('<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-content/modules/gallery/admin/gallery-include.php');
+				$('#includeGallery').load('<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-content/modules/vbcms-filemanager/admin/gallery-include.php');
 		}
 
 		// Contournement pour ne sélectionner que les images

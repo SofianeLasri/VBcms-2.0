@@ -566,3 +566,35 @@ header .menu-item{
     background: linear-gradient(to right, #e6e6e6 10%, #dadada 18%, #e6e6e6 33%);
     position: relative;
 }
+
+.admin-tips{
+	display: none;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 22em;
+	height: 100%;
+	margin: 1em;
+}
+.admin-tips .tip{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	background-color: #e6e6e6;
+	border-radius: 5px;
+	padding: 1em;
+	margin-bottom: 1em;
+}
+.admin-tips .tip img{
+	max-width: 100%;
+}
+.admin-tips .tip p, .admin-tips .tip h5{
+	width: 100%;
+}
+
+@media (min-width: 1400px){
+	.admin-tips{
+		display: block;
+	}
+}

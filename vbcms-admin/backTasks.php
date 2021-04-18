@@ -19,12 +19,8 @@ if (isset($_GET["enableWSAddon"]) && !empty($_GET["enableWSAddon"])) {
 	$params = json_decode(urldecode($_GET["disableWSAddon"]));
 	$depedencies = json_decode($params[1]);
 	disableAddon($params[0]);
-	$response = $bdd->prepare("DELETE FROM `vbcms-modulesDepencies` WHERE moduleId=?"); // Je supprime tous ses liens
-	$response->execute([$params[0]]);
 	
 	foreach ($depedencies as $depedency) {
-		$response = $bdd->prepare("DELETE FROM `vbcms-modulesDepencies` WHERE moduleId=?"); // Je supprime tous ses liens
-		$response->execute([$depedency]);
 		disableAddon($depedency);
 	}
 } elseif (isset($_GET["getModuledepedencies"]) && !empty($_GET["getModuledepedencies"])) {

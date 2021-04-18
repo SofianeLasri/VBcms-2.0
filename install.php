@@ -3,12 +3,21 @@ ini_set("allow_url_fopen", 1);
 session_start();
 error_reporting(E_ALL); //Désactive les erreur
 
-if (isset($_SESSION["steam_steamid"])) {
+if (isset($_SESSION["user_id"])) {
 	$depedencies = 0;
 }
 
+// On récupère l'ip
+if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    $ip = $_SERVER['HTTP_CLIENT_IP'];
+} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+} else {
+    $ip = $_SERVER['REMOTE_ADDR'];
+}
+
 if (isset($_GET["session"])) {
-	$json = file_get_contents("https://api.vbcms.net/auth.php?session=".$_GET["session"]);
+	$json = file_get_contents("https://api.vbcms.net/auth/v1/checkToken/?token=".$_GET["session"]."&ip=".urlencode($ip));
 	$jsonData = json_decode($json);
 	foreach ($jsonData as $key => $value) {
 		$_SESSION[$key] = $value;
@@ -30,30 +39,30 @@ if (isset($_GET["session"])) {
 		die();
 	}
 	if (!$bddError) {
-		$savedParameters = file_get_contents("tempBddInfos");
+		$savedParameters = file_get_contents("tempInstallConfig");
 		if ($savedParameters) {
 			$savedParameters = json_decode($savedParameters);
 			$savedParameters[0] = $bddInfos[0];
 			$savedParameters[1] = $bddInfos[1];
 			$savedParameters[2] = $bddInfos[2];
 			$savedParameters[3] = $bddInfos[3];
-			file_put_contents("tempBddInfos", json_encode($savedParameters));
+			file_put_contents("tempInstallConfig", json_encode($savedParameters));
 		} else {
-			file_put_contents("tempBddInfos", json_encode($bddInfos));
+			file_put_contents("tempInstallConfig", json_encode($bddInfos));
 		}
 	}
 } elseif (isset($_GET["saveWebsiteConfig"]) AND !empty($_GET["saveWebsiteConfig"])){
 	$websiteConfig = json_decode($_GET["saveWebsiteConfig"]);
-	$savedParameters = file_get_contents("tempBddInfos");
+	$savedParameters = file_get_contents("tempInstallConfig");
 	$savedParameters = json_decode($savedParameters);
 	$savedParameters[4] = $websiteConfig[0];
 	$savedParameters[5] = $websiteConfig[1];
 	$savedParameters[6] = $websiteConfig[2];
 	$savedParameters[7] = $websiteConfig[3];
-	file_put_contents("tempBddInfos", json_encode($savedParameters));
+	file_put_contents("tempInstallConfig", json_encode($savedParameters));
 
 } elseif (isset($_GET["createDatabase"])){
-	$parameters = json_decode(file_get_contents("tempBddInfos"));
+	$parameters = json_decode(file_get_contents("tempInstallConfig"));
 	$bddHost = $parameters[0]; //Adresse du serveur MySQL
 	$bddName = $parameters[1]; //Nom de la base de donnée
 	$bddUser = $parameters[2]; //Utilisateur
@@ -97,6 +106,7 @@ if (isset($_GET["session"])) {
   `writtenOn` datetime NOT NULL,
   `modifiedOn` datetime NOT NULL,
   `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `views`int(11),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;");
 
@@ -146,16 +156,16 @@ if (isset($_GET["session"])) {
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
 	$requete = $bdd->exec("CREATE TABLE IF NOT EXISTS `vbcms-modulesDepencies` (
-		`moduleId` INT NOT NULL,
-		`depedencyId` INT NOT NULL,
+		`moduleId` int(11) NOT NULL,
+		`depedencyId` int(11) NOT NULL,
 		`mandatory` BOOLEAN NOT NULL,
 		PRIMARY KEY (`moduleId`, `depedencyId`)
 	) ENGINE = InnoDB;");
 
 	$requete = $bdd->exec("CREATE TABLE IF NOT EXISTS `vbcms-clientNavbar` (
-		`id` INT NOT NULL AUTO_INCREMENT,
-		`parentId` INT NOT NULL,
-		`parentPosition` INT NOT NULL,
+		`id` int(11) NOT NULL AUTO_INCREMENT,
+		`parentId` int(11) NOT NULL,
+		`parentPosition` int(11) NOT NULL,
 		`value1` VARCHAR(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
 		`value2` VARCHAR(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
 		`value3` VARCHAR(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -168,26 +178,54 @@ if (isset($_GET["session"])) {
 		`path` varchar(255) NOT NULL,
 		`version` varchar(32) NOT NULL,
 		`activated` tinyint(1) NOT NULL,
+		`designedFor` int(11) NOT NULL,
 		PRIMARY KEY (`workshopId`)
 	  ) ENGINE=InnoDB;");
 
 	$requete = $bdd->exec("CREATE TABLE `vbcms-localAccounts` (
-		`id` INT NOT NULL AUTO_INCREMENT,
+		`id` int(11) NOT NULL AUTO_INCREMENT,
 		`username` VARCHAR(128) NOT NUL,
 		`email` VARCHAR(256) NOT NULL,
 		`password` VARCHAR(255) NOT NULL,
+		`role` varchar(32) NOT NULL,
 		PRIMARY KEY (`id`)
 		) ENGINE = InnoDB;");
 	
 	$requete = $bdd->exec("CREATE TABLE `vbcms-websiteStats` (
-		`id` INT NOT NULL AUTO_INCREMENT,
+		`id` int(11) NOT NULL AUTO_INCREMENT,
 		`date` DATETIME NOT NULL,
 		`page` VARCHAR(300) NOT NULL,
 		`ip` VARCHAR(64) NOT NULL,
 		PRIMARY KEY (`id`)
 		) ENGINE = InnoDB;");
 
+	$requete = $bdd->exec("CREATE TABLE `vbcms-loadingscreeens` (
+		`id` INT(11) NOT NULL AUTO_INCREMENT,
+		`themeId` INT(11) NOT NULL,
+		`name` INT(255) NOT NULL,
+		PRIMARY KEY (`id`)
+	) ENGINE = InnoDB;");
+
+	$requete = $bdd->exec("CREATE TABLE `vbcms-loadingscreensParameters` (
+		`loadingScreenId` INT(11) NOT NULL,
+	`name` VARCHAR(128) NOT NULL,
+	`value` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+	PRIMARY KEY (`loadingScreenId`, `name`)
+	) ENGINE = InnoDB;");
+
+	$requete = $bdd->exec("CREATE TABLE `vbcms-permissions` (
+		`accountId` INT(11) NOT NULL,
+		`name` VARCHAR(128) NOT NULL,
+		`value` VARCHAR(128) NOT NULL,
+		PRIMARY KEY (`accountId`, `name`)
+	) ENGINE = InnoDB;");
+
 	/*
+	$requete = $bdd->exec("");
+	$requete = $bdd->exec("");
+	$requete = $bdd->exec("");
+	$requete = $bdd->exec("");
+	$requete = $bdd->exec("");
 	$requete = $bdd->exec("");
 	$requete = $bdd->exec("");
 	$requete = $bdd->exec("");
@@ -278,21 +316,21 @@ if (isset($_GET["session"])) {
 	<title>VBcms | Installation</title>
 	<meta name="theme-color" content="#BF946F">
 	<meta name="author" content="Sofiane Lasri">
-	<link rel="icon" href="https://cdn.vbcms.net/images/vbcms-logo/raccoon-in-box-128x.png" type="image/png">
+	<link rel="icon" href="https://vbcms.net/vbcms-admin/images/vbcms-logo/raccoon-in-box-128x.png" type="image/png">
 
 	<meta content="VBcms" property="og:title">
 	<meta content="Installation de VBcms" property="og:description">
-	<meta content='https://cdn.vbcms.net/images/vbcms-logo/raccoon-in-box-512x.png' property='og:image'>
+	<meta content='https://vbcms.net/vbcms-admin/images/vbcms-logo/raccoon-in-box-512x.png' property='og:image'>
 
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 	<!-- Intégration de JS Snackbar -->
-	<link rel="stylesheet" href="https://cdn.vbcms.net/vendors/js-snackbar/css/js-snackbar.css?v=2.0.0" />
-	<script src="https://cdn.vbcms.net/vendors/js-snackbar/js/js-snackbar.js?v=1.2.0"></script>
+	<link rel="stylesheet" href="https://vbcms.net/vbcms-admin/vendors/js-snackbar/css/js-snackbar.css?v=2.0.0" />
+	<script src="https://vbcms.net/vbcms-admin/vendors/js-snackbar/js/js-snackbar.js?v=1.2.0"></script>
 
-	<link rel="stylesheet" href="https://cdn.vbcms.net/vendors/pick-a-color/css/pick-a-color-1.2.3.min.css">
+	<link rel="stylesheet" href="https://vbcms.net/vbcms-admin/vendors/pick-a-color/css/pick-a-color-1.2.3.min.css">
 
-	<link rel="stylesheet" type="text/css" href="https://cdn.vbcms.net/fonts/fonts.css">
+	<link rel="stylesheet" type="text/css" href="https://vbcms.net/vbcms-admin/fonts/fonts.css">
 </head>
 <body>
 	<style type="text/css">
@@ -333,7 +371,7 @@ if (isset($_GET["session"])) {
 			font-size: 14px;
 		    font-family: 'Inter', sans-serif;
 
-			/*background-image: url("https://cdn.vbcms.net/images/general/vbcms-illustration1.jpg");*/
+			/*background-image: url("https://vbcms.net/vbcms-admin/images/general/vbcms-illustration1.jpg");*/
 			background: rgb(167,124,88);
 			background: -moz-linear-gradient(180deg, rgba(167,124,88,1) 0%, rgba(116,73,42,1) 100%);
 			background: -webkit-linear-gradient(180deg, rgba(167,124,88,1) 0%, rgba(116,73,42,1) 100%);
@@ -450,34 +488,34 @@ if (isset($_GET["session"])) {
 
 	<div class="installDiv">
 		<div class="header">
-			<img height="45" src="https://cdn.vbcms.net/images/vbcms-logo/raccoon-in-box-128x.png" alt="vbcms-logo">
+			<img height="45" src="https://vbcms.net/vbcms-admin/images/vbcms-logo/raccoon-in-box-128x.png" alt="vbcms-logo">
 			<span>VBcms</span><span id="installStateTitle">Bienvenu</span>
 		</div>
 		<?php 
-		if (!isset($_SESSION["steam_steamid"])){ ?>
+		if (!isset($_SESSION["user_id"])){ ?>
 		<div id="install-step-0" title="" class="content" style="display: none;">
 			<div class="centerItems">
-				<img src="https://cdn.vbcms.net/images/vbcms-logo/raccoon-in-box-128x.png" alt="vbcms-logo">
+				<img src="https://vbcms.net/vbcms-admin/images/vbcms-logo/raccoon-in-box-128x.png" alt="vbcms-logo">
 				<h3>Bienvenu sur VBcms!</h3>
 				<p>Merci de participer aux tests de pré-release! <br>Le panel actuel ne reflète qu'assez peu le travail final, de nombreuses fonctionnalités vont être ajouté dans les semaines à suivre.
-				<br><br>
+				<br><br><?=$ip?><br>
 				Pour te remercier de ton investissement, une liscence t'as été offerte. Tu as juste à te connecter pour procéder à l'installation. ^^</p>
 			</div>
 		</div>
 		<div id="install-step-1" title="" class="content" style="display: none;">
 			<div class="centerItems">
-				<img src="https://cdn.vbcms.net/images/vbcms-logo/raccoon-in-box-128x.png" alt="vbcms-logo">
+				<img src="https://vbcms.net/vbcms-admin/images/vbcms-logo/raccoon-in-box-128x.png" alt="vbcms-logo">
 				<h3>Se connecter</h3>
 				<a id="connectToVBcmsLink" class="btn btn-brown" href="">Connexion</a>
 			</div>
 		</div>
 
-		<?php } else { ?>
+		<?php } elseif(isset($_SESSION["user_id"])&&in_array($_SESSION["user_role"], ["owner", "admin"])) { ?>
 
 		<div id="install-step-0" title="Connexion réussie!" class="content" style="display: none;">
 			<div class="centerItems">
-				<img class="rounded-circle mb-3" src="<?=$_SESSION['steam_avatarfull']?>" alt="user-logo">
-				<h3>Salut <?=$_SESSION['steam_personaname']?>!</h3>
+				<img class="rounded-circle mb-3" src="<?=$_SESSION['user_profilePic']?>" alt="user-logo">
+				<h3>Salut <?=$_SESSION['user_username']?>!</h3>
 				<p>Nous allons maintenant pouvoir passer à l'installation du panel! :D</p>
 			</div>
 		</div>
@@ -508,7 +546,7 @@ if (isset($_GET["session"])) {
 		</div>
 
 		<?php if ($depedencies==3){
-			$savedParameters = file_get_contents("tempBddInfos");
+			$savedParameters = file_get_contents("tempInstallConfig");
 			if ($savedParameters) {
 				$savedParameters = json_decode($savedParameters);
 				$bddHost = $savedParameters[0]; //Adresse du serveur MySQL
@@ -610,8 +648,8 @@ if (isset($_GET["session"])) {
 			</div>
 		</div>
 	</div>
-	<script src="https://cdn.vbcms.net/vendors/pick-a-color/js/tinycolor-0.9.15.min.js"></script>
-	<script src="https://cdn.vbcms.net/vendors/pick-a-color/js/pick-a-color-1.2.3.min.js"></script>
+	<script src="https://vbcms.net/vbcms-admin/vendors/pick-a-color/js/tinycolor-0.9.15.min.js"></script>
+	<script src="https://vbcms.net/vbcms-admin/vendors/pick-a-color/js/pick-a-color-1.2.3.min.js"></script>
 	<script type="text/javascript">
 		$( document ).ready(function() {
 			var url = new URL(window.location.href);
@@ -625,7 +663,7 @@ if (isset($_GET["session"])) {
 				showStep(search_params.get('step'));
 			}
 
-			$("#connectToVBcmsLink").attr("href", "https://api.vbcms.net/auth.php?login&from="+encodeURIComponent(window.location.href)+"&firstInstall");
+			$("#connectToVBcmsLink").attr("href", "https://vbcms.net/manager/login?from="+encodeURIComponent(window.location.href)+"&firstInstall");
 		});
 
 		function nextStep(){

@@ -8,11 +8,23 @@ if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 $url = parse_url("$http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");	
 $folders = explode("/", $url["path"]);
 
-// Se charge de la session
-require 'session.php'; // Permet l'usage des sessions
+// On récupère l'ip
+if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    $ip = $_SERVER['HTTP_CLIENT_IP'];
+} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+} else {
+    $ip = $_SERVER['REMOTE_ADDR'];
+}
 
 // Concentre toutes les constantes/variables du site
 require 'constants.php';
+
+// Se charge de la session
+require 'session.php'; // Permet l'usage des sessions
+
+// Concentre toutes les fonctions du site
+require 'functions.php';
 
 // Switch pour la langue
 // Doit être placé avant l'inclusion des pages
@@ -35,10 +47,16 @@ switch ($language) {
 if ($folders[1]=="vbcms-admin") {// Ne s'éxecute que si l'on n'est sur le panneau admin
 	if (!isset($_SESSION["user_id"])) { // Si l'utilisateur n'est pas connecté
 		if (basename($_SERVER['PHP_SELF'])!="login.php") { // Évite les boucles de redirection
-			header("Location: ".$websiteUrl."vbcms-admin/login.php?from=".urlencode("$http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']));
+			header("Location: https://vbcms.net/manager/login?from=".urlencode("$http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']));
 		}
 		
 	} else {
+		if (!in_array($_SESSION["user_role"], ["owner", "admin", "moderator"])){
+			if ($_SERVER['HTTP_HOST'] != "vbcms.net") {
+				session_destroy(); // Évite les boucles de redirection
+			}
+			header("Location: https://vbcms.net/manager/?error=".urlencode("Tu n'as pas le droit de te connecter à ce site <img height=\"16\" src=\"https://dev.vbcms.net/vbcms-content/uploads/emoji/oiseau-pas-content.png\">"));
+		}
 		// On inclu les scripts de fond des modules activés
 		$response = $bdd->query("SELECT * FROM `vbcms-modules` WHERE activated=1"); // Je récupère l'id du dossier parent
 	    $response = $response->fetchAll(PDO::FETCH_ASSOC);
@@ -69,22 +87,20 @@ if ($folders[1]=="vbcms-admin") {// Ne s'éxecute que si l'on n'est sur le panne
 			include $_SERVER['DOCUMENT_ROOT']."/backTasks.php";
 		} else {
 			// Je récupère l'ip du client pour les stats
-			if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-			    $ip = $_SERVER['HTTP_CLIENT_IP'];
-			} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-			    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-			} else {
-			    $ip = $_SERVER['REMOTE_ADDR'];
-			}
-
+			$response = $bdd->prepare("SELECT * FROM `vbcms-websiteStats` WHERE date LIKE ? AND ip = ?");
+			$response->execute(['%'.date("Y-m-d").'%', $ip]);
 			$response = $bdd->prepare("INSERT INTO `vbcms-websiteStats` (id, date, page, ip) VALUES (?,?,?,?)");
 			$response->execute([null, date("Y-m-d H:i:s"), $_SERVER['REQUEST_URI'], $ip]);
+			
 
 			$moduleParams = array();
 			for ($i=2; $i<count($folders); $i++) { 
 				array_push($moduleParams, $folders[$i]);
 			}
 			loadModule("client", $folders[1], $moduleParams);
+
+
+			
 		}
 	}
 

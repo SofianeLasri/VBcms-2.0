@@ -12,5 +12,3 @@ if (!isset($bddError)){
 	$bdd = new PDO("mysql:host=$bddHost;dbname=$bddName", $bddUser, $bddMdp);
 	$bdd->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
 }
-
-?>

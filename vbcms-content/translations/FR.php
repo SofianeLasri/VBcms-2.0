@@ -6,6 +6,8 @@ $translation["404message"] = "Il semblerait que tu te soit perdu!";
 /* Général - Majuscules(utiliser lowercase si besoin) */
 $translation["myProfil"] = "Mon profil";
 $translation["settings"] = "Paramètres";
+$translation["connect"] = "Se connecter";
+$translation["connection"] = "Connexion";
 $translation["disconnect"] = "Se déconnecter";
 $translation["naviguation"] = "Naviguation";
 $translation["dashboard"] = "Tableau de bord";
@@ -26,8 +28,8 @@ $translation["auto-save"] = "Sauvegarde automatique";
 $translation["auto-saving"] = "Sauvegarde automatique en cours";
 $translation["error-saving"] = "Erreur lors de la sauvegarde";
 $translation["success-saving"] = "Sauvegarde réussie";
-$translation["sample"] = "sample";
-$translation["sample"] = "sample";
+$translation["onlineAccountRequired"] = "Connexion aux services de VBcms requise";
+$translation["close"] = "Fermer";
 $translation["sample"] = "sample";
 $translation["sample"] = "sample";
 $translation["sample"] = "sample";
@@ -38,6 +40,12 @@ $translation["sample"] = "sample";
 /*Prases générales*/
 $translation["dont_exist"] = "n'existe pas";
 $translation["sampleText"] = "Ceci est un texte.";
+$translation["onlineAccountRequiredPhrase"] = "Une connexion via les services de VBcms est requise pour pouvoir accéder à cette fonctionnalité, or vous êtes actuellement connecté en compte local. :/";
+$translation["tip_createAddon"] = '<b>Créer un addon pour VBcms est un jeu d\'enfant!</b><br><a href="#" class="text-brown">Check la documentation</a> pour en savoir plus, les créateurs sont régulièrement mis en avant sur le Workshop!';
+$translation["sample"] = "sample";
+$translation["sample"] = "sample";
+$translation["sample"] = "sample";
+$translation["sample"] = "sample";
 $translation["sample"] = "sample";
 $translation["sample"] = "sample";
 $translation["sample"] = "sample";
@@ -75,14 +83,6 @@ $translation["sample"] = "sample";
 $translation["sample"] = "sample";
 
 /* Admin Navbar */
-$translation["serversStates"] = "État des serveurs";
-$translation["drm_manage"] = "Gestion DRM";
-$translation["drm_viewLiscences"] = "Voir les liscences";
-$translation["drm_viewUsers"] = "Liste des utilisateurs";
-$translation["drm_viewServeres"] = "Liste des serveurs";
-$translation["drm_viewImpostors"] = "Liste des imposteurs";
-$translation["drm_viewHistory"] = "Connexions/Autorisations";
-$translation["drm_createLiscence"] = "Créer une lisence";
 $translation["updates"] = "Mises à jours";
 $translation["viewUpdates"] = "Liste des mises à jours";
 $translation["stats"] = "Statistiques";

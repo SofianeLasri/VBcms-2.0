@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title><?=$websiteName?> | Gérer les addons</title>
+	<title><?=$websiteName?> | <?=$translation["ws_createAddon"]?></title>
 	<?php include 'includes/depedencies.php';?>
 </head>
 <body>
@@ -35,9 +35,9 @@
 									$response->execute([$themeJsonFileContents->workshopId]);
 									$response = $response->fetch(PDO::FETCH_ASSOC);
 									if(file_exists($isDir."/module-logo.png")){
-										$moduleLogo = $http.'://'.$_SERVER["HTTP_HOST"].'/vbcms-content/modules/'.basename($isDir).'/module-logo.png';
+										$moduleLogo = $websiteUrl.'/vbcms-content/modules/'.basename($isDir).'/module-logo.png';
 									} elseif(file_exists($isDir."/module-logo.jpg")){
-										$moduleLogo = $http.'://'.$_SERVER["HTTP_HOST"].'/vbcms-content/modules/'.basename($isDir).'/module-logo.jpg';
+										$moduleLogo = $websiteUrl.'/vbcms-content/modules/'.basename($isDir).'/module-logo.jpg';
 									} else {
 										$moduleLogo = "";
 									}
@@ -110,14 +110,14 @@
 									$response->execute([$themeJsonFileContents->workshopId]);
 									$response = $response->fetch(PDO::FETCH_ASSOC);
 									if(file_exists($isDir."/theme-logo.png")){
-										$themeLogo = $http.'://'.$_SERVER["HTTP_HOST"].'/vbcms-content/themes/'.basename($isDir).'/theme-logo.png';
+										$themeLogo = $websiteUrl.'/vbcms-content/themes/'.basename($isDir).'/theme-logo.png';
 									} elseif(file_exists($isDir."/theme-logo.jpg")){
-										$themeLogo = $http.'://'.$_SERVER["HTTP_HOST"].'/vbcms-content/themes/'.basename($isDir).'/theme-logo.jpg';
+										$themeLogo = $websiteUrl.'/vbcms-content/themes/'.basename($isDir).'/theme-logo.jpg';
 									} else {
 										$themeLogo = "";
 									}
 									if (empty($response["activated"]) OR $response["activated"]==0) {
-										echo '<div class="workshop-suscribedCard my-2" id="'.$themeJsonFileContents->workshopId.'" depedencies="'.$themeJsonFileContents->requiredModules.'">
+										echo '<div class="workshop-suscribedCard my-2" id="'.$themeJsonFileContents->workshopId.'" designedFor="'.$themeJsonFileContents->designedFor.'" depedencies="'.$themeJsonFileContents->requiredModules.'">
 									<div class="addonLogo" style="background: url(\''.$themeLogo.'\'), linear-gradient(0deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75));"></div>
 									<div class="ml-4 addonDetails flex-grow-1">
 										<h6 class="mb-0"><a class="text-dark text-decoration-none" href="#">'.$themeJsonFileContents->showname.'</a></h6>
@@ -130,7 +130,7 @@
 									</div>
 								</div>';
 									} else {
-										echo '<div class="workshop-suscribedCard my-2" id="'.$themeJsonFileContents->workshopId.'" depedencies="'.$themeJsonFileContents->requiredModules.'">
+										echo '<div class="workshop-suscribedCard my-2" id="'.$themeJsonFileContents->workshopId.'" designedFor="'.$themeJsonFileContents->designedFor.'" depedencies="'.$themeJsonFileContents->requiredModules.'">
 									<div class="addonLogo" style="background: url(\''.$themeLogo.'\'), linear-gradient(0deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75));"></div>
 									<div class="ml-4 addonDetails flex-grow-1">
 										<h6 class="mb-0"><a class="text-dark text-decoration-none" href="#">'.$themeJsonFileContents->showname.'</a></h6>
@@ -144,14 +144,27 @@
 								</div>';
 									}
 									if(empty($response)){
-										$response = $bdd->prepare("INSERT INTO `vbcms-themes` (workshopId, name, path, version, activated) VALUES (?,?,?,?,?)");
-			 							$response->execute([$themeJsonFileContents->workshopId, $themeJsonFileContents->name, "/".$modulePath,  $themeJsonFileContents->version, 0]);
+										$response = $bdd->prepare("INSERT INTO `vbcms-themes` (workshopId, name, path, version, activated, designedFor) VALUES (?,?,?,?,?,?)");
+			 							$response->execute([$themeJsonFileContents->workshopId, $themeJsonFileContents->name, "/".$modulePath,  $themeJsonFileContents->version, 0, $themeJsonFileContents->designedFor]);
 									}				
 						}
 					}
 				}
 			}
 			?>
+		</div>
+		<div class="admin-tips">
+			<div class="tip">
+				<h5>Créer un addon</h5>
+				<p><b>Créer un addon pour VBcms est un jeu d'enfant!</b><br><a href="#" class="text-brown">Check la documentation</a> pour en savoir plus, les créateurs sont régulièrement mis en avant sur le Workshop!</p>
+				<img class="mt-n3" width="96" src="<?=$websiteUrl?>vbcms-admin/images/misc/create-addon.jpg">
+			</div>
+			<div class="tip">
+				<h5>Quèsaco une dépendance?</h5>
+				<p>Tu as très probablement déjà du voir ce message d'avertissement lors de l'activation de la désactivation d'un addon, sans trop savoir ce qu'est une dépendance.</p>
+				<img class="mt-n1 mb-1" src="<?=$websiteUrl?>vbcms-admin/images/misc/alerte-dependance.jpg">
+				<p><b>Une dépendance est un addon nécessaire au bon fonctionnement d'autres addons</b>. Le désactiver pourrait provoquer une erreur fatale, c'est pour cela que VBcms désactive tous ses liens par défaut.</p>
+			</div>
 		</div>
 	</div>
 
