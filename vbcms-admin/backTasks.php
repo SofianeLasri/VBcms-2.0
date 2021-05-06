@@ -23,6 +23,11 @@ if (isset($_GET["enableWSAddon"]) && !empty($_GET["enableWSAddon"])) {
 	foreach ($depedencies as $depedency) {
 		disableAddon($depedency);
 	}
+} elseif (isset($_GET["getUniqueWSId"]) && !empty($_GET["getUniqueWSId"])) {
+	global $bdd;
+	$addonDetails = json_decode($_GET["getUniqueWSId"]);
+	$encryptionKey = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name = 'encryptionKey'")->fetchColumn();
+	echo file_get_contents("https://api.vbcms.net/ws/v1/getUniqueId/?token=".$encryptionKey."&addonName=".$addonDetails["slug"]);
 } elseif (isset($_GET["getModuledepedencies"]) && !empty($_GET["getModuledepedencies"])) {
 	global $bdd;
 	$response = $bdd->prepare("SELECT * FROM `vbcms-modulesDepencies` WHERE moduleId=?");

@@ -88,7 +88,7 @@ include 'includes/header.php';
 
 		<div class="mt-3">
 			<h3>Test</h3>
-			<p><?php print_r($_SESSION) ?></p>
+			<p><?php print_r($_SESSION) ?><br><?=$ip?></p>
 		</div>
 		
 	</div>
