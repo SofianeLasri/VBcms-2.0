@@ -250,6 +250,13 @@ if (isset($_GET["session"])) {
 	$response = $bdd->prepare("INSERT INTO `vbcms-settings` (name, value) VALUES (?,?)");
 	$response->execute(["steamApiKey", $parameters[7]]);
 
+	$response = $bdd->prepare("INSERT INTO `vbcms-settings` (name, value) VALUES (?,?)");
+	$response->execute(["lastUpdateCheck", date("Y-m-d H:i:s")]);
+	$response = $bdd->prepare("INSERT INTO `vbcms-settings` (name, value) VALUES (?,?)");
+	$response->execute(["upToDate", "1"]);
+	$response = $bdd->prepare("INSERT INTO `vbcms-settings` (name, value) VALUES (?,?)");
+	$response->execute(["updateCanal", "release"]);
+
 	require "vbcms-content/translations/".$_SESSION["language"].".php";
 
 
