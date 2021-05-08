@@ -13,8 +13,6 @@ function loadModule($type, $moduleAlias, $moduleParams){
 	        $response->execute([$moduleAlias]);
 	        $response = $response->fetch(PDO::FETCH_ASSOC);
 
-	        $variableInutilePourTest = "test";
-
 	        if (!empty($response)) {
 	        	include $_SERVER['DOCUMENT_ROOT'].'/vbcms-content/modules'.$response["path"]."/moduleLoadPage.php"; //module.php a été remplacé par divers fichiers représentant les fonctions
 	        	// moduleLoadPage($type, $moduleParams); // Plus d'appel de fonction du coup
