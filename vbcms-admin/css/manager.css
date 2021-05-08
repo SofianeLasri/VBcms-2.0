@@ -154,8 +154,30 @@ header .menu-item{
 	margin-left: 240px;
 	width: calc(100% - 240px);
 }
+.page-content.notTop{
+	position: relative;
+	margin-top: 0!important;
+}
 
 /* Index Cards */
+.dashboardTopCard{
+	position: relative;
+	margin-top: 60px;
+	margin-left: 240px;
+	width: calc(100% - 240px);
+	padding: 30px 50px;
+	background-color: var(--mainBrown);
+	color: white;
+
+	
+}
+.dashboardTopCard .userLogo{
+	width: 128px;
+	height: 128px;
+	border-radius: 50%;
+	background-position: center;
+	background-size: cover;
+}
 .indexCard{
 	position: relative;
 	display: flex;
