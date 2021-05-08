@@ -19,8 +19,6 @@ function loadModule($type, $moduleAlias, $moduleParams){
 	        } else {
 	        	include 'clientPagesAssoc.php';
 
-	        	$UneVariableInutile = null;
-
 	        	// Check si la page n'est pas un module
 	        	if (array_key_exists($moduleAlias, $clientPagesAssoc)) {
 	        		loadThemePage($clientPagesAssoc[$moduleAlias]);

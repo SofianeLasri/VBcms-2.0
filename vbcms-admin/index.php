@@ -1,19 +1,11 @@
 <?php
 include 'includes/header.php';
-
-$isUpToDate = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name = 'upToDate'")->fetchColumn();
-if ($isUpToDate == 1) {
-	$updateMessage = $translation["isUpToDate"];
-} else {
-	$updateMessage = $translation["isNotUpToDate"];
-}
-
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
-	<title><?=$websiteName?> | <?=$translation["dashboard"]?></title>
+	<title><?=$websiteName?></title>
 	<?php include 'includes/depedencies.php';?>
 </head>
 <body>
@@ -22,17 +14,7 @@ if ($isUpToDate == 1) {
 	?>
 
 	<!-- Contenu -->
-	<div class="dashboardTopCard" leftSidebar="240" rightSidebar="0">
-		<div class="d-flex">
-			<div class="userLogo" style="background-image: url('<?=$_SESSION['user_profilePic']?>');"></div>
-			<div class="ml-5">
-				<h3>Bienvenue <?=$_SESSION["user_username"]?>!</h3>
-				<p><?=$updateMessage?>
-				<br><strong>Vous avez 3 notifications</strong></p>
-			</div>
-		</div>
-	</div>
-	<div class="page-content notTop" leftSidebar="240" rightSidebar="0">
+	<div class="page-content" leftSidebar="240" rightSidebar="0">
 		<h3>Tableau de bord</h3>
 		<p>Bienvenu sur le paneau d’administration. Voici un bref résumé de l'activité de cette semaine.</p>
 
