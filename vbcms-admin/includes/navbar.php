@@ -1,3 +1,6 @@
+<?php
+$vbcmsVer = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='vbcmsVersion'")->fetchColumn();
+?>
 <header>
 	<div class="navbar managerHeader d-flex">
 		<div class="brand d-flex">
@@ -8,16 +11,22 @@
 		</div>
 
 		<div class="menu d-flex ml-auto justify-content-end">
-			<div class="menu-item">
-				<a href="#" class="menu-link">
+			<div class="menu-item dropdown">
+				<a href="#" class="menu-link" role="button" data-toggle="dropdown">
 					<div class="menu-icon">
 						<i class="fas fa-bell"></i>
 					</div>
-					<div class="menu-label">3</div>
+					<div id="notificationsNumber" class="menu-label">n</div>
 				</a>
+				<div id="notificationsDropdown" class="dropdown-menu notificationsDropdown" aria-labelledby="userProfileDD">					
+					<!--<a class="dropdown-item" target="_blank" href="https://vbcms.net/manager/myaccount">
+						<small><strong>vbcms-updater</strong> - 2021-05-10 08:55:29</small><br>
+						Une mise à jour est disponible!
+					</a>-->
+				</div>
 			</div>
 			<div class="menu-item d-flex align-items-center dropdown">
-				<a href="#" class="menu-link dropdown-toggle" role="button" id="userProfileDD" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<a href="#" class="menu-link dropdown-toggle" role="button" id="userProfileDD" data-toggle="dropdown">
 					<div class="menu-img">
 						<img src="<?=$_SESSION['user_profilePic']?>">
 					</div>
@@ -25,9 +34,13 @@
 						<?=$_SESSION['user_username']?>
 					</div>
 				</a>
-				<div class="dropdown-menu" aria-labelledby="userProfileDD">
-					<a class="dropdown-item" href="#"><?=$translation["myProfil"]?></a>
-				    <a class="dropdown-item" href="https://vbcms.net/manager/myliscence"><?=$translation["manageliscence"]?></a>
+				<div class="dropdown-menu userDropdown" aria-labelledby="userProfileDD">
+					<div class="dropdown-topItem">
+						<span class="brand-name">VBcms</span><small class="ml-1"><?=$vbcmsVer?></small>
+					</div>
+					
+					<a class="dropdown-item" target="_blank" href="https://vbcms.net/manager/myaccount"><?=$translation["myProfil"]?></a>
+				    <a class="dropdown-item" target="_blank" href="https://vbcms.net/manager/myliscence"><?=$translation["manageliscence"]?></a>
 				    <a class="dropdown-item" href="?logout"><?=$translation["disconnect"]?></a>
 				</div>
 			</div>
@@ -95,4 +108,23 @@
 			resizePageContent(240,"left");
 		}
 	});
+	async function loadNotifications(){
+		await $.get("<?=$websiteUrl?>vbcms-admin/backTasks/?getNotifications", function(data){
+			var notifications = JSON.parse(data);
+			if (notifications.length!=0) {
+				$("#notificationsNumber").html(notifications.length);
+				jQuery.each(JSON.parse(data), function(index){
+					$("#notificationsDropdown").append('<a class="dropdown-item" href="'+notifications[index]["link"]+'">\
+						<small><strong>'+JSON.parse(notifications[index]["origin"])[0]+'</strong> - '+notifications[index]["date"]+'</small><br>\
+						'+notifications[index]["content"]+'\
+					</a>');
+				});
+			} else {
+				$("#notificationsNumber").remove();
+				$("#notificationsDropdown").html("<div class='text-center text-muted'>Vous n'avez aucune notification <i class=\"far fa-smile\"></i></div>");
+			}
+			
+		});
+	}
+	loadNotifications();
 </script>

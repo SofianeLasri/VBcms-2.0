@@ -57,12 +57,14 @@ if ($folders[1]=="vbcms-admin") {// Ne s'éxecute que si l'on n'est sur le panne
 			}
 			header("Location: https://vbcms.net/manager/?error=".urlencode("Tu n'as pas le droit de te connecter à ce site <img height=\"16\" src=\"https://dev.vbcms.net/vbcms-content/uploads/emoji/oiseau-pas-content.png\">"));
 		}
+
 		// On inclu les scripts de fond des modules activés
 		$response = $bdd->query("SELECT * FROM `vbcms-modules` WHERE activated=1"); // Je récupère l'id du dossier parent
 	    $response = $response->fetchAll(PDO::FETCH_ASSOC);
 	    if (!empty($response)) {
 	    	foreach ($response as $module) {
-	    		include $_SERVER['DOCUMENT_ROOT'].'/vbcms-content/modules'.$module["path"]."/back.php"; //module.php a été remplacé par divers fichiers représentant les fonctions
+	    		if(file_exists($_SERVER['DOCUMENT_ROOT'].'/vbcms-content/modules'.$module["path"]."/back.php"))
+	    			include $_SERVER['DOCUMENT_ROOT'].'/vbcms-content/modules'.$module["path"]."/back.php"; //module.php a été remplacé par divers fichiers représentant les fonctions
 	    	}
 	    }
 
@@ -78,6 +80,31 @@ if ($folders[1]=="vbcms-admin") {// Ne s'éxecute que si l'on n'est sur le panne
 				array_push($moduleParams, $folders[$i]);
 			}
 			loadModule("admin", $folders[2], $moduleParams); // Charge le module admin
+		}
+
+		// On check les mises à jour
+		$lastUpdateCheck = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name = 'lastUpdateCheck'")->fetchColumn();
+		$lastUpdateCheck = DateTime::createFromFormat('Y-m-d H:i:s', $lastUpdateCheck);
+		if ((abs($datetime->getTimestamp()-$lastUpdateCheck->getTimestamp())) > 1800){
+			$serverId = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='serverId'")->fetchColumn();
+			$key = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='encryptionKey'")->fetchColumn();
+			$vbcmsVer = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='vbcmsVersion'")->fetchColumn();
+			
+			$json = file_get_contents("https://api.vbcms.net/updater/lastest?serverId=".$serverId."&key=".$key."&version=".$vbcmsVer);
+			$jsonData = json_decode($json, true);
+
+			if (!$jsonData["upToDate"]) {
+				$response = $bdd->query("UPDATE `vbcms-settings` SET `value` = 0 WHERE `vbcms-settings`.`name` = 'upToDate'");
+
+				$response = $bdd->query("SELECT COUNT(*) FROM `vbcms-notifications` WHERE origin = '[\"vbcms-updater\", \"notifyUpdate\"]'")->fetchColumn();
+				if ($response!=1) {
+					$response = $bdd->prepare("INSERT INTO `vbcms-notifications` (`id`, `origin`, `link`, `content`, `removable`, `date`, `userId`) VALUES (NULL, '[\"vbcms-updater\", \"notifyUpdate\"]', '/vbcms-admin/updater\"', ?, '0', ?, 0)");
+					$response->execute([$translation["isNotUpToDate"], date("Y-m-d H:i:s")]);
+				}
+			}
+			$response = $bdd->prepare("UPDATE `vbcms-settings` SET `value` = ? WHERE `vbcms-settings`.`name` = 'lastUpdateCheck'");
+			$response->execute([date("Y-m-d H:i:s")]);
+			
 		}
 		
 	}

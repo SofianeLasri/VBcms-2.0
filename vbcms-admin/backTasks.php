@@ -60,6 +60,11 @@ if (isset($_GET["enableWSAddon"]) && !empty($_GET["enableWSAddon"])) {
 	deleteNavItem($_GET["deleteNavItem"]);
 }  elseif (isset($_GET["loadLastNavItem"])) {
 	echo loadLastNavItem($_GET["loadLastNavItem"]);
+}  elseif (isset($_GET["getNotifications"])) {
+	$response = $bdd->prepare("SELECT * FROM `vbcms-notifications` WHERE userId='0' OR userId=?");
+	$response->execute([$_SESSION["user_id"]]);
+	$response = $response->fetchAll(PDO::FETCH_ASSOC);
+	echo json_encode($response);
 } else {?>
 <!DOCTYPE html>
 <html>

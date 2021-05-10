@@ -4,7 +4,7 @@
 	});
 
 	async function loadNavbar(parentId,state){
-		await $.get("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/backTasks/?loadClientNavbar=all", function(data) {
+		await $.get("<?=$websiteUrl?>/backTasks/?loadClientNavbar=all", function(data) {
 			var navbarItems = JSON.parse(data);
 			jQuery.each(JSON.parse(data), function(index){
 				if (navbarItems[index]["parentId"]!=0 && $("#navbar-item-"+navbarItems[index]["parentId"]).attr("type")=="link") {

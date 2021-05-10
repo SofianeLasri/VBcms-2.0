@@ -7,4 +7,4 @@ $websiteMetaColor = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='
 $websiteLogo = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='websiteLogo'")->fetchColumn();
 
 $uploadFolderPath = $_SERVER['DOCUMENT_ROOT']."/vbcms-content/uploads/"; // Hérité du manager de vbcms.net -> cette variable était utilisée dans le fichier de config
-$datetime = date("Y-m-d H:i:s");
+$datetime = new DateTime(date("Y-m-d H:i:s"));
