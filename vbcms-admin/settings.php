@@ -1,4 +1,5 @@
 <?php
+$curentUpdateCanal = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='updateCanal'")->fetchColumn();
 $steamApiKey = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='steamApiKey'")->fetchColumn();
 
 if (isset($_POST["submit"])) {
@@ -17,6 +18,9 @@ if (isset($_POST["submit"])) {
 	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='steamApiKey'");
 	$response->execute([$_POST["steamApiKey"]]);
 
+	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='updateCanal'");
+	$response->execute([$_POST["updateCanal"]]);
+
 
 	header("Refresh:0");
 }
@@ -27,7 +31,7 @@ if (isset($_POST["submit"])) {
 <html>
 <head>
 	<meta charset="utf-8">
-	<title><?=$websiteName?></title>
+	<title><?=$websiteName?> | <?=$translation["settings"]?></title>
 	<?php include 'includes/depedencies.php';?>
 	<link rel="stylesheet" href="https://cdn.vbcms.net/vendors/pick-a-color/css/pick-a-color-1.2.3.min.css">
 </head>
@@ -40,8 +44,24 @@ if (isset($_POST["submit"])) {
 	<div class="page-content" leftSidebar="240" rightSidebar="0">
 		<h3><?=$translation["settings"]?></h3>
 		
-		<h5 class="mt-4"><?=$translation["website"]?></h5>
+		
 		<form class="width-50em" action="settings" method="POST">
+			<h5 class="mt-4">VBcms</h5>
+			<div class="form-group">
+				<label>Canal de mise à jour</label>
+				<select class="form-control" name="updateCanal">
+                    <?php
+                    $updateCanals = ["release", "nightly", "dev"];
+                    foreach($updateCanals as $updateCanal){
+                        if($updateCanal == $curentUpdateCanal) $selected = 'selected';
+                        else $selected = '';
+                        echo '<option value="'.$updateCanal.'" '.$selected.'>'.$updateCanal.'</option>';
+                    }
+                    ?>
+                </select>
+			</div>
+
+			<h5 class="mt-4"><?=$translation["website"]?></h5>
 			<div class="form-group">
 				<label>Nom du site internet</label>
 				<input required type="text" value="<?=$websiteName?>" class="form-control" name="websiteName">

@@ -197,8 +197,6 @@ header .menu-item{
 	padding: 30px 50px;
 	background-color: var(--mainBrown);
 	color: white;
-
-	
 }
 .dashboardTopCard .userLogo{
 	width: 128px;
@@ -206,6 +204,13 @@ header .menu-item{
 	border-radius: 50%;
 	background-position: center;
 	background-size: cover;
+}
+.dashboardTopCard .vbcms-logo{
+	position: relative;
+}
+.dashboardTopCard .vbcms-logo img{
+	width: 128px;
+	height: 128px;
 }
 .indexCard{
 	position: relative;

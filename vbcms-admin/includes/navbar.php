@@ -66,6 +66,12 @@ $vbcmsVer = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='vbcmsVer
 					<span class="menu-text"><?=$translation["settings"]?></span>
 				</a>
 			</div>
+			<div class="menu-item">
+				<a href="/vbcms-admin/updater" class="menu-link">
+					<span class="menu-icon"><i class="fas fa-cloud-download-alt"></i></span>
+					<span class="menu-text"><?=$translation["update"]?></span>
+				</a>
+			</div>
 
 			<!-- Insérer les liens ici -->
 

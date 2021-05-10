@@ -2,6 +2,7 @@
 $adminPagesAssoc = array();
 $adminPagesAssoc[""] = ""; //index.php -> je met rien car sinon on a une boucle infinie
 $adminPagesAssoc["settings"] = "settings.php";
+$adminPagesAssoc["updater"] = "updater.php";
 $adminPagesAssoc["test"] = "test.php";
 $adminPagesAssoc["404"] = "404.php";
 
