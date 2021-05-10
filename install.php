@@ -220,8 +220,18 @@ if (isset($_GET["session"])) {
 		PRIMARY KEY (`accountId`, `name`)
 	) ENGINE = InnoDB;");
 
+	$requete = $bdd->exec("CREATE TABLE `vbcms-notifications` (
+		`id` INT(11) NOT NULL AUTO_INCREMENT, 
+		`origin` VARCHAR(512) NOT NULL,
+		`link` VARCHAR(512) NOT NULL,
+		`content` TEXT NOT NULL,
+		`removable` BOOLEAN NOT NULL,
+		`date` DATETIME NOT NULL,
+		`userId` INT(11),
+		PRIMARY KEY (`id`)
+	) ENGINE = InnoDB;");
+
 	/*
-	$requete = $bdd->exec("");
 	$requete = $bdd->exec("");
 	$requete = $bdd->exec("");
 	$requete = $bdd->exec("");
