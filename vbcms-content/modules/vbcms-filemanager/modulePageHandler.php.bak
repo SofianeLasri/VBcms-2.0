@@ -11,14 +11,14 @@ if($type=="admin") {
 		
 		// Variables nécessaire à création d'une page
 		$pageTitle = "Fichiers";
-		$pageToInclude = $_SERVER['DOCUMENT_ROOT']."/vbcms-content/modules/gallery/admin/gallery.php";
+		$pageToInclude = $vbcmsRootPath."/vbcms-content/modules/gallery/admin/gallery.php";
 		createModulePage($pageTitle, $pageDepedencies, $pageToInclude);
 
 	} elseif($params[1]=="backTask"){
 		// Permet d'intéragir avec la base de donnée en mode admin
 
 		// Fonction admin		
-		include $_SERVER['DOCUMENT_ROOT']."/vbcms-content/modules/gallery/includes/admin-functions.php";
+		include $vbcmsRootPath."/vbcms-content/modules/gallery/includes/admin-functions.php";
 
 		if (isset($_GET["folderContent"])) {
 			if (isset($_GET["folderOnly"])) {

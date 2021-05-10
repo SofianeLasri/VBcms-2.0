@@ -1,4 +1,8 @@
 <?php
+$vbcmsRootPath = getcwd();
+if(strpos($vbcmsRootPath, "/vbcms-admin") !== false){
+    $vbcmsRootPath = substr($vbcmsRootPath, 0, strpos($vbcmsRootPath, "/vbcms-admin"));
+}
 require 'dbConnect.php'; // Primordiale pour l'usage de la base de donnée
 
 // Vérifie le type de connexion
@@ -34,13 +38,13 @@ if(!isset($_SESSION["language"])){
 } else $language = $_SESSION["language"];
 switch ($language) {
     case "FR":
-        include $_SERVER['DOCUMENT_ROOT'].'/vbcms-content/translations/FR.php';
+        include $vbcmsRootPath.'/vbcms-content/translations/FR.php';
         break;
     case "EN":
-        include $_SERVER['DOCUMENT_ROOT'].'/vbcms-content/translations/FR.php';
+        include $vbcmsRootPath.'/vbcms-content/translations/FR.php';
         break;
     default:
-    	include $_SERVER['DOCUMENT_ROOT'].'/vbcms-content/translations/FR.php';
+    	include $vbcmsRootPath.'/vbcms-content/translations/FR.php';
         break;
 }
 
@@ -63,8 +67,8 @@ if ($folders[1]=="vbcms-admin") {// Ne s'éxecute que si l'on n'est sur le panne
 	    $response = $response->fetchAll(PDO::FETCH_ASSOC);
 	    if (!empty($response)) {
 	    	foreach ($response as $module) {
-	    		if(file_exists($_SERVER['DOCUMENT_ROOT'].'/vbcms-content/modules'.$module["path"]."/back.php"))
-	    			include $_SERVER['DOCUMENT_ROOT'].'/vbcms-content/modules'.$module["path"]."/back.php"; //module.php a été remplacé par divers fichiers représentant les fonctions
+	    		if(file_exists($vbcmsRootPath.'/vbcms-content/modules'.$module["path"]."/back.php"))
+	    			include $vbcmsRootPath.'/vbcms-content/modules'.$module["path"]."/back.php"; //module.php a été remplacé par divers fichiers représentant les fonctions
 	    	}
 	    }
 
@@ -73,7 +77,7 @@ if ($folders[1]=="vbcms-admin") {// Ne s'éxecute que si l'on n'est sur le panne
 		include 'adminPagesAssoc.php';
 		if (array_key_exists($folders[2], $adminPagesAssoc)) {
 			if($adminPagesAssoc[$folders[2]]!="")
-				include $_SERVER['DOCUMENT_ROOT']."/vbcms-admin/".$adminPagesAssoc[$folders[2]]; // Charge la page admin
+				include $vbcmsRootPath."/vbcms-admin/".$adminPagesAssoc[$folders[2]]; // Charge la page admin
 		} else {
 			$moduleParams = array();
 			for ($i=2; $i<count($folders); $i++) { 
@@ -112,7 +116,7 @@ if ($folders[1]=="vbcms-admin") {// Ne s'éxecute que si l'on n'est sur le panne
 } else { // Ne s'éxecute que si l'on n'est PAS sur le panneau admin (donc la partie publique)
 	if ($folders[1]!="vbcms-content") { // Permet aux scripts de communiquer tout en utilisant header
 		if($folders[1]=="backTasks"){
-			include $_SERVER['DOCUMENT_ROOT']."/backTasks.php";
+			include $vbcmsRootPath."/backTasks.php";
 		} else {
 			// Je récupère l'ip du client pour les stats
 			$response = $bdd->prepare("SELECT * FROM `vbcms-websiteStats` WHERE date LIKE ? AND ip = ?");

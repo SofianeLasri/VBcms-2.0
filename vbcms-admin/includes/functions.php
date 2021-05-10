@@ -14,7 +14,7 @@ function loadModule($type, $moduleAlias, $moduleParams){
 	        $response = $response->fetch(PDO::FETCH_ASSOC);
 
 	        if (!empty($response)) {
-	        	include $_SERVER['DOCUMENT_ROOT'].'/vbcms-content/modules'.$response["path"]."/moduleLoadPage.php"; //module.php a été remplacé par divers fichiers représentant les fonctions
+	        	include $vbcmsRootPath.'/vbcms-content/modules'.$response["path"]."/moduleLoadPage.php"; //module.php a été remplacé par divers fichiers représentant les fonctions
 	        	// moduleLoadPage($type, $moduleParams); // Plus d'appel de fonction du coup
 	        } else {
 	        	include 'clientPagesAssoc.php';
@@ -44,7 +44,7 @@ function loadModule($type, $moduleAlias, $moduleParams){
         $response = $response->fetch(PDO::FETCH_ASSOC);
 
         if (!empty($response)) {
-        	include $_SERVER['DOCUMENT_ROOT'].'/vbcms-content/modules'.$response["path"]."/moduleLoadPage.php"; //module.php a été remplacé par divers fichiers représentant les fonctions
+        	include $vbcmsRootPath.'/vbcms-content/modules'.$response["path"]."/moduleLoadPage.php"; //module.php a été remplacé par divers fichiers représentant les fonctions
         	// moduleLoadPage($type, $moduleParams); // Plus d'appel de fonction du coup
         } else {
         	show404($type);
@@ -61,7 +61,7 @@ function show404($type){
 	} elseif($type=="admin") {
 		global $bdd, $http, $websiteUrl, $translation, $websiteName, $websiteMetaColor, $websiteDescription, $websiteLogo;
 		// Affiche la page 404 du panel admin
-        include $_SERVER['DOCUMENT_ROOT']."/vbcms-admin/404.php";
+        include $vbcmsRootPath."/vbcms-admin/404.php";
 	}
 }
 
@@ -79,7 +79,7 @@ function createModulePage($title, $description, $depedencies, $pageToInclude, $m
 			// On charge la page template du thème utilisé
 			$response = $bdd->query("SELECT * FROM `vbcms-themes` WHERE activated = 1");
 			$theme = $response->fetch(PDO::FETCH_ASSOC);
-			include $_SERVER['DOCUMENT_ROOT'].'/vbcms-content/themes'.$theme["path"].'/pages/template.php';
+			include $vbcmsRootPath.'/vbcms-content/themes'.$theme["path"].'/pages/template.php';
 		}
 	}
 	
@@ -90,7 +90,7 @@ function loadThemePage($page){
 	$response = $bdd->query("SELECT * FROM `vbcms-themes` WHERE activated = 1");
 	$theme = $response->fetch(PDO::FETCH_ASSOC);
 
-	include $_SERVER['DOCUMENT_ROOT'].'/vbcms-content/themes'.$theme["path"]."/pages/".$page;
+	include $vbcmsRootPath.'/vbcms-content/themes'.$theme["path"]."/pages/".$page;
 }
 
 function loadClientNavbar($parentId){
@@ -150,7 +150,7 @@ if (isset($_SESSION["user_id"])){
 			$response = $bdd->prepare("SELECT * FROM `vbcms-modules` WHERE workshopId=?");
 			$response->execute([$workshopId]);
 			$response = $response->fetch(PDO::FETCH_ASSOC);
-			include $_SERVER['DOCUMENT_ROOT'].'/vbcms-content/modules'.$response["path"]."/init.php";
+			include $vbcmsRootPath.'/vbcms-content/modules'.$response["path"]."/init.php";
 		} else {
 			//il s'agit d'un thème
 			$response = $bdd->prepare("SELECT * FROM `vbcms-themes` WHERE workshopId=?");
@@ -170,7 +170,7 @@ if (isset($_SESSION["user_id"])){
 				$response = $bdd->prepare("SELECT * FROM `vbcms-themes` WHERE workshopId=?");
 				$response->execute([$workshopId]);
 				$response = $response->fetch(PDO::FETCH_ASSOC);
-				include $_SERVER['DOCUMENT_ROOT'].'/vbcms-content/themes'.$response["path"]."/init.php";
+				include $vbcmsRootPath.'/vbcms-content/themes'.$response["path"]."/init.php";
 			}
 		}
 	}
