@@ -61,6 +61,29 @@ if (isset($_GET["session"])) {
 	$savedParameters[7] = $websiteConfig[3];
 	file_put_contents("tempInstallConfig", json_encode($savedParameters));
 
+} elseif (isset($_GET["download"])){
+	if (file_exists(".htaccess")) {
+		echo "finished";
+	} else {
+		$versionInfos = file_get_contents("https://api.vbcms.net/updater/lastest?serverId=".$_SESSION["serverId"]."&key=".$_SESSION["liscenceKey"]."&canal=dev");
+		$versionInfos = json_decode($versionInfos, true);
+		//echo $versionInfos["downloadLink"]."?serverId=".$_SESSION["serverId"]."&key=".$_SESSION["liscenceKey"];
+		file_put_contents("vbcms.zip", file_get_contents($versionInfos["downloadLink"]."?serverId=".$_SESSION["serverId"]."&key=".$_SESSION["liscenceKey"]));
+		if (file_exists("vbcms.zip")) {
+			$zip = new ZipArchive;
+			if ($zip->open('vbcms.zip') === TRUE) {
+			    $zip->extractTo("./");
+			    $zip->close();
+			    echo "N'est pas une erreur :)";
+			} else {
+			    echo 'Impossible d\'ouvrir l\'archive';
+			}
+		} else {
+			echo "Impossible de télécharger VBcms";
+		}
+	}
+	
+	//echo $versionInfos["downloadLink"]."?serverId=".$_SESSION["serverId"]."&key=".$_SESSION["liscenceKey"];
 } elseif (isset($_GET["createDatabase"])){
 	$parameters = json_decode(file_get_contents("tempInstallConfig"));
 	$bddHost = $parameters[0]; //Adresse du serveur MySQL
@@ -130,7 +153,7 @@ if (isset($_GET["session"])) {
 
 	$requete = $bdd->exec("CREATE TABLE IF NOT EXISTS `vbcms-settings` (
 		`name` VARCHAR(128) NOT NULL,
-		`value` VARCHAR(3000) NOT NULL,
+		`value` VARCHAR(3000),
 		PRIMARY KEY (`name`)
 	) ENGINE = InnoDB;");
 
@@ -182,16 +205,16 @@ if (isset($_GET["session"])) {
 		PRIMARY KEY (`workshopId`)
 	  ) ENGINE=InnoDB;");
 
-	$requete = $bdd->exec("CREATE TABLE `vbcms-localAccounts` (
+	$requete = $bdd->exec("CREATE TABLE IF NOT EXISTS `vbcms-localAccounts` (
 		`id` int(11) NOT NULL AUTO_INCREMENT,
-		`username` VARCHAR(128) NOT NUL,
+		`username` VARCHAR(128) NOT NULL,
 		`email` VARCHAR(256) NOT NULL,
 		`password` VARCHAR(255) NOT NULL,
 		`role` varchar(32) NOT NULL,
 		PRIMARY KEY (`id`)
 		) ENGINE = InnoDB;");
 	
-	$requete = $bdd->exec("CREATE TABLE `vbcms-websiteStats` (
+	$requete = $bdd->exec("CREATE TABLE IF NOT EXISTS `vbcms-websiteStats` (
 		`id` int(11) NOT NULL AUTO_INCREMENT,
 		`date` DATETIME NOT NULL,
 		`page` VARCHAR(300) NOT NULL,
@@ -199,28 +222,28 @@ if (isset($_GET["session"])) {
 		PRIMARY KEY (`id`)
 		) ENGINE = InnoDB;");
 
-	$requete = $bdd->exec("CREATE TABLE `vbcms-loadingscreeens` (
+	$requete = $bdd->exec("CREATE TABLE IF NOT EXISTS `vbcms-loadingscreeens` (
 		`id` INT(11) NOT NULL AUTO_INCREMENT,
 		`themeId` INT(11) NOT NULL,
 		`name` INT(255) NOT NULL,
 		PRIMARY KEY (`id`)
 	) ENGINE = InnoDB;");
 
-	$requete = $bdd->exec("CREATE TABLE `vbcms-loadingscreensParameters` (
+	$requete = $bdd->exec("CREATE TABLE IF NOT EXISTS `vbcms-loadingscreensParameters` (
 		`loadingScreenId` INT(11) NOT NULL,
 	`name` VARCHAR(128) NOT NULL,
 	`value` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
 	PRIMARY KEY (`loadingScreenId`, `name`)
 	) ENGINE = InnoDB;");
 
-	$requete = $bdd->exec("CREATE TABLE `vbcms-permissions` (
+	$requete = $bdd->exec("CREATE TABLE IF NOT EXISTS `vbcms-permissions` (
 		`accountId` INT(11) NOT NULL,
 		`name` VARCHAR(128) NOT NULL,
 		`value` VARCHAR(128) NOT NULL,
 		PRIMARY KEY (`accountId`, `name`)
 	) ENGINE = InnoDB;");
 
-	$requete = $bdd->exec("CREATE TABLE `vbcms-notifications` (
+	$requete = $bdd->exec("CREATE TABLE IF NOT EXISTS `vbcms-notifications` (
 		`id` INT(11) NOT NULL AUTO_INCREMENT, 
 		`origin` VARCHAR(512) NOT NULL,
 		`link` VARCHAR(512) NOT NULL,
@@ -317,7 +340,29 @@ if (isset($_GET["session"])) {
 	echo "finished";
 
 
-} else {
+} elseif (isset($_GET["configure"])){
+	$savedParameters = file_get_contents("tempInstallConfig");
+	$savedParameters = json_decode($savedParameters);
+	$bddHost = $savedParameters[0]; //Adresse du serveur MySQL
+	$bddName = $savedParameters[1]; //Nom de la base de donnée
+	$bddUser = $savedParameters[2]; //Utilisateur
+	$bddMdp = $savedParameters[3]; //Mot de passe
+
+	$configFile = ('<?php
+//
+// VBcms 2.0 - Sofiane Lasri | https://sl-projects.com
+//
+// DATABASE CONFIGURATION
+
+$bddHost = "'.$bddHost.'"; //Adresse du serveur MySQL
+$bddUser = "'.$bddUser.'"; //Utilisateur
+$bddMdp = "'.$bddMdp.'"; //Mot de passe
+$bddName = "'.$bddName.'"; //Nom de la base de données
+
+error_reporting(0); //Désactive les erreurs');
+	file_put_contents("vbcms-config.php", $configFile);
+
+}else {
 ?>
 <!DOCTYPE html>
 <html>
@@ -526,7 +571,7 @@ if (isset($_GET["session"])) {
 			<div class="centerItems">
 				<img class="rounded-circle mb-3" src="<?=$_SESSION['user_profilePic']?>" alt="user-logo">
 				<h3>Salut <?=$_SESSION['user_username']?>!</h3>
-				<p>Nous allons maintenant pouvoir passer à l'installation du panel! :D</p>
+				<p>Nous allons maintenant pouvoir passer à l'installation du panel! :D <?php print_r($_SESSION); ?></p>
 			</div>
 		</div>
 		<div id="install-step-1" title="1. Dépendances" class="content" style="display: none;">
@@ -619,6 +664,7 @@ if (isset($_GET["session"])) {
 						<input class="form-control" value="<?=$savedParameters[7]?>" type="text" id="steamApiKey">
 						<small class="form-text text-muted">Non obligatoire selon les utilisations</small>
 					</div>
+					<button id="testDatabaseConn" onclick="saveWebsiteConfig()" class="m-1 btn btn-brown float-left">Sauvegarder</button>	
 				</div>
 			</div>
 		</div>
@@ -627,6 +673,9 @@ if (isset($_GET["session"])) {
 				<h3>4. Téléchargement de VBcms</h3>
 				<p>Comme tu as pu le remarquer, tu n'a téléchargé que cette petite page internet. ^^'<br>
 				Mais ne t'inquiète pas c'est normal, c'est pour que tu puisse bénéficier de la dernière version du panel sans que tu ai à le mettre à jour! :D</p>
+				<p><strong>Un message d'erreur va apparaître, tu dois renommer le fichier</strong> <code>RenommeMoi</code> en <code>.htaccess</code><br>
+					<strong>Je n'ai pas les permissions pour le faire. :(</strong></p>
+				<p><strong>Actualise la page lorsque c'est fait.</strong></p>
 			</div>
 		</div>
 		<div id="install-step-5" title="5. Création de la base de donnée" class="content" style="display: none;">
@@ -635,9 +684,9 @@ if (isset($_GET["session"])) {
 				<p>Veuillez patienter...</p>
 			</div>
 		</div>
-		<div id="install-step-6" title="6. Vérifications additionnelles" class="content" style="display: none;">
+		<div id="install-step-6" title="6. Configuration de l'installation" class="content" style="display: none;">
 			<div class="p-2">
-				<h3>6. Vérifications additionnelles</h3>
+				<h3>6. Configuration de l'installation</h3>
 				<p>On sait jamais, ça peut ne pas marcher x)</p>
 			</div>
 		</div>
@@ -706,6 +755,7 @@ if (isset($_GET["session"])) {
 		}
 		async function showStep(id){
 			id = parseInt(id, 10);
+			$("#install-step-"+(id)).css("display", "block");
 
 			if(!$("#install-step-"+(id-1)).length){
 				$("#prevBtn").css("display", "none");
@@ -733,11 +783,26 @@ if (isset($_GET["session"])) {
 			} else if (id==3) {
 				$("#progress-bar").css("width", "15%");
 				$(".pick-a-color").pickAColor();
+				$("#nextBtn").css("display", "none");
 			} else if (id==4) {
 				var websiteConfig = [];
 				websiteConfig.push($("#websiteName").val(), $("#websiteDesc").val(), $("#websiteColor").val(), $("#steamApiKey").val());
 				$.get("install.php?saveWebsiteConfig="+JSON.stringify(websiteConfig), function(data) {});
 				$("#progress-bar").css("width", "25%");
+				$("#prevBtn").css("display", "none");
+				$("#nextBtn").css("display", "none");
+				$.get("install.php?download", function(data) {
+					console.log("data="+data);
+					if (data!="finished") {
+						SnackBar({
+	                        message: "Echec lors du téléchargement de VBcms: "+data,
+	                        status: "danger",
+	                        timeout: false
+	                    });
+					}else{
+						nextStep();
+					}
+				});
 			} else if (id==5) {
 				$("#progress-bar").css("width", "80%");
 				$.get("install.php?createDatabase", function(data) {
@@ -753,10 +818,20 @@ if (isset($_GET["session"])) {
 					}
 				});
 			} else if (id==6) {
-				$("#progress-bar").css("width", "95%");;
+				$("#progress-bar").css("width", "95%");
+				$.get("install.php?configure", function(data) {
+					console.log("data="+data);
+					if (data!="") {
+						SnackBar({
+	                        message: "Echec lors de la configuration du site: "+data,
+	                        status: "danger",
+	                        timeout: false
+	                    });
+					}else{
+						//nextStep();
+					}
+				});
 			}
-
-			$("#install-step-"+id).css("display", "block");
 		}
 
 		function databaseTest(){
@@ -773,6 +848,27 @@ if (isset($_GET["session"])) {
 					$("#nextBtn").css("display", "none");
 					SnackBar({
                         message: "Echec lors de la connexion: "+data,
+                        status: "danger",
+                        timeout: false
+                    });
+				}
+			});
+		}
+
+		function saveWebsiteConfig(){
+			var parms = [];
+			parms.push($("#websiteName").val(), $("#websiteDesc").val(), $("#websiteColor").val(), $("#steamApiKey").val());
+			$.get("install.php?saveWebsiteConfig="+JSON.stringify(parms), function(data) {
+				if (data=="") {
+					$("#nextBtn").css("display", "block");
+					SnackBar({
+                        message: "Connexion réussie!",
+                        status: "success"
+                    });
+				} else {
+					$("#nextBtn").css("display", "none");
+					SnackBar({
+                        message: "Echec lors de la sauvegarde: "+data,
                         status: "danger",
                         timeout: false
                     });
