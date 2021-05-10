@@ -508,7 +508,7 @@ if (isset($_GET["session"])) {
 				<img src="https://vbcms.net/vbcms-admin/images/vbcms-logo/raccoon-in-box-128x.png" alt="vbcms-logo">
 				<h3>Bienvenu sur VBcms!</h3>
 				<p>Merci de participer aux tests de pré-release! <br>Le panel actuel ne reflète qu'assez peu le travail final, de nombreuses fonctionnalités vont être ajouté dans les semaines à suivre.
-				<br><br><?=$ip?><br>
+				<br><br><br>
 				Pour te remercier de ton investissement, une liscence t'as été offerte. Tu as juste à te connecter pour procéder à l'installation. ^^</p>
 			</div>
 		</div>
