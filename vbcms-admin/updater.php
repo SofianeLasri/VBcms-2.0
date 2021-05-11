@@ -27,8 +27,10 @@ $isUpToDate = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name = 'upTo
 $lastUpdateCheck = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name = 'lastUpdateCheck'")->fetchColumn();
 if ($isUpToDate == 1) {
     $updateMessage = $translation["isUpToDate"];
+    $textColor = "success";
 } else {
     $updateMessage = $translation["isNotUpToDate"];
+    $textColor = "danger";
 }
 
 ?>
@@ -70,7 +72,38 @@ if ($isUpToDate == 1) {
     </div>
 
     <div class="page-content notTop" leftSidebar="240" rightSidebar="0">
-        <h3><?=$translation["update"]?></h3>
+        <div class="row">
+            <div class="col">
+                <h5>Détail de la mise à jour</h5>
+                <p><span class="text-muted">Installée: </span><span class="text-<?=$textColor?>"><?=$vbcmsVer?></span>
+                <?php
+                if ($isUpToDate == 0) echo '<br><span class="text-muted">Disponible: </span><span class="text-success"><?=$updateInfosData["version"]?></span>';
+                ?>
+                <br><span class="text-muted">Canal de mise à jour: </span>
+                <?php
+                if ($curentUpdateCanal == "release") {
+                    echo '<span class="text-success">Release</span>';
+                } elseif ($curentUpdateCanal == "dev") {
+                    echo '<span class="text-danger">Développement</span>';
+                } elseif ($curentUpdateCanal == "nightly") {
+                    echo '<span class="text-warning">Bêta</span>';
+                }
+                
+                ?></p>
+
+
+            </div>
+            <div class="col-8"">
+                <h4>Détail de la mise à jour</h4>
+            </div>
+            <div class="col">
+                <h5>Obtenir de l'aide</h5>
+                <a class="text-dark" target="_blank" href="https://vbcms.net/doc"><i class="fas fa-book"></i> Documentation</a><br>
+                <a class="text-dark" target="_blank" href="https://vbcms.net/doc/faq"><i class="fas fa-question-circle"></i> Questions réponses</a><br>
+                <a class="text-dark" target="_blank" href="https://vbcms.net/manager/support"><i class="fas fa-life-ring"></i> Support</a><br>
+                <a class="text-dark" target="_blank" href="https://discord.gg/DpfF8Kz"><i class="fab fa-discord"></i> Notre discord</a>
+            </div>
+        </div>
 
     </div>
 </body>
