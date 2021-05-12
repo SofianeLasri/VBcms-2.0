@@ -77,7 +77,7 @@ if ($isUpToDate == 1) {
                 <h5>Détail de la mise à jour</h5>
                 <p><span class="text-muted">Installée: </span><span class="text-<?=$textColor?>"><?=$vbcmsVer?></span>
                 <?php
-                if ($isUpToDate == 0) echo '<br><span class="text-muted">Disponible: </span><span class="text-success"><?=$updateInfosData["version"]?></span>';
+                if ($isUpToDate == 0) echo '<br><span class="text-muted">Disponible: </span><span class="text-success">'.$updateInfosData["version"].'</span>';
                 ?>
                 <br><span class="text-muted">Canal de mise à jour: </span>
                 <?php

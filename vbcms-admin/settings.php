@@ -136,13 +136,13 @@ if (isset($_POST["submit"])) {
 		function openGallery(){
 			$('#galleryModal').modal('toggle');
 			if ($('#includeGallery').html()=="")
-				$('#includeGallery').load('<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-content/modules/vbcms-filemanager/admin/gallery-include.php');
+				$('#includeGallery').load('<?=$websiteUrl?>vbcms-content/modules/vbcms-filemanager/admin/gallery-include.php');
 		}
 
 		// Contournement pour ne sélectionner que les images
 		function openViewer(path){
-			$("#websiteLogoPreview").css("background", "url(\"<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-content/uploads"+path+"\"),linear-gradient(180deg, rgba(65,65,65,1) 0%, rgba(1,1,1,1) 100%)");
-			$("#websiteLogo").val("<?=$http?>://<?=$_SERVER['HTTP_HOST']?>/vbcms-content/uploads"+path);
+			$("#websiteLogoPreview").css("background", "url(\"<?=$websiteUrl?>vbcms-content/uploads"+path+"\"),linear-gradient(180deg, rgba(65,65,65,1) 0%, rgba(1,1,1,1) 100%)");
+			$("#websiteLogo").val("<?=$websiteUrl?>vbcms-content/uploads"+path);
 			$('#galleryModal').modal('hide');
 		}
 		function openVideo(path){

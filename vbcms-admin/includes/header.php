@@ -1,8 +1,11 @@
 <?php
-$vbcmsRootPath = getcwd();
-if(strpos($vbcmsRootPath, "/vbcms-admin") !== false){
-    $vbcmsRootPath = substr($vbcmsRootPath, 0, strpos($vbcmsRootPath, "/vbcms-admin"));
+if(!isset($vbcmsRootPath)){
+	$vbcmsRootPath = getcwd();
+	if(strpos($vbcmsRootPath, "/vbcms-admin") !== false){
+	    $vbcmsRootPath = substr($vbcmsRootPath, 0, strpos($vbcmsRootPath, "/vbcms-admin"));
+	}
 }
+
 require 'dbConnect.php'; // Primordiale pour l'usage de la base de donnée
 
 // Vérifie le type de connexion
@@ -114,6 +117,7 @@ if ($folders[1]=="vbcms-admin") {// Ne s'éxecute que si l'on n'est sur le panne
 		
 	}
 } else { // Ne s'éxecute que si l'on n'est PAS sur le panneau admin (donc la partie publique)
+
 	if ($folders[1]!="vbcms-content") { // Permet aux scripts de communiquer tout en utilisant header
 		if($folders[1]=="backTasks"){
 			include $GLOBALS['vbcmsRootPath']."/backTasks.php";

@@ -1,6 +1,6 @@
 <?php
 // Je le remet car l'inclusion de header.php va causer plus de problèmes qu'autre chose
-if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
+//if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 ?>
 <script src="<?=$websiteUrl?>vbcms-admin/js/md5.js"></script>
 <script type="text/javascript">
