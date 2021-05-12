@@ -135,10 +135,24 @@ if ($isUpToDate == 1) {
                         timeout: false
                     });
 				}else{
-                    console.log(details)
 					details = JSON.parse(data);
-                    console.log(details)
-                    //if (details.success) {}
+                    if (details.success == true) {
+                        window.location.replace(details.link);
+                    } else {
+                        if (detail.code == 0) {
+                            SnackBar({
+                                message: "Impossible de télécharger la mise à jour",
+                                status: "danger",
+                                timeout: false
+                            });
+                        } else if(detail.code == 1) {
+                            SnackBar({
+                                message: "Impossible d'ouvrir l'archive de la mise à jour",
+                                status: "danger",
+                                timeout: false
+                            });
+                        }
+                    }
 				}
 			});
     	}
