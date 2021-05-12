@@ -128,17 +128,17 @@ if ($isUpToDate == 1) {
     	async function updateVBcms(){
     		$.get("<?=$websiteUrl?>vbcms-admin/backTasks?updateVBcms", function(data) {
 				console.log("data="+data);
-				if (data!="") {
+				if (data=="") {
 					SnackBar({
-                        message: "Impossible de mettre à jour VBcms: "+data,
+                        message: "backTasks ne retourne rien: "+data,
                         status: "danger",
                         timeout: false
                     });
 				}else{
-					SnackBar({
-                        message: "La mise à jour va débuter dans quelques instants",
-                        status: "sucess"
-                    });
+                    console.log(details)
+					details = JSON.parse(data);
+                    console.log(details)
+                    //if (details.success) {}
 				}
 			});
     	}

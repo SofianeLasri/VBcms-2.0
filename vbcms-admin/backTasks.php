@@ -76,20 +76,26 @@ if (isset($_GET["enableWSAddon"]) && !empty($_GET["enableWSAddon"])) {
 	$updateInfosData = json_decode($updateInfos, true);
 
 	$updateFilename = $GLOBALS['vbcmsRootPath']."/vbcms-content/updates/vbcms-update-v".$updateInfosData['version']."_from-".$vbcmsVer.".zip";
-	echo $updateInfosData["downloadLink"]."?serverId=".$serverId."&key=".$key;
+	if (!file_exists($GLOBALS['vbcmsRootPath']."/vbcms-content/updates")) mkdir($GLOBALS['vbcmsRootPath']."/vbcms-content/updates", 0755);
+	//echo $updateInfosData["downloadLink"]."?serverId=".$serverId."&key=".$key;
 	file_put_contents($updateFilename, file_get_contents($updateInfosData["downloadLink"]."?serverId=".$serverId."&key=".$key));
 	if (file_exists($updateFilename)) {
 		$zip = new ZipArchive;
 		if ($zip->open($updateFilename) === TRUE) {
 		    $zip->extractTo($GLOBALS['vbcmsRootPath']);
 		    $zip->close();
-		    echo "Mise à jour effectuée";
+
+		    $response["sucess"] = true;
+		    $response["link"] = $GLOBALS['vbcmsRootPath']."/update.php";
 		} else {
-		    echo 'Impossible d\'ouvrir l\'archive';
+			$response["sucess"] = false;
+			$response["code"] = 1; // Impossible d'ouvrir l'archive
 		}
 	} else {
-		echo "Impossible de télécharger VBcms";
+		$response["sucess"] = false;
+		$response["code"] = 0; // Impossible de télécharger la màj
 	}
+	echo json_encode($response);
 } else {?>
 <!DOCTYPE html>
 <html>
