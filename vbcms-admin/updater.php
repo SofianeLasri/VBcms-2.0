@@ -139,13 +139,13 @@ if ($isUpToDate == 1) {
                     if (details.success == true) {
                         window.location.replace(details.link);
                     } else {
-                        if (detail.code == 0) {
+                        if (details.code == 0) {
                             SnackBar({
                                 message: "Impossible de télécharger la mise à jour",
                                 status: "danger",
                                 timeout: false
                             });
-                        } else if(detail.code == 1) {
+                        } else if(details.code == 1) {
                             SnackBar({
                                 message: "Impossible d'ouvrir l'archive de la mise à jour",
                                 status: "danger",
