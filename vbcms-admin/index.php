@@ -106,7 +106,7 @@ if ($isUpToDate == 1) {
 
 		<div class="mt-3">
 			<h3>Test</h3>
-			<p><?php print_r($_SESSION) ?><br><?=$ip?></p>
+			<p>Mise à jour de test</p>
 		</div>
 		
 	</div>
