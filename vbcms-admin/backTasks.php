@@ -86,7 +86,7 @@ if (isset($_GET["enableWSAddon"]) && !empty($_GET["enableWSAddon"])) {
 		    $zip->close();
 
 		    $response["sucess"] = true;
-		    $response["link"] = $GLOBALS['vbcmsRootPath']."/update.php";
+		    $response["link"] = $websiteUrl."update.php";
 		} else {
 			$response["sucess"] = false;
 			$response["code"] = 1; // Impossible d'ouvrir l'archive
