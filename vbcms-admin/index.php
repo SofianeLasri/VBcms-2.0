@@ -106,7 +106,7 @@ if ($isUpToDate == 1) {
 
 		<div class="mt-3">
 			<h3>Test</h3>
-			<p>Mise à jour de test n°2</p>
+			<p>Mise à jour de test n°3 :D</p>
 		</div>
 		
 	</div>
