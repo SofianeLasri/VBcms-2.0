@@ -127,7 +127,6 @@ if ($isUpToDate == 1) {
     <script type="text/javascript">
     	async function updateVBcms(){
     		$.get("<?=$websiteUrl?>vbcms-admin/backTasks?updateVBcms", function(data) {
-				console.log("data="+data);
 				if (data=="") {
 					SnackBar({
                         message: "backTasks ne retourne rien: "+data,
