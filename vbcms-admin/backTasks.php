@@ -65,6 +65,31 @@ if (isset($_GET["enableWSAddon"]) && !empty($_GET["enableWSAddon"])) {
 	$response->execute([$_SESSION["user_id"]]);
 	$response = $response->fetchAll(PDO::FETCH_ASSOC);
 	echo json_encode($response);
+} elseif (isset($_GET["updateVBcms"])) {
+	$curentUpdateCanal = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='updateCanal'")->fetchColumn();
+	$serverId = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='serverId'")->fetchColumn();
+	$key = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='encryptionKey'")->fetchColumn();
+	$vbcmsVer = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='vbcmsVersion'")->fetchColumn();
+	$curentUpdateCanal = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='updateCanal'")->fetchColumn();
+
+	$updateInfos = file_get_contents("https://api.vbcms.net/updater/lastest?serverId=".$serverId."&key=".$key."&version=".$vbcmsVer."&canal=".$curentUpdateCanal);
+	$updateInfosData = json_decode($updateInfos, true);
+
+	$updateFilename = $GLOBALS['vbcmsRootPath']."/vbcms-content/updates/vbcms-update-v".$updateInfosData['version']."_from-".$vbcmsVer.".zip";
+	echo $updateInfosData["downloadLink"]."?serverId=".$serverId."&key=".$key;
+	file_put_contents($updateFilename, file_get_contents($updateInfosData["downloadLink"]."?serverId=".$serverId."&key=".$key));
+	if (file_exists($updateFilename)) {
+		$zip = new ZipArchive;
+		if ($zip->open($updateFilename) === TRUE) {
+		    $zip->extractTo($GLOBALS['vbcmsRootPath']);
+		    $zip->close();
+		    echo "Mise à jour effectuée";
+		} else {
+		    echo 'Impossible d\'ouvrir l\'archive';
+		}
+	} else {
+		echo "Impossible de télécharger VBcms";
+	}
 } else {?>
 <!DOCTYPE html>
 <html>

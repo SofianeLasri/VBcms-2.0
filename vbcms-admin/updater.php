@@ -63,7 +63,7 @@ if ($isUpToDate == 1) {
                         #
                     } else {
                         echo '<p>Test</p>';
-                        echo '<button type="button" class="btn btn-light">'.$translation["downloadAndInstall"].'</button>';
+                        echo '<button type="button" onclick="$(\'#updateModal\').modal(\'toggle\');" class="btn btn-light">'.$translation["downloadAndInstall"].'</button>';
                     }
                     
                 ?>
@@ -105,6 +105,43 @@ if ($isUpToDate == 1) {
             </div>
         </div>
 
+        <div class="modal fade" id="updateModal" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5>Mettre à jour VBcms</h5>
+	      			</div>
+			      	<div class="modal-body">
+			        	<p>Vous êtes sur le point de télécharger et d'installer une mise à jour. Tout se fera automatiquement, vous serez automatiquement redirigé après l'installation effectuée.</p>
+			        	<p><strong>Note : Il se peut que d'autres mises à jours suivent celle-ci, référez-vous à notre documentation pour en savoir plus.</strong></p>
+			      	</div>
+	      			<div class="modal-footer">
+				        <button type="button" class="btn btn-secondary" data-dismiss="modal">Peut-être plus-tard</button>
+				        <button type="button" data-dismiss="modal" onclick="updateVBcms()" class="btn btn-success">Faire la mise à jour</button>
+	      			</div>
+	    		</div>
+	  		</div>
+		</div>
+
     </div>
+    <script type="text/javascript">
+    	async function updateVBcms(){
+    		$.get("<?=$websiteUrl?>vbcms-admin/backTasks?updateVBcms", function(data) {
+				console.log("data="+data);
+				if (data!="") {
+					SnackBar({
+                        message: "Impossible de mettre à jour VBcms: "+data,
+                        status: "danger",
+                        timeout: false
+                    });
+				}else{
+					SnackBar({
+                        message: "La mise à jour va débuter dans quelques instants",
+                        status: "sucess"
+                    });
+				}
+			});
+    	}
+    </script>
 </body>
 </html>
