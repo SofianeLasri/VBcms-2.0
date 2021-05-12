@@ -187,7 +187,7 @@ if (isset($_GET["silentUpdate"])) {
 
 	<script type="text/javascript">
 		$( document ).ready(function() {
-			$.get("install.php?silentUpdate", function(data) {
+			$.get("update.php?silentUpdate", function(data) {
 				console.log("data="+data);
 				if (data!="") {
 					SnackBar({
@@ -196,7 +196,7 @@ if (isset($_GET["silentUpdate"])) {
                         timeout: false
                     });
 				}else{
-					$.get("install.php?deleteUpdateFile", function(data) {
+					$.get("update.php?deleteUpdateFile", function(data) {
 						console.log("data="+data);
 						if (data!="") {
 							SnackBar({

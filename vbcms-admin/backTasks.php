@@ -85,14 +85,14 @@ if (isset($_GET["enableWSAddon"]) && !empty($_GET["enableWSAddon"])) {
 		    $zip->extractTo($GLOBALS['vbcmsRootPath']);
 		    $zip->close();
 
-		    $response["sucess"] = true;
+		    $response["success"] = true;
 		    $response["link"] = $websiteUrl."update.php";
 		} else {
-			$response["sucess"] = false;
+			$response["success"] = false;
 			$response["code"] = 1; // Impossible d'ouvrir l'archive
 		}
 	} else {
-		$response["sucess"] = false;
+		$response["success"] = false;
 		$response["code"] = 0; // Impossible de télécharger la màj
 	}
 	echo json_encode($response);
