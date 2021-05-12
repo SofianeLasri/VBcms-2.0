@@ -3,7 +3,7 @@
 $params = $moduleParams;
 
 // Fonctions publiques
-require $vbcmsRootPath."/vbcms-content/modules/vbcms-blog/includes/client-functions.php";
+require $GLOBALS['vbcmsRootPath']."/vbcms-content/modules/vbcms-blog/includes/client-functions.php";
 
 if ($type=="client") {
 	if ($params[0]=="backTasks"){
@@ -16,7 +16,7 @@ if ($type=="client") {
 		}
 	}elseif ($params[0]!=""){
 		$pageTitle = "";
-		$pageToInclude = $vbcmsRootPath."/vbcms-content/modules/vbcms-blog/client/viewArticle.php";
+		$pageToInclude = $GLOBALS['vbcmsRootPath']."/vbcms-content/modules/vbcms-blog/client/viewArticle.php";
 		$customDescription = "";
 		$pageDepedencies = "";
 		createModulePage($pageTitle, $customDescription, $pageDepedencies, $pageToInclude, 1);
@@ -33,7 +33,7 @@ if ($type=="client") {
   		';
 
 	// Fonction admin		
-	require $vbcmsRootPath."/vbcms-content/modules/vbcms-blog/includes/admin-functions.php";
+	require $GLOBALS['vbcmsRootPath']."/vbcms-content/modules/vbcms-blog/includes/admin-functions.php";
 
 	if (isset($_GET["updateCategory"]) AND !empty($_GET["updateCategory"])) {
 		$response = $bdd->prepare("UPDATE `vbcms-blogCategories` SET shortName= ?, showName=?, childOf=? WHERE id = ?");
@@ -43,17 +43,17 @@ if ($type=="client") {
 	} elseif ($params[1]=="post-new") {
 		// Variables nécessaire à création d'une page
 		$pageTitle = "Éditeur";
-		$pageToInclude = $vbcmsRootPath."/vbcms-content/modules/vbcms-blog/admin/post-new.php";
+		$pageToInclude = $GLOBALS['vbcmsRootPath']."/vbcms-content/modules/vbcms-blog/admin/post-new.php";
 		createModulePage($pageTitle, "", $pageDepedencies, $pageToInclude, 0);
 
 	} elseif($params[1]=="posts-list"){
 		$pageTitle = "Liste des articles";
-		$pageToInclude = $vbcmsRootPath."/vbcms-content/modules/vbcms-blog/admin/posts-list.php";
+		$pageToInclude = $GLOBALS['vbcmsRootPath']."/vbcms-content/modules/vbcms-blog/admin/posts-list.php";
 		createModulePage($pageTitle, "", $pageDepedencies, $pageToInclude, 0);
 
 	} elseif($params[1]=="categories"){
 		$pageTitle = "Catégories";
-		$pageToInclude = $vbcmsRootPath."/vbcms-content/modules/vbcms-blog/admin/categories.php";
+		$pageToInclude = $GLOBALS['vbcmsRootPath']."/vbcms-content/modules/vbcms-blog/admin/categories.php";
 		createModulePage($pageTitle, "", $pageDepedencies, $pageToInclude, 0);
 		
 	} elseif($params[1]=="backTasks"){

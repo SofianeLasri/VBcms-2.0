@@ -1,7 +1,7 @@
 <?php
 // Je rappel qu'on a $type et $params
 $params = $moduleParams;
-$uploadFolderPath = $vbcmsRootPath.'/vbcms-content/uploads';
+$uploadFolderPath = $GLOBALS['vbcmsRootPath'].'/vbcms-content/uploads';
 
 
 if($type=="admin") {
@@ -12,14 +12,14 @@ if($type=="admin") {
 		
 		// Variables nécessaire à création d'une page
 		$pageTitle = "Fichiers";
-		$pageToInclude = $vbcmsRootPath."/vbcms-content/modules/vbcms-filemanager/admin/gallery.php";
+		$pageToInclude = $GLOBALS['vbcmsRootPath']."/vbcms-content/modules/vbcms-filemanager/admin/gallery.php";
 		createModulePage($pageTitle, "", $pageDepedencies, $pageToInclude, 0);
 
 	} elseif($params[1]=="backTasks"){
 		// Permet d'intéragir avec la base de donnée en mode admin
 
 		// Fonction admin		
-		include $vbcmsRootPath."/vbcms-content/modules/vbcms-filemanager/includes/admin-functions.php";
+		include $GLOBALS['vbcmsRootPath']."/vbcms-content/modules/vbcms-filemanager/includes/admin-functions.php";
 
 		if (isset($_GET["folderContent"])) {
 			if (isset($_GET["folderOnly"])) {

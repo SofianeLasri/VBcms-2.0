@@ -18,7 +18,7 @@
 		<div class="width-50em d-flex flex-column">
 			<h5>Modules</h5>
 			<?php
-			$modulesPath = $vbcmsRootPath.'/vbcms-content/modules/';
+			$modulesPath = $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules/';
 			$folder = array_diff(scandir($modulesPath), array('..', '.'));
 			foreach ($folder as $isDir) {
 				$modulePath = $isDir;
@@ -93,7 +93,7 @@
 
 			<h5 class="mt-4">Thèmes</h5>
 			<?php
-			$modulesPath = $vbcmsRootPath.'/vbcms-content/themes/';
+			$modulesPath = $GLOBALS['vbcmsRootPath'].'/vbcms-content/themes/';
 			$folder = array_diff(scandir($modulesPath), array('..', '.'));
 			foreach ($folder as $isDir) {
 				$modulePath = $isDir;

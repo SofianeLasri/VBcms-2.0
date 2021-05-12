@@ -5,7 +5,7 @@
 
 	<div id="includeGallery">
 		<!-- ICI la galerie est incluse lors du chargement de la page -->
-		<?php require $vbcmsRootPath."/vbcms-content/modules/vbcms-filemanager/admin/gallery-htmlOnly.php"; ?>
+		<?php require $GLOBALS['vbcmsRootPath']."/vbcms-content/modules/vbcms-filemanager/admin/gallery-htmlOnly.php"; ?>
 	</div>
 
 	<div class="width-50em mt-4">
@@ -47,4 +47,4 @@
 		<li id="explorerDelete"><a href="#"><i class="fas fa-trash"></i> Supprimer</a></li>
 	</ul>
 </div>
-<?php require $vbcmsRootPath."/vbcms-content/modules/vbcms-filemanager/admin/gallery-scriptOnly.php"; ?>
+<?php require $GLOBALS['vbcmsRootPath']."/vbcms-content/modules/vbcms-filemanager/admin/gallery-scriptOnly.php"; ?>

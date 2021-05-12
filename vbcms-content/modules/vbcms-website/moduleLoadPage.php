@@ -1,7 +1,7 @@
 <?php
 // Je rappel qu'on a $type et $params
 $params = $moduleParams;
-$uploadFolderPath = $vbcmsRootPath.'/vbcms-content/uploads';
+$uploadFolderPath = $GLOBALS['vbcmsRootPath'].'/vbcms-content/uploads';
 
 
 if($type=="admin") {
@@ -13,7 +13,7 @@ if($type=="admin") {
 		// Variables Modifier la navbar à création d'une page
 		$pageTitle = "Modifier la navbar";
 		$pageDepedencies = '<script src="'.$websiteUrl.'vbcms-admin/js/jquery-sortable-lists-navbarEdit.js"></script>';
-		$pageToInclude = $vbcmsRootPath."/vbcms-content/modules/vbcms-website/admin/modifyNavbar.php";
+		$pageToInclude = $GLOBALS['vbcmsRootPath']."/vbcms-content/modules/vbcms-website/admin/modifyNavbar.php";
 		createModulePage($pageTitle, "", $pageDepedencies, $pageToInclude, 0);
 	}
 	

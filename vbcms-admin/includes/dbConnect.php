@@ -1,5 +1,5 @@
 <?php
-require $vbcmsRootPath."/vbcms-config.php";
+require $GLOBALS['vbcmsRootPath']."/vbcms-config.php";
 try {
     $bddConn = new PDO("mysql:host=$bddHost;dbname=$bddName", $bddUser, $bddMdp); //Test de la connexion
     $bddConn = null;

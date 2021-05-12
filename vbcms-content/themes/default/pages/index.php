@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<title><?=$websiteName?></title>
-	<?php include $vbcmsRootPath.'/vbcms-content/themes/default/includes/depedencies.php';?>
+	<?php include $GLOBALS['vbcmsRootPath'].'/vbcms-content/themes/default/includes/depedencies.php';?>
 </head>
 <body>
 	<header>
@@ -60,6 +60,6 @@
 		</div>
 	</div>
 	
-	<?php include $vbcmsRootPath.'/vbcms-content/themes/default/includes/footer.php'; ?>
+	<?php include $GLOBALS['vbcmsRootPath'].'/vbcms-content/themes/default/includes/footer.php'; ?>
 </body>
 </html>
