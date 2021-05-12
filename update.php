@@ -4,7 +4,7 @@ if (isset($_GET["silentUpdate"])) {
 	include 'vbcms-config.php';
 	$bdd = new PDO("mysql:host=$bddHost;dbname=$bddName", $bddUser, $bddMdp);
 
-	$response=$bdd->prepare("UPDATE `vbcms-settings` SET value = ? WHERE name = 'vbcmsVersion");
+	$response=$bdd->prepare("UPDATE `vbcms-settings` SET value = ? WHERE name = 'vbcmsVersion'");
 	$response->execute([$vbcmsVer]);
 } elseif(isset($_GET["deleteUpdateFile"])){
 	unlink('update.php');
