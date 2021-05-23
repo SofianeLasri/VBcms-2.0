@@ -1,5 +1,6 @@
 <?php
 $vbcmsVer = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='vbcmsVersion'")->fetchColumn();
+$debugMode = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='debugMode'")->fetchColumn();
 ?>
 <header>
 	<div class="navbar managerHeader d-flex">
@@ -72,6 +73,16 @@ $vbcmsVer = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='vbcmsVer
 					<span class="menu-text"><?=$translation["update"]?></span>
 				</a>
 			</div>
+			<?php 
+			if($debugMode == "1"){
+				echo '<div class="menu-item">
+				<a href="/vbcms-admin/debug" class="menu-link">
+					<span class="menu-icon"><i class="fas fa-bug"></i></span>
+					<span class="menu-text">Debug</span>
+				</a>
+			</div>';
+			}
+			?>			
 
 			<!-- Insérer les liens ici -->
 

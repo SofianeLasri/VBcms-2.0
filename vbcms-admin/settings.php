@@ -21,6 +21,14 @@ if (isset($_POST["submit"])) {
 	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='updateCanal'");
 	$response->execute([$_POST["updateCanal"]]);
 
+	if (isset($_POST["debugMode"])) {
+		$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='debugMode'");
+		$response->execute(["1"]);
+	} else {
+		$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='debugMode'");
+		$response->execute(["0"]);
+	}
+
 
 	header("Refresh:0");
 }
@@ -59,6 +67,10 @@ if (isset($_POST["submit"])) {
                     }
                     ?>
                 </select>
+			</div>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" name="debugMode">
+				<label class="form-check-label">Debug mode</label>
 			</div>
 
 			<h5 class="mt-4"><?=$translation["website"]?></h5>

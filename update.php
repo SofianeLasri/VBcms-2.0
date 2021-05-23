@@ -4,7 +4,10 @@ if (isset($_GET["silentUpdate"])) {
 	include 'vbcms-config.php';
 	$bdd = new PDO("mysql:host=$bddHost;dbname=$bddName", $bddUser, $bddMdp);
 
-	$bdd->exec("CREATE TABLE `vbcms-wsSuscribedAddons` ( `addonId` INT(11) NOT NULL , `addonTitle` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL , `version` VARCHAR(32) NOT NULL , `lastUpdateCheck` DATETIME NOT NULL , PRIMARY KEY (`addonId`)) ENGINE = InnoDB;");
+	$response = $bdd->prepare("INSERT INTO `vbcms-settings` (name, value) VALUES (?,?)");
+	$response->execute(["autoUpdate","1"]);
+	$response = $bdd->prepare("INSERT INTO `vbcms-settings` (name, value) VALUES (?,?)");
+	$response->execute(["debugMode","0"]);
 	
 	$response=$bdd->prepare("UPDATE `vbcms-settings` SET value = ? WHERE name = 'vbcmsVersion'");
 	$response->execute([$vbcmsVer]);

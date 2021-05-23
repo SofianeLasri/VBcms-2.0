@@ -16,7 +16,35 @@ if (isset($_GET["loadClientNavbar"])) {
     		case 'getVersionInfo':
     			echo $bdd->query("SELECT value FROM `vbcms-settings` WHERE name = 'vbcmsVersion'")->fetchColumn();
     			break;
-    		
+
+            case 'autoUpdate':
+                $autoUpdate = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name = 'autoUpdate'")->fetchColumn();
+                if ($autoUpdate=="1") {
+                    $updateState = json_decode(file_get_contents($websiteUrl."vbcms-admin/backTasks/updateVBcms"), true);
+                    if ($updateState["success"]==true) {
+                        file_get_contents($websiteUrl."update.php");
+                    } else {
+                        echo "Update failed with code: ".$updateState["code"];
+                    }
+                    
+                } else {
+                   echo "Auto update is not enabled";
+                }
+                break;
+            
+            case 'criticalUpdate':
+                $response=$bdd->prepare("UPDATE `vbcms-settings` SET value = ? WHERE name = 'updateCanal'");
+                $response->execute(["release"]);
+
+                $updateState = json_decode(file_get_contents($websiteUrl."vbcms-admin/backTasks/updateVBcms"), true);
+                if ($updateState["success"]==true) {
+                    file_get_contents($websiteUrl."update.php");
+                } else {
+                    echo "Update failed with code: ".$updateState["code"];
+                }   
+                
+                break;
+
     		default:
     			echo "unrecognized command";
     			break;

@@ -6,6 +6,11 @@
 
 function loadModule($type, $moduleAlias, $moduleParams){
 	global $bdd, $http, $websiteUrl, $translation;
+
+	// On va enregistrer l'évnènement
+	$response = $bdd->prepare("INSERT INTO `vbcms-events` (id,date,module,content,url,ip) VALUES (?,?,?,?,?,?)");
+	$response->execute([null, date("Y-m-d H:i:s"), $moduleAlias, "loadModule($type, $moduleAlias, ".json_encode($moduleParams).")", $GLOBALS['http']."://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]", $GLOBALS['ip']]);
+
 	if ($type=="client") {
 		if ($moduleAlias !="") {
 			// On cherche le module correspondant à l'alias clientAccess dans la liste des modules activés

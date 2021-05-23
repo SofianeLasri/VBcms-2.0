@@ -187,3 +187,14 @@ body {
   border-color: var(--mainBrown);
   box-shadow: 0 0 0 0.2rem rgba(167, 124, 88, 0.5);
 }
+.table .thead-brown th {
+    color: #fff;
+    background-color: var(--mainBrown);
+    border-color: var(--secondaryBrown);
+}
+.table .thead-brown th:hover{
+    background-color: var(--secondaryBrown);
+}
+.table tbody tr:hover{
+    background-color: #dadada;
+}

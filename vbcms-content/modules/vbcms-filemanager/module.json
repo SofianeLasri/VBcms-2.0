@@ -5,7 +5,7 @@
   "showname": "Gestionnaire de fichiers de base",
   "version": "1.0",
   "compatible": "2.0",
-  "author": "76561198148455403",
+  "author": "1",
   "description": "Il s'agit du gestionnaire de fichers inclu avec VBcms. Est nécessaire au bon fonctionnement du panel.",
   "clientAccess": "",
   "adminAccess": "filemanager"
