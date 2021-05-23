@@ -5,8 +5,9 @@ if (isset($_GET["silentUpdate"])) {
 	$bdd = new PDO("mysql:host=$bddHost;dbname=$bddName", $bddUser, $bddMdp);
 
 	$bdd->exec("CREATE TABLE `vbcms-wsSuscribedAddons` ( `addonId` INT(11) NOT NULL , `addonTitle` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL , `version` VARCHAR(32) NOT NULL , `lastUpdateCheck` DATETIME NOT NULL , PRIMARY KEY (`addonId`)) ENGINE = InnoDB;");
-	//$response=$bdd->prepare("UPDATE `vbcms-settings` SET value = ? WHERE name = 'vbcmsVersion'");
-	//$response->execute([$vbcmsVer]);
+	
+	$response=$bdd->prepare("UPDATE `vbcms-settings` SET value = ? WHERE name = 'vbcmsVersion'");
+	$response->execute([$vbcmsVer]);
 } elseif(isset($_GET["deleteUpdateFile"])){
 	unlink('update.php');
 }else{
