@@ -28,7 +28,7 @@ if ($isUpToDate == 1) {
 			<div class="ml-5">
 				<h3>Bienvenue <?=$_SESSION["user_username"]?>!</h3>
 				<p><?=$updateMessage?>
-				<br><strong>Vous avez 3 notifications</strong></p>
+				<br><strong>Vous êtes sur une version de développement de VBcms.</strong></p>
 			</div>
 		</div>
 	</div>
@@ -105,12 +105,22 @@ if ($isUpToDate == 1) {
 		</div>
 		-->
 		<!-- Fin de la liste des cartes -->
-		<!--
+		
 		<div class="mt-3">
-			<h3>Un superbe accueil!</h3>
-			<p>Ouai c'est très remplit dit donc...</p>
+			<h3>Merci de participer aux tests!</h3>
+			<p>Salut et merci d'avoir accepté de participer aux tests de pré-sortie. Tu es là sur une version très primaire de ce que sera VBcms 2.0 à la fin, et comme tu l'as peut-être déjà remarqué, il n'y a pas grand chose de terminé.</p><br>
+
+			<h5>Pourquoi avoir sorti publiquement une application non terminée?</h5>
+			<p>Cela fait maintenant près de 7 mois que je travail activement sur le développement de ce cms. Je vous ai tenu informé de l'avancement du projet depuis le début, et j'ai souhaité vous faire part d'un aperçu fonctionnel de que j'ai pu réaliser durant ces longs mois. <strong>VBcms 1 étant vraiment médiocre</strong>, je me suis dit qu'il serait bon de le remplacer en commençant par vous mettre à disposition une nouvelle solution. Pas forcément plus stable vous verrez, mais une alternative très prometeuse qui vous proposera bien plus de fonctionnalités dans le temps.</p>
+			<br>
+			<h5>Qu'en est-il de la suite? Quand arriveront les nouveautés?</h5>
+			<p>VBcms dispose d'un système de mise à jour automatique, vous permettant de ne pas avoir à vous soucier de ce problème. Les prochaînes mises à jours du panel arriveront dans les jours qui suivent. Elles apporteront diverses modifications comme des corrections de bugs, de nouvelles fonctionnalités, mais aussi et surtout une amélioration du coeur du panel. Étant donné que nous sommes là sur une version très primitive dans l'état de développement, beaucoup de choses vont changer dans les semaines à venir.<br>
+			Une documentation détaillée verra le jours le plus tôt possible, le workshop suivra sa sortie pour vous permetre la création d'addons. (on peut déjà en créer mais l'api n'est encore établie. Il est trop dangereux de créer un addon dans cet état puisque les addons possèdent un accès total à la base de donnée)</p>
+			<br>
+			<h5>Reste informé!</h5>
+			<p>Reste sur notre serveur Discord pour être informé de l'avancement du cms! :D <a href="https://discord.gg/DpfF8Kz">https://discord.gg/DpfF8Kz</a></p>
 		</div>
-		-->
+		
 	</div>
 </body>
 </html>
