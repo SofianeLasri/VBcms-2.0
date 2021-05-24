@@ -25,7 +25,7 @@ if (isset($_GET["loadClientNavbar"])) {
                 if ($autoUpdate=="1") {
                     $updateState = json_decode(file_get_contents($websiteUrl."vbcms-admin/backTasks/?updateVBcms&session=".$instructions["arguments"]), true);
                     if ($updateState["success"]==true) {
-                        file_get_contents($websiteUrl."update.php");
+                        file_get_contents($websiteUrl."update.php?silentUpdate");
                         $result["result"] = "success";
                         echo json_encode($result);
                     } else {
@@ -46,7 +46,7 @@ if (isset($_GET["loadClientNavbar"])) {
 
                 $updateState = json_decode(file_get_contents($websiteUrl."vbcms-admin/backTasks/?updateVBcms&session=".$instructions["arguments"]), true);
                 if ($updateState["success"]==true) {
-                    file_get_contents($websiteUrl."update.php");
+                    file_get_contents($websiteUrl."update.php?silentUpdate");
                     $result["result"] = "success";
                     echo json_encode($result);
                 } else {
