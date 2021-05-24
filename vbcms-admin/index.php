@@ -37,6 +37,7 @@ if ($isUpToDate == 1) {
 		<p>Bienvenu sur le paneau d’administration. Voici un bref résumé de l'activité de cette semaine.</p>
 
 		<!-- Debut de la liste des cartes -->
+		<!--
 		<div id="indexCards" class="row" style="">
 			<div class="col-xl-6">
 				<div id="indexCardOne" class="indexCard mb-3 overflow-hidden">
@@ -102,13 +103,14 @@ if ($isUpToDate == 1) {
 				</div>
 			</div>
 		</div>
+		-->
 		<!-- Fin de la liste des cartes -->
-
+		<!--
 		<div class="mt-3">
 			<h3>Un superbe accueil!</h3>
 			<p>Ouai c'est très remplit dit donc...</p>
 		</div>
-		
+		-->
 	</div>
 </body>
 </html>
