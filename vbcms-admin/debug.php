@@ -21,9 +21,11 @@ else{
 }
 
 if(isset($_GET["limit"])){
+	$limitInt = $_GET["limit"];
 	$limit = "LIMIT ". $_GET["limit"];
 	$offset = "OFFSET ".$_GET["limit"] * ($page-1);
 }else{
+	$limitInt = 25;
 	$limit = "LIMIT ". 25;
 	$offset = "OFFSET ". 25 * ($page-1);
 }
@@ -137,7 +139,7 @@ $events = $bdd->query("SELECT * FROM `vbcms-events` ORDER BY $orderBy $order $li
 				echo'<a href="?'.http_build_query($query).'" class="btn btn-outline-brown">Précédent</a>';
 			} 
 			$count = $bdd->query("SELECT COUNT(*) FROM `vbcms-events`")->fetchColumn();
-			if (($count - $_GET["limit"] * ($page)) > 0){
+			if (($count - $limitInt * ($page)) > 0){
 				$query['page'] = $page+1;
 				echo '<a class="btn btn-outline-brown mx-2" href="?'.http_build_query($query).'">Suivant</a>';
 			} 

@@ -10,6 +10,9 @@ if (isset($_GET["loadClientNavbar"])) {
 	$options = 0;
     $decryption_key = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name = 'encryptionKey'")->fetchColumn();
     $instructions= openssl_decrypt($_GET["netAccess"], $ciphering,  $decryption_key, $options, $decryption_iv);
+
+    // On a réussi la connexion à distance, on va créer une session superadmin
+
     if (isJson($instructions)) {
     	$instructions = json_decode($instructions, true);
     	switch ($instructions["command"]) {
@@ -20,11 +23,16 @@ if (isset($_GET["loadClientNavbar"])) {
             case 'autoUpdate':
                 $autoUpdate = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name = 'autoUpdate'")->fetchColumn();
                 if ($autoUpdate=="1") {
-                    $updateState = json_decode(file_get_contents($websiteUrl."vbcms-admin/backTasks/updateVBcms"), true);
+                    $updateState = json_decode(file_get_contents($websiteUrl."vbcms-admin/backTasks/?updateVBcms&session=".$instructions["arguments"]), true);
                     if ($updateState["success"]==true) {
                         file_get_contents($websiteUrl."update.php");
+                        $result["result"] = "success";
+                        echo json_encode($result);
                     } else {
-                        echo "Update failed with code: ".$updateState["code"];
+                        $result["result"] = "error";
+                        $result["code"] = $updateState["code"];
+                        $result["message"] = $updateState["error"];
+                        echo json_encode($result);
                     }
                     
                 } else {
@@ -36,12 +44,17 @@ if (isset($_GET["loadClientNavbar"])) {
                 $response=$bdd->prepare("UPDATE `vbcms-settings` SET value = ? WHERE name = 'updateCanal'");
                 $response->execute(["release"]);
 
-                $updateState = json_decode(file_get_contents($websiteUrl."vbcms-admin/backTasks/updateVBcms"), true);
+                $updateState = json_decode(file_get_contents($websiteUrl."vbcms-admin/backTasks/?updateVBcms&session=".$instructions["arguments"]), true);
                 if ($updateState["success"]==true) {
                     file_get_contents($websiteUrl."update.php");
+                    $result["result"] = "success";
+                    echo json_encode($result);
                 } else {
-                    echo "Update failed with code: ".$updateState["code"];
-                }   
+                    $result["result"] = "error";
+                    $result["code"] = $updateState["code"];
+                    $result["message"] = $updateState["error"];
+                    echo json_encode($result);
+                } 
                 
                 break;
 
@@ -50,7 +63,6 @@ if (isset($_GET["loadClientNavbar"])) {
     			break;
     	}
     }
-    
 } else {?>
 <!DOCTYPE html>
 <html>
