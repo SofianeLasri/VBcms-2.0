@@ -12,9 +12,9 @@ if (isset($_GET["session"]) && !empty($_GET["session"])) {
 	
 	$json = file_get_contents("https://api.vbcms.net/auth/v1/checkToken/?token=".$_GET["session"]."&ip=".urlencode($ip)."&serverId=".$serverId);
 	//echo $json;
-	$jsonData = json_decode($json);
-	if (isset($jsonData) && !isset($jsonData->error)) {
-		if ($jsonData->user_id ==0) {
+	$jsonData = json_decode($json, true);
+	if (isset($jsonData) && !isset($jsonData['error'])) {
+		if ($jsonData["user_id"] ==0) {
 			//Connexion par vbcms
 			$_SESSION["user_id"] = 0;
 	    	$_SESSION["user_role"] = "owner";
@@ -28,7 +28,7 @@ if (isset($_GET["session"]) && !empty($_GET["session"])) {
 			$newUrl = http_build_query($newUrl); // J'encode les nouveaux paramètres
 			header("Location: ".$url["scheme"]."://".$url["host"].$url["path"]."?$newUrl"); // Et je renvoie vers la nouvelle url
 		}
-	} elseif(isset($jsonData) && isset($jsonData->error)){
+	} elseif(isset($jsonData) && isset($jsonData['error'])){
 		echo $json;
 	}
 	

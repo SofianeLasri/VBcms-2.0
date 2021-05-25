@@ -53,7 +53,7 @@ switch ($language) {
 
 if ($folders[1]=="vbcms-admin") {// Ne s'éxecute que si l'on n'est sur le panneau admin
 	if (!isset($_SESSION["user_id"])) { // Si l'utilisateur n'est pas connecté
-		if (basename($_SERVER['PHP_SELF'])!="login.php" && !isset($jsonData) && !isset($jsonData->error)) { // Évite les boucles de redirection
+		if (basename($_SERVER['PHP_SELF'])!="login.php" && !isset($jsonData) && !isset($jsonData['error'])) { // Évite les boucles de redirection
 			header("Location: https://vbcms.net/manager/login?from=".urlencode("$http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']));
 		}
 		
