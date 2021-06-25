@@ -1,0 +1,200 @@
+@import "../fonts/fonts.css";
+:root{
+  --mainBrown: #bf946f;
+  --secondaryBrown: #a77c58;
+  --darkBrown: #74492a;
+  --darkerBrown: #5c351f;
+
+  --lightMB: #d3ab89;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 7px;
+}
+::-webkit-scrollbar-button {
+    width: 0px;
+    height: 0px;
+}
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #525965;
+    border: 0px none #ffffff;
+    border-radius: 0px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+    border: 0px none #ffffff;
+    border-radius: 50px;
+}
+
+body {
+	margin: 0;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+}
+
+.text-brown {
+  color: var(--mainBrown)!important;
+}
+
+.btn-brown {
+  color: #fff;
+  background-color: var(--mainBrown);
+  border-color: var(--mainBrown);
+}
+
+.btn-brown:hover {
+  color: #fff;
+  background-color: var(--lightMB);
+  border-color: var(--lightMB);
+}
+
+.btn-brown:focus, .btn-brown.focus {
+  color: #fff;
+  background-color: var(--darkerBrown);
+  border-color: var(--darkerBrown);
+  box-shadow: 0 0 0 0.2rem rgba(167, 124, 88, 0.5);
+}
+
+.btn-brown.disabled, .btn-brown:disabled {
+  color: #fff;
+  background-color: var(--secondaryBrown);
+  border-color: var(--secondaryBrown);
+}
+
+.btn-brown:not(:disabled):not(.disabled):active, .btn-brown:not(:disabled):not(.disabled).active,
+.show > .btn-brown.dropdown-toggle {
+  color: #fff;
+  background-color: var(--secondaryBrown);
+  border-color: var(--secondaryBrown);
+}
+
+.btn-brown:not(:disabled):not(.disabled):active:focus, .btn-brown:not(:disabled):not(.disabled).active:focus,
+.show > .btn-brown.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(167, 124, 88, 0.5);
+}
+
+.btn-circle.btn-xl {
+  width: 70px;
+  height: 70px;
+  padding: 10px 16px;
+  border-radius: 35px;
+  font-size: 24px;
+  line-height: 1.33;
+}
+
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  padding: 6px 0px;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.42857;
+}
+
+.btn-discord {
+  color: #fff;
+  background-color: #7289DA;
+  border-color: #7289DA;
+}
+
+.btn-discord:hover {
+  color: #fff;
+  background-color: #8fa4ed;
+  border-color: #879ce7;
+}
+
+.btn-discord:focus, .btn-discord.focus {
+  color: #fff;
+  background-color: #218838;
+  border-color: #1e7e34;
+  box-shadow: 0 0 0 0.2rem rgba(90, 202, 151, 0.5);
+}
+
+.btn-discord.disabled, .btn-discord:disabled {
+  color: #fff;
+  background-color: #43B581;
+  border-color: #43B581;
+}
+
+.btn-discord:not(:disabled):not(.disabled):active, .btn-discord:not(:disabled):not(.disabled).active,
+.show > .btn-discord.dropdown-toggle {
+  color: #fff;
+  background-color: #43B581;
+  border-color: #43B581;
+}
+
+.btn-discord:not(:disabled):not(.disabled):active:focus, .btn-discord:not(:disabled):not(.disabled).active:focus,
+.show > .btn-discord.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(90, 202, 151, 0.5);
+}
+
+.rButton-white{
+  box-sizing: border-box;
+    width: 44px;
+    height: 44px;
+    border: none;
+  border-radius: 22px;
+    background-color: transparent;
+    color: white;
+    font-size: 22px;
+}
+.rButton-white:hover{
+    background:linear-gradient(0deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5));
+}
+
+.rButton-black{
+  box-sizing: border-box;
+    width: 44px;
+    height: 44px;
+    border: none;
+  border-radius: 22px;
+    background-color: transparent;
+    color: black;
+    font-size: 22px;
+}
+.rButton-black:hover{
+    background:linear-gradient(0deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25));
+}
+
+.btn-invisible{
+  border: none!important;
+  background-color: transparent;
+}
+
+.brand-name {
+    font-family: "Linotype Kaliber Bold";
+}
+
+.visible-link-white{
+  color: white;
+}
+.visible-link-white:hover{
+  color: #dadada;
+}
+
+.btn-outline-brown {
+    color: var(--lightMB);
+    border-color: var(--lightMB);
+}
+.btn-outline-brown:focus, .btn-outline-brown.focus {
+  color: #fff;
+  background-color: var(--mainBrown);
+  border-color: var(--mainBrown);
+  box-shadow: 0 0 0 0.2rem rgba(167, 124, 88, 0.5);
+}
+.table .thead-brown th {
+    color: #fff;
+    background-color: var(--mainBrown);
+    border-color: var(--secondaryBrown);
+}
+.table .thead-brown th:hover{
+    background-color: var(--secondaryBrown);
+}
+.table tbody tr:hover{
+    background-color: #dadada;
+}

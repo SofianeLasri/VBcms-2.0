@@ -24,3 +24,4 @@ if ((abs($datetime->getTimestamp()-$lastUpdateCheck->getTimestamp())) > 1800){
     }
     $response = $bdd->prepare("UPDATE `vbcms-settings` SET `value` = ? WHERE `vbcms-settings`.`name` = 'lastUpdateCheck'");
     $response->execute([date("Y-m-d H:i:s")]);
+}

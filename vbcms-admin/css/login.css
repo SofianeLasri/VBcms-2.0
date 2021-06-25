@@ -1,0 +1,66 @@
+@import 'base.css';
+
+html{
+	height: 100%
+}
+body{
+	/*background-image: url("https://cdn.vbcms.net/images/general/vbcms-illustration1.jpg");*/
+	background: rgb(167,124,88);
+	background: -moz-linear-gradient(180deg, rgba(167,124,88,1) 0%, rgba(116,73,42,1) 100%);
+	background: -webkit-linear-gradient(180deg, rgba(167,124,88,1) 0%, rgba(116,73,42,1) 100%);
+	background: linear-gradient(180deg, rgba(167,124,88,1) 0%, rgba(116,73,42,1) 100%);
+	background-size: cover;
+	background-position: center;
+}
+.loginForm{
+	position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    background-color: white;
+	width: 30em;
+}
+.brand-name{
+	font-size: 2.5em;
+	color: black!important;
+}
+.brand-name img{
+	height: 1.5em;
+}
+#steamLoading{
+	height: 100px;
+}
+
+@media screen and (orientation:portrait){
+	p{
+		font-size: 2em;
+	}
+	h1{
+		font-size: 3.5em;
+	}
+	h2{
+	    font-size: 3em;
+	}
+	h3{
+		font-size: 2.8em;
+	}
+	h4{
+		font-size: 2.65em;
+	}
+	h5{
+		font-size: 2.5em;
+	}
+	.loginForm{
+		width: 80vw;
+	}
+	.brand-name{
+		font-size: 4em;
+	}
+	.brand-name img{
+		height: 2em;
+	}
+	#steamLoading{
+		height: 200px;
+	}
+}

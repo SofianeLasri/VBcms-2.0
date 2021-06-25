@@ -16,7 +16,7 @@ if(!isset($vbcmsRootPath)){
 }
 // On utilisera $GLOBALS['vbcmsRootPath']
 
-// Connexxion à la base de donnée
+// Connexion à la base de donnée
 require_once 'dbConnect.php';
 
 // On inclue le fichier des variables (constantes ou non)
