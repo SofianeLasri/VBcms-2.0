@@ -4,9 +4,9 @@
 //
 // DATABASE CONFIGURATION
 
-$bddHost = ""; //Adresse du serveur MySQL
-$bddUser = ""; //Utilisateur
-$bddMdp = ""; //Mot de passe
-$bddName = ""; //Nom de la base de données
+$bddHost = 'localhost'; //Adresse du serveur MySQL
+$bddUser = 'vbcms-test'; //Utilisateur
+$bddMdp = 'YIn2hTln5iMQap1W'; //Mot de passe
+$bddName = 'vbcms-test'; //Nom de la base de donnée
 
 error_reporting(0); //Désactive les erreurs

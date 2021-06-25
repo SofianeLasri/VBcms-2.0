@@ -8,9 +8,21 @@ if(!isset($vbcmsRootPath)){
 	$vbcmsRootPath = getcwd();
 	if(strpos($vbcmsRootPath, "/vbcms-core") !== false){
 	    $vbcmsRootPath = substr($vbcmsRootPath, 0, strpos($vbcmsRootPath, "/vbcms-core"));
+	}elseif(strpos($vbcmsRootPath, "/vbcms-admin") !== false){
+	    $vbcmsRootPath = substr($vbcmsRootPath, 0, strpos($vbcmsRootPath, "/vbcms-admin"));
+	}elseif(strpos($vbcmsRootPath, "/vbcms-content") !== false){
+	    $vbcmsRootPath = substr($vbcmsRootPath, 0, strpos($vbcmsRootPath, "/vbcms-content"));
 	}
 }
 // On utilisera $GLOBALS['vbcmsRootPath']
 
 // Connexxion à la base de donnée
 require_once 'dbConnect.php';
+
+// On inclue le fichier des variables (constantes ou non)
+require_once 'variables.php';
+
+// On inclue le fichier des fonctions
+require_once 'functions.php';
+
+// On va vérifier si l'utilisateur est connecté
