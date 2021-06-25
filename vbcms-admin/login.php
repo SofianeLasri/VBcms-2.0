@@ -1,5 +1,5 @@
 <?php
-include '../vbcms-core/core.php';
+require_once '../vbcms-core/core.php';
 
 if (isset($_GET["from"])) {
 	$redirect = urlencode($_GET["from"]);
