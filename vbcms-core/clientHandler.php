@@ -1,7 +1,7 @@
 <?php
 // On vérifie que le premier chemin ne soit pas vbcms-content afin de permettre aux extension de pouvoir communiquer
-if ($folders[1]!="vbcms-content") {
-    if($folders[1]=="backTasks"){
+if ($paths[1]!="vbcms-content") {
+    if($paths[1]=="backTasks"){
         include $GLOBALS['vbcmsRootPath']."/vbcms-core/clientBackTasks.php";
     } else {
         // J'indique que l'utilisateur ayant l'ip X a visité cette page à cet instant t
@@ -10,10 +10,10 @@ if ($folders[1]!="vbcms-content") {
         
 
         $moduleParams = array();
-        for ($i=2; $i<count($folders); $i++) { 
-            array_push($moduleParams, $folders[$i]);
+        for ($i=2; $i<count($paths); $i++) { 
+            array_push($moduleParams, $paths[$i]);
         }
-        loadModule("client", $folders[1], $moduleParams);
+        loadModule("client", $paths[1], $moduleParams);
 
 
         
