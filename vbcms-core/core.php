@@ -38,7 +38,7 @@ switch ($language) {
         require_once $GLOBALS['vbcmsRootPath'].'/vbcms-content/translations/FR.php';
         break;
     case "EN":
-        require_once $GLOBALS['vbcmsRootPath'].'/vbcms-content/translations/FR.php';
+        require_once $GLOBALS['vbcmsRootPath'].'/vbcms-content/translations/EN.php';
         break;
     default:
     	require_once $GLOBALS['vbcmsRootPath'].'/vbcms-content/translations/FR.php';
