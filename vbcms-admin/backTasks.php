@@ -4,7 +4,7 @@ if (isset($_GET["getNotifications"])) {
 	$response->execute([$_SESSION["user_id"]]);
 	$response = $response->fetchAll(PDO::FETCH_ASSOC);
 	echo json_encode($response);
-} elseif (isset($_GET["updateVBcms"])) {
+} elseif (isset($_GET["updateVBcms"])) {/*
 	$curentUpdateCanal = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='updateCanal'")->fetchColumn();
 	$serverId = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='serverId'")->fetchColumn();
 	$key = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='encryptionKey'")->fetchColumn();
@@ -35,6 +35,7 @@ if (isset($_GET["getNotifications"])) {
 		$response["code"] = 0; // Impossible de télécharger la màj
 	}
 	echo json_encode($response);
+    */
 } else {?>
 <!DOCTYPE html>
 <html>

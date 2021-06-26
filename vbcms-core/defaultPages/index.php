@@ -40,20 +40,32 @@ if(!isset($websiteUrl)){
             align-items: center;
         }
         .vbcmsLogo img{
-            width:8em;
-            height:8em;
+            width:7em;
+            height:7em;
         }
         .vbcmsLogo span{
             font-family: "Linotype Kaliber Bold";
             font-size: 2em;
         }
+        .vbcmsLogo .sub{
+            font-family: "Linotype Kaliber Bold";
+            font-size: 1em;
+        }
+        .vbcmsLogo .text{
+            display:flex;
+            flex-direction:column;
+            align-items: start;
+            margin-left: .5em;
+        }
     </style>
     <div class="pageContent">
         <div class="vbcmsLogo">
             <img src="https://vbcms.net/vbcms-content/uploads/vbcms-logo/raccoon-in-box-512x.png">
-            <span>VBcms</span>
+            <div class="text">
+                <span>VBcms</span>
+                <span class="sub">Aucun index de configuré</span>
+            </div>
         </div>
-        <p>Cette installation de VBcms ne gère pas l'index du site internet.</p>
     </div>
 </body>
 </html>

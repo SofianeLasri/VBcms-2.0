@@ -10,7 +10,7 @@ if(!isset($websiteUrl)){
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-	<title>VBcms | Erreur 404</title>
+	<title>VBcms</title>
     <link rel="icon" type="image/png" href="https://vbcms.net/vbcms-content/uploads/vbcms-logo/raccoon-in-box-512x.png" />
     <link rel="stylesheet" href="<?=$websiteUrl?>vbcms-admin/fonts/fonts.css">
 </head>
@@ -40,20 +40,32 @@ if(!isset($websiteUrl)){
             align-items: center;
         }
         .vbcmsLogo img{
-            width:8em;
-            height:8em;
+            width:7em;
+            height:7em;
         }
         .vbcmsLogo span{
             font-family: "Linotype Kaliber Bold";
             font-size: 2em;
         }
+        .vbcmsLogo .sub{
+            font-family: "Linotype Kaliber Bold";
+            font-size: 1em;
+        }
+        .vbcmsLogo .text{
+            display:flex;
+            flex-direction:column;
+            align-items: start;
+            margin-left: .5em;
+        }
     </style>
     <div class="pageContent">
         <div class="vbcmsLogo">
             <img src="https://vbcms.net/vbcms-content/uploads/vbcms-logo/raccoon-in-box-512x.png">
-            <span>VBcms</span>
+            <div class="text">
+                <span>VBcms</span>
+                <span class="sub">Erreur 404: La page demandée n'existe pas</span>
+            </div>
         </div>
-        <p>Erreur 404: La page demandée n'existe pas. :/</p>
     </div>
 </body>
 </html>
