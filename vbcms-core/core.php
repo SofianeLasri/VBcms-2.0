@@ -25,6 +25,12 @@ require_once 'variables.php';
 // On inclue le fichier des fonctions
 require_once 'functions.php';
 
+// On inclue le fichier des classes
+require_once 'classes.php';
+
+// On inclue les classes et fonctions du Namespace VBcms
+require_once 'ns-VBcms.php';
+
 // On inclue le fichier responsable de la session utilisateur
 require_once 'sessionHandler.php';
 

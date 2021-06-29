@@ -1,0 +1,13 @@
+{
+    "workshopId" : "",
+    "requiredModules" : "",
+    "name": "vbcms-websiteSystem",
+    "showname": "Système de site intnet de base",
+    "version": "1.0",
+    "compatible": "2.1",
+    "author": "1",
+    "description": "Il s'agit du système de site internet inclu avec VBcms.",
+    "clientAccess": "",
+    "adminAccess": "website",
+    "permissions": ""
+  }

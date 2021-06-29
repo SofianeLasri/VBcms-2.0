@@ -8,7 +8,7 @@ function loadModule($type, $moduleAlias, $moduleParams){
 
 	if ($type=="client") {
 		// On cherche le module correspondant à l'alias clientAccess dans la liste des modules activés
-        $response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess=?"); // Je récupère l'id du dossier parent
+        $response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess=? AND type='module'"); // Je récupère l'id du dossier parent
         $response->execute([$moduleAlias]);
         $response = $response->fetch(PDO::FETCH_ASSOC);
 
@@ -27,13 +27,14 @@ function loadModule($type, $moduleAlias, $moduleParams){
         
 	} elseif($type=="admin") {
 		// On cherche le module correspondant à l'alias adminAccess dans la liste des modules activés
-		$response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE adminAccess=?");
+		$response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE adminAccess=? AND type='module'");
         $response->execute([$moduleAlias]);
         $response = $response->fetch(PDO::FETCH_ASSOC);
 
         if (!empty($response)) {
-        	include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/moduleLoadPage.php"; // Le module appelé va se charger du reste
-        	// moduleLoadPage($type, $moduleParams); // Plus d'appel de fonction du coup
+        	//include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/moduleLoadPage.php"; // Le module appelé va se charger du reste
+            $calledmodule = new VBcms\module($response["name"],$response["path"],$response["adminAccess"],$response["clientAccess"],$response["vbcmsVerId"]);
+            $calledmodule->call($moduleParams, $type);
         } else {
         	show404($type);
         }
@@ -49,10 +50,10 @@ function show404($type){
         
 	} elseif($type=="admin") {
         // A REFAIRE
-        /*
+        
 		global $bdd, $http, $websiteUrl, $translation, $websiteName, $websiteMetaColor, $websiteDescription, $websiteLogo;
 		// Affiche la page 404 du panel admin
         include $GLOBALS['vbcmsRootPath']."/vbcms-admin/404.php";
-        */
+        
 	}
 }

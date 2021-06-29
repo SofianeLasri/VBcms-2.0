@@ -16,7 +16,11 @@ if (!isset($_SESSION["user_id"])) { // Si l'utilisateur n'est pas connecté
 		header("Location: https://vbcms.net/manager/?error=".urlencode("Tu n'as pas le droit de te connecter à ce site <img height=\"16\" src=\"https://vbcms.net/vbcms-content/uploads/emoji/oiseau-pas-content.png\">"));
 	}
 
+	//
+	// A CHANGER CAR NON COMPATIBLE AVEC LE NOUVEAU SYSTEM DE SECURITE
+	// 
 	// On inclu les scripts de fond des modules activés
+	/*
 	$response = $bdd->query("SELECT * FROM `vbcms-activatedExtensions` WHERE type='module'");
 	$response = $response->fetchAll(PDO::FETCH_ASSOC);
 	if (!empty($response)) {
@@ -25,6 +29,10 @@ if (!isset($_SESSION["user_id"])) { // Si l'utilisateur n'est pas connecté
 				include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$module["path"]."/back.php";
 		}
 	}
+	*/
+	//
+	//
+	//	
 
 	// On inclue les associations de page admin
 	require_once 'adminPagesAssoc.php';
