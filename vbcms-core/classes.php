@@ -1,6 +1,8 @@
 <?php
 
 class moduleDatabaseConnect {
+    // UPDATE 01/07/2021 : N'est plus utile après reflexion
+    
     // Le but de cette classe est de créer un driver sql sécurisé, ne permettant pas de causer des dégats à la base de donnée du cms
     // Le module devra s'identifier en initialisant sa connexion, et le driver se chargera de vérifier qu'il a bien l'autorisation d'utiliser la bdd
     
@@ -16,6 +18,11 @@ class moduleDatabaseConnect {
     private $selectedTables = array();
     private $condition;
 
+    // Variables pour la préparation
+    private $prepareType;
+    private $preparePositions = array();
+    private $isPreparedQuery;
+
     // Variables pour l'éxecution de la requête
     private $queryResult;
 
@@ -28,8 +35,10 @@ class moduleDatabaseConnect {
         $response = $bdd->prepare("SELECT * FROM `vbcms-extensionsPermissions` WHERE extensionName = ?");
         $response->execute([$moduleName]);
         $moduleStoredPermissions = $response->fetch(PDO::FETCH_ASSOC);
+        
         $moduleStoredPermissions["databasePerms"] = json_decode($moduleStoredPermissions["databasePerms"], true);
         if(!empty($moduleStoredPermissions["databasePerms"])){
+            
             // On va renseigner les permissions de l'extension, ainsi que ses tables
             foreach ($moduleStoredPermissions["databasePerms"]["permissions"] as $moduleStoredPermission){
                 array_push($this->permissions, $moduleStoredPermission);
@@ -49,6 +58,7 @@ class moduleDatabaseConnect {
     function select($selectedColumns){
         // On vide $query
         $this->query = null; $queryResult=null;
+        $this->isPreparedQuery = false;
         
         if(!is_array($selectedColumns)) {
             $temp = $selectedColumns;
@@ -69,6 +79,7 @@ class moduleDatabaseConnect {
 
     function update($selectedColumn){
         $this->query = null; $queryResult=null;
+        $this->isPreparedQuery = false;
 
         unset($selectedColumns);
         $selectedColumns[0] = $selectedColumn;
@@ -77,6 +88,7 @@ class moduleDatabaseConnect {
 
     function delete(){
         $this->query = "DELETE";
+        $this->isPreparedQuery = false;
     }
 
     function from($selectedTables){
@@ -243,11 +255,40 @@ class moduleDatabaseConnect {
         $this->query = null;
     }
 
+    // Pour les requêtes avec du vrai code sql (car c'est quand même bcp mieux)
+    function prepare($sql){
+        unset($this->preparePositions);
+        $this->isPreparedQuery = true;
+
+        if(strpos($sql, "?") !== false){
+            $this->prepareType = "markers";
+            // Ici on prépapre avec des ?
+            $lastPos = 0;
+    
+            while (($lastPos = strpos($query, "?", $lastPos))!== false) {
+                $this->preparePositions[] = $lastPos;
+                $lastPos = $lastPos + strlen("?");
+                $this->query = $sql;
+            }
+        } elseif(strpos($sql, ":") !== false){
+            // Ici on prépare avec les index
+            $this->prepareType = "namedParameters";
+            $this->query = $sql;
+        }
+    }
+
     // Partie éxecution et résolution de résultat
 
     function execute(){
-        $this->queryResult = $this->bdd->query($this->query);
-        //echo $this->query;
+        if(!$this->isPreparedQuery){
+            $this->queryResult = $this->bdd->query($this->query);
+            //echo $this->query;
+        } else {
+            if($this->prepareType = "makers"){
+
+            }
+        }
+        
     }
     
     function fetch($pdoFetchMethod){

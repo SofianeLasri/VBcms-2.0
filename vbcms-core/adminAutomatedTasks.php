@@ -13,7 +13,7 @@ if ((abs($datetime->getTimestamp()-$lastUpdateCheck->getTimestamp())) > 1800){
     $json = file_get_contents("https://api.vbcms.net/updater/lastest?serverId=".$serverId."&key=".$key."&version=".$vbcmsVer."&canal=".$curentUpdateCanal);
     $jsonData = json_decode($json, true);
 
-    if (!$jsonData["upToDate"]) {
+    if (!empty($jsonData) && !$jsonData["upToDate"]) {
         $response = $bdd->query("UPDATE `vbcms-settings` SET `value` = 0 WHERE `vbcms-settings`.`name` = 'upToDate'");
 
         $response = $bdd->query("SELECT COUNT(*) FROM `vbcms-notifications` WHERE origin = '[\"vbcms-updater\", \"notifyUpdate\"]'")->fetchColumn();

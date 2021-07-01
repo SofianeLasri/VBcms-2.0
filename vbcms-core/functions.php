@@ -8,7 +8,7 @@ function loadModule($type, $moduleAlias, $moduleParams){
 
 	if ($type=="client") {
 		// On cherche le module correspondant à l'alias clientAccess dans la liste des modules activés
-        $response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess=? AND type='module'"); // Je récupère l'id du dossier parent
+        $response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess=? AND type='module'");
         $response->execute([$moduleAlias]);
         $response = $response->fetch(PDO::FETCH_ASSOC);
 
@@ -21,7 +21,18 @@ function loadModule($type, $moduleAlias, $moduleParams){
                 // Si aucun module ne s'en charge, on va afficher la page par défaut
                 include $GLOBALS['vbcmsRootPath'].'/vbcms-core/defaultPages/index.php';
             } else {
-                show404($type);
+                // Il s'agit peut-être d'une page du module gérant l'index du site Internet
+                // Nous allons donc vérifier si un module gère l'index, puis on va l'éxecuter
+                $response = $bdd->query("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess='' AND type='module'")->fetch(PDO::FETCH_ASSOC);
+        
+                if (!empty($response)) {
+                    // On a trouvé un module qui gère l'index, au cas où cet alias n'existe pas, ce sera ce module qui gérera la page 404
+                    include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/moduleLoadPage.php"; // Le module appelé va se charger du reste
+                } else {
+                    // Si on arrive ici c'est qu'il n'y a vraiment aucun module qui gère cet alias
+                    show404($type);
+                }
+                
             }
         }
         

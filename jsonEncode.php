@@ -2,7 +2,7 @@
 require_once dirname(__FILE__) . '/vbcms-core/vendors/PHPSQLParser/vendor/autoload.php';
 
 $test["database"]["permissions"] = ["SELECT", "INSERT", "UPDATE"];
-$test["database"]["tables"] = ["vbcmsWebSys_blogCategories", "vbcmsWebSys_blogCategories"];
+$test["database"]["tables"] = ["vbcmsWebSys_blogCategories", "vbcmsWebSys_blogCategories", "vbcmsWebSys_blogPosts"];
 
 
 // [path, droitLecture, droitEcriture]
@@ -29,11 +29,42 @@ $string = ('CREATE TABLE IF NOT EXISTS `vbcms-blogPosts` (
     `views` int(11) NOT NULL,
     PRIMARY KEY (`id`)
   ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;');
-  echo "String:<br>".$string."<br><br>";
 
-  $explodedString = explode(";", $string);
-  echo "PrintR explodedString:<br>";
-  print_r($explodedString);
-  echo "<br><br><br><br>";
-$parser = new PhpMyAdmin\SqlParser\Parser($string, true);
+echo PhpMyAdmin\SqlParser\Utils\Formatter::format($string, ['type' => 'html'])."<br><br>";
+$parser = new PhpMyAdmin\SqlParser\Parser($string);
+
 var_dump($parser->statements[0]);
+echo "<br><br>";
+//echo json_encode($parser);
+echo "<br><br>";
+
+echo $parser->statements[0]->name->table;
+
+
+
+echo "<br><br>";
+
+$string = ("INSERT INTO `moduledeouf` (`id`, `exemple`) VALUES (NULL, 'test')");
+
+echo PhpMyAdmin\SqlParser\Utils\Formatter::format($string, ['type' => 'html'])."<br><br>";
+$parser = new PhpMyAdmin\SqlParser\Parser($string);
+
+var_dump($parser->statements[0]);
+echo "<br><br>";
+//echo json_encode($parser);
+echo "<br><br>";
+
+echo $parser->statements[0]->into->dest->table;
+echo "<br><br>";
+
+$query = "SELECT * FROM table WHERE id = ? AND type = ?";
+$lastPos = 0;
+$positions = array();
+
+while (($lastPos = strpos($query, "?", $lastPos))!== false) {
+  $positions[] = $lastPos;
+  $lastPos = $lastPos + strlen("?");
+}
+foreach ($positions as $value) {
+  echo $value ."<br />";
+}
