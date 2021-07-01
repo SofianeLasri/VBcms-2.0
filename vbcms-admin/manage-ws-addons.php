@@ -1,8 +1,52 @@
+<?php
+// On va récupérer la liste des extensions activées pour la comparer à la liste d'extension installées
+$activatedExtensions = $bdd->query("SELECT * FROM `vbcms-activatedExtensions`")->fetchAll(PDO::FETCH_ASSOC);
+
+// On va scanner le dossier des extensions pour les afficher dans la page
+$extensionsFolder = $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/';
+$extensionsFolderContent = scandir($extensionsFolder);
+$extensionsList = array();
+$extensionListIndex = 0;
+foreach ($extensionsFolderContent as $extensionFolder){
+	if(!in_array($extensionFolder,[".", ".."]) && is_dir($extensionsFolder.$extensionFolder)){ // Ici on check qu'il s'agisse bien d'un dossier
+		if(file_exists($extensionsFolder.$extensionFolder.'/extensionInfos.json')){
+			$extensionInfos = json_decode(file_get_contents($extensionsFolder.$extensionFolder.'/extensionInfos.json'),true);
+			foreach($extensionInfos as $extensionInfoKey => $extensionInfoValue){
+				$extensionsList[$extensionInfos['type'].'s'][$extensionListIndex][$extensionInfoKey] = $extensionInfoValue;
+			}
+			// On vérifie que l'extension dispose d'une icône
+			if(file_exists($extensionsFolder.$extensionFolder.'/extension-logo.jpg')){
+				$extensionsList[$extensionInfos['type'].'s'][$extensionListIndex]['extensionLogo'] = $GLOBALS['websiteUrl'].'vbcms-content/extensions/'.$extensionFolder.'/extension-logo.jpg';
+			}elseif(file_exists($extensionsFolder.$extensionFolder.'/extension-logo.png')){
+				$extensionsList[$extensionInfos['type'].'s'][$extensionListIndex]['extensionLogo'] = $GLOBALS['websiteUrl'].'vbcms-content/extensions/'.$extensionFolder.'/extension-logo.png';
+			}else{
+				$extensionsList[$extensionInfos['type'].'s'][$extensionListIndex]['extensionLogo'] = null;
+			}
+
+			$extensionsList[$extensionInfos['type'].'s'][$extensionListIndex]['activated'] = false; // Flag pour juste après
+			$extensionsList[$extensionInfos['type'].'s'][$extensionListIndex]['isWsSuscribed'] = false; // Pour le moment on a pas le workshop donc je met false
+		}
+	}
+}
+
+// Maintenant on va comparer les extensiosn installées avec les extensions activées
+foreach ($activatedExtensions as $activatedExtension){
+	// Dans un premier temps on va vérifier qu'il existe une extension de ce type (ouai au moins si y en a pas c'est réglé x) )
+	if(isset($extensionsList[$activatedExtension['type'].'s'])){
+		for($i = 0; $i < count($extensionsList[$activatedExtension['type'].'s']); $i++){
+			if($extensionsList[$activatedExtension['type'].'s'][$i]['name'] == $activatedExtension['name']){
+				$extensionsList[$activatedExtension['type'].'s'][$i]['activated'] = true;
+				break;
+			}
+		}
+	}
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
-	<title><?=$websiteName?> | <?=$translation["ws_createAddon"]?></title>
+	<title><?=$websiteName?> | <?=$translation["ws_addonsLists"]?></title>
 	<?php include 'includes/depedencies.php';?>
 </head>
 <body>
@@ -16,6 +60,47 @@
 		<p><?=$translation["ws_pageDesc"]?></p>
 
 		<div class="width-50em d-flex flex-column">
+			<h5>Debug</h5>
+			<div class="border rounded my-2">
+			<pre><code><?php echo 'extensionsFolderContent:<br>'; print_r($extensionsFolderContent); echo '<br>extensionsList:<br>'; print_r($extensionsList); ?></code></pre>
+			</div>
+
+			
+			<?php
+			foreach ($extensionsList as $extensionTypeName => $extensionTypeExtensions){
+				if($extensionTypeName == "modules"){
+					echo "<h5>".$translation["ws_modules"]."</h5>";
+				}elseif($extensionTypeName == "themes"){
+					echo "<h5>".$translation["ws_themes"]."</h5>";
+				}elseif($extensionTypeName == "plugins"){
+					echo "<h5>".$translation["ws_plugins"]."</h5>";
+				}
+				foreach ($extensionTypeExtensions as $extension){
+					if(!empty($extension['extensionLogo'])) $backgroundLogo = 'style="background-image: url(\''.$extension['extensionLogo'].'\')"';
+					else $backgroundLogo = null;
+					echo('<div class="workshop-suscribedCard my-2" id="'.$extension['name'].'" depedencies="'.json_encode($extension['requiredModules']).'">
+					<div class="addonLogo" '.$backgroundLogo.'></div>
+					<div class="ml-4 addonDetails flex-grow-1">
+						<h6 class="mb-0"><a class="text-dark text-decoration-none" href="#">'.$extension['showname'].'</a></h6>
+						<small class="text-muted">Par <a class="text-brown" href="https://workshop.vbcms.net/team/'.$extension['author'].'">Team Workshop à Récupérer</a></small>
+						<p>'.$extension['description'].'</p>
+					</div>
+					<div class="addonControl">');
+					if($extension['activated'])
+						echo '<button class="btn btn-sm btn-brown float-right my-1" id="toogle-addon-'.$extension['name'].'" onclick="disableAddon('.$extension['name'].')">'.$translation["ws_disable"].'</button>';
+					else
+						echo '<button class="btn btn-sm btn-brown float-right my-1" id="toogle-addon-'.$extension['name'].'" onclick="enableAddon('.$extension['name'].')">'.$translation["ws_enable"].'</button>';
+					
+					if($extension['isWsSuscribed'])
+						echo '<button class="btn btn-sm btn-danger float-right my-1" onclick="unsuscribeAddon('.$extension['name'].')">Se désabonner</button>';
+					
+					echo('</div>
+					</div>');
+				}
+				
+			}
+			?>
+			<!--
 			<h5>Modules</h5>
 			<div class="workshop-suscribedCard my-2">
 				<div class="addonLogo"></div>
@@ -43,6 +128,7 @@
 					<button class="btn btn-sm btn-danger float-right my-1" onclick="unsuscribeAddon(16484)">Se désabonner</button>
 				</div>
 			</div>
+			-->
 		</div>
 		<div class="admin-tips">
 			<div class="tip">

@@ -1,6 +1,7 @@
 {
     "workshopId" : "",
     "requiredModules" : [],
+    "type" : "module",
     "name": "vbcms-websiteSystem",
     "showname": "Système de site internet de base",
     "version": "1.0",
