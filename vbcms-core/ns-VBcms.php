@@ -6,22 +6,29 @@ namespace VBcms{
     
     class module {
         // Cette classe se chargera de charger les modules
-        private $name, $path, $adminAccess, $clientAccess, $vbcmsVerId;
+        private $name, $path, $adminAccess, $clientAccess, $vbcmsVerId, $workshopId;
         
         private $bdd, $mbdd;
 
         private $permissions = array();
     
-        public function __construct($name, $path, $adminAccess, $clientAccess, $vbcmsVerId){
+        public function __construct($name){
             $this->name = $name;
-            $this->path = $path;
-            $this->adminAccess = $adminAccess;
-            $this->clientAccess = $clientAccess;
-            $this->vbcmsVerId = $vbcmsVerId;
     
             // On va initialiser le driver sql
             global $bdd;
             $this->bdd = $bdd;
+            $moduleInfos = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE name=?");
+		    $moduleInfos->execute([$name]);
+            $moduleInfos = $moduleInfos->fetch(PDO::FETCH_ASSOC);
+            if(!empty($moduleInfos)){
+                $this->path = $moduleInfos['path'];
+                $this->adminAccess = $moduleInfos['adminAccess'];
+                $this->clientAccess = $moduleInfos['clientAccess'];
+                $this->vbcmsVerId = $moduleInfos['vbcmsVerId'];
+                $this->workshopId = $moduleInfos['workshopId'];
+            }
+            
             //$this->mbdd = new \moduleDatabaseConnect($name);
             
             // UPDATE 01/07/2021 : N'est plus utile après reflexion
@@ -38,11 +45,26 @@ namespace VBcms{
             */
             
         }
+        function initModule($name, $path, $adminAccess, $clientAccess, $vbcmsVerId, $workshopId){
+            $this->name = $name;
+            $this->path = $path;
+            $this->adminAccess = $adminAccess;
+            $this->clientAccess = $clientAccess;
+            $this->vbcmsVerId = $vbcmsVerId;
+            if(empty($workshopId))$this->workshopId = NULL;
+            else $this->workshopId = $workshopId;
+
+            $bdd=$this->bdd;
+            include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/init.php"; // Le module appelé va se charger du reste
+            enable($name, $path);
+            $query = $bdd->prepare("INSERT INTO `vbcms-activatedExtensions` (`name`, `type`, `path`, `adminAccess`, `clientAccess`, `vbcmsVerId`, `workshopId`) VALUES (?,?,?,?,?,?,?)");
+            $query->execute([$name, "module", $path, $adminAccess, $clientAccess, $vbcmsVerId, $this->workshopId]);
+        }
     
         function call(array $parameters, $type){
             //$mbdd=$this->mbdd;
             $bdd=$this->bdd;
-            include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/moduleLoadPage.php"; // Le module appelé va se charger du reste
+            include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/pageHandler.php"; // Le module appelé va se charger du reste
             
         }
     }

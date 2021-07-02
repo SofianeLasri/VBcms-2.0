@@ -25,3 +25,5 @@ $websiteName = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='websi
 $websiteDescription = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='websiteDescription'")->fetchColumn();
 $websiteMetaColor = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='websiteMetaColor'")->fetchColumn();
 $websiteLogo = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='websiteLogo'")->fetchColumn();
+
+$debugMode = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='debugMode'")->fetchColumn();

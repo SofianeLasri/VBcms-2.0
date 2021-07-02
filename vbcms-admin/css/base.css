@@ -36,6 +36,9 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
+.bg-brown{
+  background-color: var(--mainBrown);
+}
 .text-brown {
   color: var(--mainBrown)!important;
 }
@@ -197,4 +200,7 @@ body {
 }
 .table tbody tr:hover{
     background-color: #dadada;
+}
+.modal-header{
+  padding: .5rem 1rem;
 }

@@ -36,6 +36,50 @@ if (isset($_GET["getNotifications"])) {
 	}
 	echo json_encode($response);
     */
+} elseif (isset($_GET["checkModulesAliases"])&&!empty($_GET["checkModulesAliases"])){
+	$aliases = json_decode($_GET["checkModulesAliases"],true);
+	$aliasesAlreadyUsed = array();
+	if(isset($aliases['adminAccess'])){
+		$response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE adminAccess=?");
+		$response->execute([$aliases['adminAccess']]);
+		if(!empty($response->fetch())) $aliasesAlreadyUsed['adminAccess'] = true;
+		else $aliasesAlreadyUsed['adminAccess'] = false;
+	}
+	if(isset($aliases['clientAccess'])){
+		$response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess=?");
+		$response->execute([$aliases['clientAccess']]);
+		if(!empty($response->fetch())) $aliasesAlreadyUsed['clientAccess'] = true;
+		else $aliasesAlreadyUsed['clientAccess'] = false;
+	}
+	echo json_encode($aliasesAlreadyUsed);
+	
+} elseif (isset($_GET["enableExtension"])&&!empty($_GET["enableExtension"])){
+	$extensionToEnable = json_decode($_GET["enableExtension"],true);
+	
+	// On va scanner le dossier des extensions pour les afficher dans la page
+	$extensionsFolder = $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/';
+	$extensionsFolderContent = scandir($extensionsFolder);
+	foreach ($extensionsFolderContent as $extensionFolder){
+		if(!in_array($extensionFolder,[".", ".."]) && is_dir($extensionsFolder.$extensionFolder)){ // Ici on check qu'il s'agisse bien d'un dossier
+			if(file_exists($extensionsFolder.$extensionFolder.'/extensionInfos.json')){
+				unset($extensionInfos);
+				$extensionInfos = json_decode(file_get_contents($extensionsFolder.$extensionFolder.'/extensionInfos.json'),true);
+				if($extensionInfos["name"]==$extensionToEnable["name"]){
+					$extensionInfos["path"] = $extensionFolder;
+					break;
+				}
+			}
+		}
+	}
+
+	// Maintenant on va créer l'instance de l'extension et l'activer
+	if($extensionInfos["type"]=="module"){
+		$calledmodule = new VBcms\module($extensionInfos["name"]);
+    	$calledmodule->initModule($extensionInfos["name"], $extensionInfos["path"], $extensionInfos["adminAccess"], $extensionInfos["clientAccess"], $extensionInfos["compatible"], $extensionInfos["workshopId"]);
+	}
+	
+} elseif(isset($_GET)&&!empty($_GET)){
+	echo "Commande \"".array_key_first($_GET)."(".$_GET[array_key_first($_GET)].")\" non reconnue.";
 } else {?>
 <!DOCTYPE html>
 <html>
@@ -53,7 +97,7 @@ if (isset($_GET["getNotifications"])) {
 	<div class="page-content" leftSidebar="240" rightSidebar="0">
 		<div class="d-flex flex-column">
 			<div class="align-self-center text-center">
-				<img src="https://cdn.vbcms.net/images/vbcms-logo/raccoon-512x.png">
+				<img src="<?=$websiteUrl?>vbcms-admin/images/vbcms-logo/raccoon-512x.png">
 				<h1 class="mt-5">Tâches de fond</h1>
 				<p>Cette page n'est pas accessible en tant que telle. Seuls les addons peuvent communiquer avec. :D</p>
 			</div>

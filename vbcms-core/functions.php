@@ -13,7 +13,9 @@ function loadModule($type, $moduleAlias, $moduleParams){
         $response = $response->fetch(PDO::FETCH_ASSOC);
 
         if (!empty($response)) {
-            include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/moduleLoadPage.php"; // Le module appelé va se charger du reste
+            //include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/pageHandler.php"; // Le module appelé va se charger du reste
+            $calledmodule = new VBcms\module($response["name"]);
+            $calledmodule->call($moduleParams, $type);
         } else {
             // Aucun module d'activé ne se charge de ce chemin
             if (empty($moduleAlias)) {
@@ -27,7 +29,9 @@ function loadModule($type, $moduleAlias, $moduleParams){
         
                 if (!empty($response)) {
                     // On a trouvé un module qui gère l'index, au cas où cet alias n'existe pas, ce sera ce module qui gérera la page 404
-                    include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/moduleLoadPage.php"; // Le module appelé va se charger du reste
+                    $calledmodule = new VBcms\module($response["name"]);
+                    $calledmodule->call($moduleParams, $type);
+                    //include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/pageHandler.php"; // Le module appelé va se charger du reste
                 } else {
                     // Si on arrive ici c'est qu'il n'y a vraiment aucun module qui gère cet alias
                     show404($type);
@@ -43,8 +47,8 @@ function loadModule($type, $moduleAlias, $moduleParams){
         $response = $response->fetch(PDO::FETCH_ASSOC);
 
         if (!empty($response)) {
-        	//include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/moduleLoadPage.php"; // Le module appelé va se charger du reste
-            $calledmodule = new VBcms\module($response["name"],$response["path"],$response["adminAccess"],$response["clientAccess"],$response["vbcmsVerId"]);
+        	//include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/pageHandler.php"; // Le module appelé va se charger du reste
+            $calledmodule = new VBcms\module($response["name"]);
             $calledmodule->call($moduleParams, $type);
         } else {
         	show404($type);
@@ -67,4 +71,48 @@ function show404($type){
         include $GLOBALS['vbcmsRootPath']."/vbcms-admin/404.php";
         
 	}
+}
+
+// Petites fonctions utiles
+function isJson($string) {
+	json_decode($string);
+	return (json_last_error() == JSON_ERROR_NONE);
+}
+
+function getRandomString($length) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
+// Fonctions pour la barre de naviguation admin
+function adminNavbarAddCategory($moduleName, $title){
+    global $bdd;
+    $position = 1+($bdd->query("SELECT position FROM `vbcms-adminNavbar` ORDER BY position DESC LIMIT 1")->fetchColumn());
+    $response = $bdd->prepare("INSERT INTO `vbcms-adminNavbar` (id, parentId, position, parentPosition, value1, value2, value3) VALUES (?,?,?,?,?,?,?)");
+    $response->execute([null, 0, $position, 0, $moduleName, $title, ""]);
+}
+function adminNavbarAddItem($moduleName, $icon, $name, $link){
+    global $bdd;
+    $response = $bdd->prepare("SELECT * FROM `vbcms-adminNavbar` WHERE value1 = ? AND parentPosition = 0"); // Je récupère l'id du dossier parent
+    $response->execute([$moduleName]);
+    $parentInfos = $response->fetch(PDO::FETCH_ASSOC);
+
+    $response = $bdd->prepare("SELECT parentPosition FROM `vbcms-adminNavbar` WHERE parentId = ? ORDER BY parentPosition DESC LIMIT 1"); // Je récupère l'id du dossier parent
+    $response->execute([$moduleName]);
+    $parentPosition = 1+ $response->fetchColumn();
+
+
+    $response = $bdd->prepare("INSERT INTO `vbcms-adminNavbar` (id, parentId, position, parentPosition, value1, value2, value3) VALUES (?,?,?,?,?,?,?)");
+    $response->execute([null, $parentInfos["id"], $parentInfos["position"], $parentPosition, $icon, $name, $link]);
+}
+function modifyNavItem($item){
+    global $bdd;
+    $item = json_decode($item);
+    $response = $bdd->prepare("UPDATE `vbcms-clientNavbar` SET value1=?, value2=? WHERE id=?");
+    $response->execute([$item[1], $item[2], $item[0]]);
 }

@@ -1,0 +1,14 @@
+{
+  "workshopId" : "",
+  "requiredModules" : [],
+  "type" : "module",
+  "name": "vbcms-filemanager",
+  "showname": "Gestionnaire de fichiers de base",
+  "version": "1.0",
+  "compatible": "48",
+  "author": "1",
+  "description": "Il s'agit du gestionnaire de fichers inclu avec VBcms. ",
+  "clientAccess": "",
+  "adminAccess": "filemanager",
+  "permissions": ""
+}

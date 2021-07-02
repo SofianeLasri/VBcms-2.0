@@ -1,14 +1,14 @@
 {
-    "workshopId" : "",
-    "requiredModules" : [],
-    "type" : "module",
-    "name": "vbcms-websiteSystem",
-    "showname": "Système de site internet de base",
-    "version": "1.0",
-    "compatible": "2.1",
-    "author": "1",
-    "description": "Il s'agit du système de site internet inclu avec VBcms.",
-    "clientAccess": "",
-    "adminAccess": "website",
-    "permissions": ""
-  }
+  "workshopId" : "",
+  "requiredModules" : ["vbcms-filemanager"],
+  "type" : "module",
+  "name": "vbcms-websiteSystem",
+  "showname": "Système de site internet de base",
+  "version": "1.0",
+  "compatible": "48",
+  "author": "1",
+  "description": "Il s'agit du système de site internet inclu avec VBcms.",
+  "clientAccess": "",
+  "adminAccess": "website",
+  "permissions": ""
+}

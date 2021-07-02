@@ -533,6 +533,7 @@ header .menu-item{
 	background-size: cover !important;
 }
 .js-snackbar-container{
+	position: fixed !important;
 	max-width: calc(100% - 240px) !important;
 }
 
