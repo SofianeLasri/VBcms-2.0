@@ -68,3 +68,8 @@ while (($lastPos = strpos($query, "?", $lastPos))!== false) {
 foreach ($positions as $value) {
   echo $value ."<br />";
 }
+echo "<br><br>";
+unset($test);
+$test['moduleName'] = "VBcms";
+$test['parameters'] = "";
+echo (json_encode($test));

@@ -655,3 +655,107 @@ header .menu-item{
 		display: block;
 	}
 }
+
+.settingsContainer .content{
+	padding: 0.5em;
+}
+
+.settingsContainer .tabs{
+	border-bottom: 1px solid #dadada;
+}
+.settingsContainer .tabs ul{
+	display:flex;
+	list-style-type:none;
+	margin: 0;
+	padding: 0;
+}
+.settingsContainer .tabs ul li{
+	margin-left: .5em;
+	padding: .25em;
+}
+.settingsContainer .tabs ul li:hover{
+	border-top: 1px solid var(--mainBrown);
+	border-left: 1px solid var(--mainBrown);
+	border-right: 1px solid var(--mainBrown);
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+.settingsContainer .tabs ul li a{
+	color: var(--mainBrown);
+}
+.settingsContainer .tabs ul li a:link { text-decoration: none; }
+.settingsContainer .tabs ul li a:visited { text-decoration: none; }
+.settingsContainer .tabs ul li a:hover { text-decoration: none; }
+.settingsContainer .tabs ul li a:active { text-decoration: none; }
+
+.settingsContainer .tabs ul .active{
+	background-color: var(--mainBrown);
+	border-top: 1px solid var(--mainBrown);
+	border-left: 1px solid var(--mainBrown);
+	border-right: 1px solid var(--mainBrown);
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+.settingsContainer .tabs ul .active a{
+	color:white;
+}
+
+.spinner {
+	animation: rotator 1.4s linear infinite;
+}
+
+
+@keyframes rotator {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(270deg);
+	}
+}
+.path {
+	stroke-dasharray: 187;
+	stroke-dashoffset: 0;
+	transform-origin: center;
+	/*animation: dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;*/
+	animation: dash 1.4s ease-in-out infinite;
+	stroke:var(--mainBrown);
+}
+
+@keyframes colors {
+	0% {
+		stroke: #4285F4;
+	}
+	25% {
+		stroke: #DE3E35;
+	}
+	50% {
+		stroke: #F7C223;
+	}
+	75% {
+		stroke: #1B9A59;
+	}
+	100% {
+		stroke: #4285F4;
+	}
+}
+@keyframes dash {
+	0% {
+		stroke-dashoffset: 187;
+	}
+	50% {
+		stroke-dashoffset: 46.75;
+		transform: rotate(135deg);
+	}
+	100% {
+		stroke-dashoffset: 187;
+		transform: rotate(450deg);
+	}
+}
+
+.centerVerHori{
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}

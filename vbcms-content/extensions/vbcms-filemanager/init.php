@@ -7,3 +7,7 @@ function enable($name, $path){
 function disable(){
 
 }
+
+function getSettingsHTML($params){
+    echo('<h5>C\'est bien la page du filemanager</h5>');
+}

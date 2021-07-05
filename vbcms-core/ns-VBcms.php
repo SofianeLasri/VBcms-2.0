@@ -67,5 +67,11 @@ namespace VBcms{
             include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/pageHandler.php"; // Le module appelé va se charger du reste
             
         }
+
+        function getSettingsPage($parameters){
+            $bdd=$this->bdd;
+            include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/init.php";
+            getSettingsHTML($parameters);
+        }
     }
 }

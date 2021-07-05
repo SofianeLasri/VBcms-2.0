@@ -78,6 +78,43 @@ if (isset($_GET["getNotifications"])) {
     	$calledmodule->initModule($extensionInfos["name"], $extensionInfos["path"], $extensionInfos["adminAccess"], $extensionInfos["clientAccess"], $extensionInfos["compatible"], $extensionInfos["workshopId"]);
 	}
 	
+} elseif (isset($_GET["checkModulesAliases"])&&!empty($_GET["checkModulesAliases"])){
+	$aliases = json_decode($_GET["checkModulesAliases"],true);
+	$aliasesAlreadyUsed = array();
+	if(isset($aliases['adminAccess'])){
+		$response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE adminAccess=?");
+		$response->execute([$aliases['adminAccess']]);
+		if(!empty($response->fetch())) $aliasesAlreadyUsed['adminAccess'] = true;
+		else $aliasesAlreadyUsed['adminAccess'] = false;
+	}
+	if(isset($aliases['clientAccess'])){
+		$response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess=?");
+		$response->execute([$aliases['clientAccess']]);
+		if(!empty($response->fetch())) $aliasesAlreadyUsed['clientAccess'] = true;
+		else $aliasesAlreadyUsed['clientAccess'] = false;
+	}
+	echo json_encode($aliasesAlreadyUsed);
+	
+} elseif (isset($_GET["getSettingsHTML"])&&!empty($_GET["getSettingsHTML"])){
+	$moduleToCall = json_decode($_GET["getSettingsHTML"],true);
+	if($moduleToCall['moduleName']=="VBcms"){
+		include $GLOBALS['vbcmsRootPath']."/vbcms-admin/includes/settingsPage.php";
+		getSettingsHTML($moduleToCall['parameters']);
+	} else {
+		$moduleExist = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE name=?");
+		$moduleExist->execute([$moduleToCall['moduleName']]);
+		$moduleExist=$moduleExist->fetch(PDO::FETCH_ASSOC);
+
+		if(!empty($moduleExist)){
+			$extensionsFolder = $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/';
+			$calledModule = new VBcms\module($moduleToCall['moduleName']);
+			$calledModule->getSettingsPage($moduleToCall['parameters']);
+		}else{
+			echo "<h5>Impossible d'afficher la page</h5><p>L'extension <code>".$moduleToCall['moduleName']."</code> n'a pas été trouvée. 😢</p>";
+		}
+	}
+	
+		
 } elseif(isset($_GET)&&!empty($_GET)){
 	echo "Commande \"".array_key_first($_GET)."(".$_GET[array_key_first($_GET)].")\" non reconnue.";
 } else {?>
