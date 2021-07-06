@@ -3,7 +3,7 @@
   "requiredModules" : [],
   "type" : "module",
   "name": "vbcms-filemanager",
-  "showname": "Gestionnaire de fichiers de base",
+  "showname": "Gestionnaire de fichiers",
   "version": "1.0",
   "compatible": "48",
   "author": "1",

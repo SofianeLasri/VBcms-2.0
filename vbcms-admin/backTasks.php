@@ -98,7 +98,7 @@ if (isset($_GET["getNotifications"])) {
 } elseif (isset($_GET["getSettingsHTML"])&&!empty($_GET["getSettingsHTML"])){
 	$moduleToCall = json_decode($_GET["getSettingsHTML"],true);
 	if($moduleToCall['moduleName']=="VBcms"){
-		include $GLOBALS['vbcmsRootPath']."/vbcms-admin/includes/settingsPage.php";
+		require_once $GLOBALS['vbcmsRootPath']."/vbcms-admin/includes/settingsPage.php";
 		getSettingsHTML($moduleToCall['parameters']);
 	} else {
 		$moduleExist = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE name=?");
@@ -115,6 +115,35 @@ if (isset($_GET["getNotifications"])) {
 	}
 	
 		
+} elseif (isset($_GET["saveSettings"])&& (isset($_POST)&&!empty($_POST))){	
+	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='websiteName'");
+	$response->execute([$_POST["websiteName"]]);
+
+	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='websiteDescription'");
+	$response->execute([$_POST["websiteDescription"]]);
+
+	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='websiteMetaColor'");
+	$response->execute([$_POST["websiteMetaColor"]]);
+
+	//$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='websiteLogo'");
+	//$response->execute([$_POST["websiteLogo"]]);
+
+	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='steamApiKey'");
+	$response->execute([$_POST["steamApiKey"]]);
+
+	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='updateCanal'");
+	$response->execute([$_POST["updateCanal"]]);
+
+	if (isset($_POST["debugMode"])) $response = $bdd->query("UPDATE `vbcms-settings` SET value='1' WHERE name='debugMode'");
+	else $response = $bdd->query("UPDATE `vbcms-settings` SET value='0' WHERE name='debugMode'");
+
+	if (isset($_POST["autoUpdatesSearch"])) $response = $bdd->query("UPDATE `vbcms-settings` SET value='1' WHERE name='autoUpdatesSearch'");
+	else $response = $bdd->query("UPDATE `vbcms-settings` SET value='0' WHERE name='autoUpdatesSearch'");
+	if (isset($_POST["autoUpdatesInstall"])) $response = $bdd->query("UPDATE `vbcms-settings` SET value='1' WHERE name='autoUpdatesInstall'");
+	else $response = $bdd->query("UPDATE `vbcms-settings` SET value='0' WHERE name='autoUpdatesInstall'");
+	if (isset($_POST["autoInstallCriticalUpdates"])) $response = $bdd->query("UPDATE `vbcms-settings` SET value='1' WHERE name='autoInstallCriticalUpdates'");
+	else $response = $bdd->query("UPDATE `vbcms-settings` SET value='0' WHERE name='autoInstallCriticalUpdates'");
+	
 } elseif(isset($_GET)&&!empty($_GET)){
 	echo "Commande \"".array_key_first($_GET)."(".$_GET[array_key_first($_GET)].")\" non reconnue.";
 } else {?>

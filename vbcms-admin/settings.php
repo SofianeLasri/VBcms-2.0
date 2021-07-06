@@ -1,38 +1,15 @@
 <?php
-$curentUpdateCanal = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='updateCanal'")->fetchColumn();
-$steamApiKey = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='steamApiKey'")->fetchColumn();
+$activatedExtensions = $bdd->query("SELECT * FROM `vbcms-activatedExtensions`")->fetchAll(PDO::FETCH_ASSOC);
+$extensionsFolder = $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/';
 
-if (isset($_POST["submit"])) {
-	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='websiteName'");
-	$response->execute([$_POST["websiteName"]]);
+foreach ($activatedExtensions as $activatedExtension){
+    $extJsonPath = $extensionsFolder.$activatedExtension['path'].'/extensionInfos.json';
+    if(file_exists($extJsonPath)){
 
-	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='websiteDescription'");
-	$response->execute([$_POST["websiteDescription"]]);
-
-	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='websiteMetaColor'");
-	$response->execute([$_POST["websiteMetaColor"]]);
-
-	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='websiteLogo'");
-	$response->execute([$_POST["websiteLogo"]]);
-
-	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='steamApiKey'");
-	$response->execute([$_POST["steamApiKey"]]);
-
-	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='updateCanal'");
-	$response->execute([$_POST["updateCanal"]]);
-
-	if (isset($_POST["debugMode"])) {
-		$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='debugMode'");
-		$response->execute(["1"]);
-	} else {
-		$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='debugMode'");
-		$response->execute(["0"]);
-	}
-
-
-	header("Refresh:0");
+    } else {
+        $error = "<b>ERREUR:</b> Le fichier <code>".$extJsonPath.'/extensionInfos.json</code> n\'existe pas!';
+    }
 }
-
 
 ?>
 <!DOCTYPE html>
@@ -50,18 +27,34 @@ if (isset($_POST["submit"])) {
 
 	<!-- Contenu -->
 	<div class="page-content d-flex flex-column" leftSidebar="240" rightSidebar="0" style="min-height: calc(100% - 60px);">
+        <?php
+            if(isset($error) && !empty($error)){
+                echo '<div class="alert alert-danger" role="alert">'.$error.'</div>';
+            }
+        ?>
 		<h3><?=$translation["settings"]?></h3>
         <p>C'est ici que sont regroupés les paramètres de VBcms, mais également des différentes extensions.</p>
 		
         <div class="settingsContainer flex-grow-1 d-flex flex-column">
             <div class="tabs">
-                <ul>
-                    <li class="active">
-                        <a href="#">Paramètres généraux</a>
+                <ul id="tabExtSettingsLinks">
+                    <li id="ext-VBcms">
+                        <a href="#" onclick="change('VBcms')">Paramètres généraux</a>
                     </li>
-                    <li>
-                        <a href="#">VBcms Website System</a>
+                    <?php
+                        foreach ($activatedExtensions as $activatedExtension){
+                            $extJsonPath = $extensionsFolder.$activatedExtension['path'].'/extensionInfos.json';
+                            if(file_exists($extJsonPath)){
+                                $extInfos = json_decode(file_get_contents($extJsonPath), true);
+                                echo "<li id=\"ext-".$activatedExtension["name"]."\"><a href=\"#\" onclick=\"change('".$activatedExtension["name"]."')\">".$extInfos['showname']."</a></li>";
+                            }
+                        }
+                    ?>
+                    <!-- Modèle
+                    <li id="nomExt">
+                        <a href="#" class="active">VBcms Website System</a>
                     </li>
+                    -->
                 </ul>
             </div>
             <div id="settingsContent" class="content centerVerHori flex-grow-1">
@@ -73,11 +66,15 @@ if (isset($_POST["submit"])) {
     <script src="<?=$websiteUrl?>vbcms-admin/vendors/pick-a-color/js/tinycolor-0.9.15.min.js"></script>
 	<script src="<?=$websiteUrl?>vbcms-admin/vendors/pick-a-color/js/pick-a-color-1.2.3.min.js"></script>
     <script type="text/javascript">
+        // S'éxecute une fois la page chargée
         $( document ).ready(function() {
+            // On va récupérer l'url et ses paramètres
             let url = new URL(window.location.href);
 		    let search_params = url.searchParams;
 
+            // On check si le paramètre p existe
             if(search_params.get('p')==null){
+                // S'il n'existe pas, on va le créer
                 let array = {};
 				array.moduleName="VBcms";
                 array.parameters="";
@@ -86,26 +83,61 @@ if (isset($_POST["submit"])) {
                 let newUrl = url.toString();
                 window.history.replaceState({}, '', newUrl);
             }
+            // Et on lance la fonction qui affiche la page
             setSettingsContent();
         });
 
         function setSettingsContent(){
+            // On ajoute l'animation de chargement
             $("#settingsContent").addClass("centerVerHori");
             $("#settingsContent").html('<svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">\
                     <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>\
                 </svg>');
+            
+            // On récupère l'url ainsi que ses paramètres
+            // Pas besoin de vérifier que p existe, on l'a déjà fait juste en haut
             let url = new URL(window.location.href);
 		    let search_params = url.searchParams;
+            
+            // On récupère les infos de la requête
+            var extSettingsQuery = JSON.parse(search_params.get('p'));
+            // Et on surligne le lien qui correspond à l'extension souhaitée
+            $("#tabExtSettingsLinks").find('.active').removeClass('active');
+            $("#ext-"+extSettingsQuery.moduleName).addClass("active");
 
+            // Pour le debug
             console.log("Debug - call:<?=$websiteUrl?>vbcms-admin/backTasks/?getSettingsHTML="+encodeURIComponent(search_params.get('p')));
+            // On récupère le contenu de la page
             $.get("<?=$websiteUrl?>vbcms-admin/backTasks/?getSettingsHTML="+encodeURIComponent(search_params.get('p')), function(data) {
+                // On supprime l'animation de chargement
                 $("#settingsContent").removeClass("centerVerHori");
+                // Et on insère le contenu
                 $("#settingsContent").html(data);
 
-                // Ici on active les différents éléments JS à chaque intégration de page
+                // Enfin, on active les différents éléments JS à chaque intégration de page, même si ce n'est pas toujours utile
                 $('[data-toggle="tooltip"]').tooltip()
                 $(".pick-a-color").pickAColor();
             });
+        }
+
+        function change(extensionName){
+            // Cette fonction permet de charger une autre page
+
+            // On va récupérer l'url et ses paramètres
+            let url = new URL(window.location.href);
+		    let search_params = url.searchParams;
+            // On recréé la requête
+            let array = {};
+            array.moduleName=extensionName;
+            array.parameters="";
+
+            // Et on modifie le paramètre p
+            search_params.set('p', JSON.stringify(array));
+            let newUrl = url.toString();
+            window.history.replaceState({}, '', newUrl);
+
+            // Enfin on lance la fonction qui affiche la page
+            setSettingsContent();
         }
     </script>
 </body>

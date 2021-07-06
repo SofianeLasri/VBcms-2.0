@@ -3,7 +3,7 @@
   "requiredModules" : ["vbcms-filemanager"],
   "type" : "module",
   "name": "vbcms-websiteSystem",
-  "showname": "Système de site internet de base",
+  "showname": "Système de site internet",
   "version": "1.0",
   "compatible": "48",
   "author": "1",
