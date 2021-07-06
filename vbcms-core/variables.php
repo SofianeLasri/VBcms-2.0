@@ -22,6 +22,7 @@ $serverId = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='serverId
 // Variables pour le site
 $websiteUrl = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='websiteUrl'")->fetchColumn();
 $websiteName = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='websiteName'")->fetchColumn();
+if(empty($websiteUrl)) $websiteName = "VBcms";
 $websiteDescription = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='websiteDescription'")->fetchColumn();
 $websiteMetaColor = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='websiteMetaColor'")->fetchColumn();
 $websiteLogo = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='websiteLogo'")->fetchColumn();
