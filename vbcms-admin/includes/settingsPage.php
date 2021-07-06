@@ -21,8 +21,35 @@ function getSettingsHTML($params){
     else $debugMode = null;
     ?>
     <div class="d-flex">
-        <div class="flex-grow-1">
-            <h5>Paramètres de mises à jour</h5>
+        <div class="flex-grow-1" >
+            <div class="tabs">
+                <ul id="tabVBcmsSettingsLinks">
+                    <li id="tab-general">
+                        <a href="#" onclick="changeTab('general')">Paramètres généraux</a>
+                    </li>
+                    <li id="tab-users">
+                        <a href="#" onclick="changeTab('users')">Utilisateurs</a>
+                    </li>
+                    <li id="tab-usersGroups">
+                        <a href="#" onclick="changeTab('usersGroups')">Groupes d'utilisateurs</a>
+                    </li>
+                    <li id="tab-permissions">
+                        <a href="#" onclick="changeTab('permissions')">Permissions</a>
+                    </li>
+                    <li id="tab-extAndWs">
+                        <a href="#" onclick="changeTab('extAndWs')">Extensions & Worshop</a>
+                    </li>
+                    <!-- Modèle
+                    <li id="tab-nomTab">
+                        <a href="#" class="active">Onglet</a>
+                    </li>
+                    -->
+                </ul>
+            </div>
+            <?php 
+                if(!isset($params)||empty($params)||$params=="general"){
+            ?>
+            <h5 class="mt-2">Paramètres de mises à jour</h5>
             <form id="form" method="post">
                 <div class="row">
                     <div class="col-sm">
@@ -52,7 +79,7 @@ function getSettingsHTML($params){
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="" name="autoInstallCriticalUpdates" <?=$autoInstallCriticalUpdates?>>
-                            <label class="form-check-label text-danger" data-toggle="tooltip" data-placement="top" title="⚠️Désactiver cette option n'est pas recommandé!⚠️"><i class="fas fa-exclamation-triangle"></i> <strong>Installation automatique de mises à jour critiques</strong></label>
+                            <label class="form-check-label text-danger" data-toggle="tooltip" data-placement="top" title="⚠️Désactiver cette option n'est pas recommandé!⚠️"><i class="fas fa-exclamation-triangle"></i> <strong>Installation automatique des mises à jour critiques</strong></label>
                         </div>
     
                     </div>
@@ -101,7 +128,7 @@ function getSettingsHTML($params){
 
             <button type="button" class="btn btn-brown" onclick="saveChanges()">Sauvegarder</button>
         </div>
-        <div class="admin-tips" style="position: relative !important;">
+        <div class="admin-tips" style="position: relative !important; ">
             <div class="tip">
                 <h5>À quoi servent ces paramètres?</h5>
                 <p><b>Ces paramètre permettent de donner une identité à votre site.</b> Ils permettent aux moteurs de recherches ainsi qu'aux applications de le reconnaître.<br><br>
@@ -119,9 +146,46 @@ function getSettingsHTML($params){
                 <p class="text-danger"><b>Il n'est pas pas recommandé de désactiver cette fonctionnalité, VBcms n'est pas encore à un stade de développement mature.</b></p>
             </div>
         </div>
-        
+        <?php } ?>
     </div>
     <script type="text/javascript">
+        // S'éxecute une fois la page chargée
+        $( document ).ready(function() {
+            // On va récupérer l'url et ses paramètres
+            let url = new URL(window.location.href);
+		    let search_params = url.searchParams;
+
+            // On récupère les infos de la requête
+            var extSettingsQuery = JSON.parse(search_params.get('p'));
+            if(extSettingsQuery.parameters == ""){
+                changeTab("general");
+            } else {
+                // Et on surligne le lien qui correspond à l'extension souhaitée
+                $("#tab-"+extSettingsQuery.parameters).addClass("active");
+            }
+            
+        });
+
+        function changeTab(pageName){
+            // Cette fonction permet de charger une autre page
+
+            // On va récupérer l'url et ses paramètres
+            let url = new URL(window.location.href);
+		    let search_params = url.searchParams;
+            // On recréé la requête
+            let array = {};
+            array.moduleName="VBcms";
+            array.parameters=pageName;
+
+            // Et on modifie le paramètre p
+            search_params.set('p', JSON.stringify(array));
+            let newUrl = url.toString();
+            window.history.replaceState({}, '', newUrl);
+
+            // Enfin on lance la fonction qui affiche la page
+            setSettingsContent();
+        }
+
         function saveChanges(){
             $.post( "<?=$GLOBALS['websiteUrl']?>vbcms-admin/backTasks?saveSettings", $( "#form" ).serialize() )
             .done(function( data ) {

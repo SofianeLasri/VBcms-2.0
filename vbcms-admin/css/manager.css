@@ -662,18 +662,21 @@ header .menu-item{
 
 .settingsContainer .tabs{
 	border-bottom: 1px solid #dadada;
+	
 }
 .settingsContainer .tabs ul{
-	display:flex;
 	list-style-type:none;
 	margin: 0;
 	padding: 0;
+	overflow-x: auto;
 }
 .settingsContainer .tabs ul li{
-	margin-left: .5em;
 	padding: .25em;
+	margin: 1px 1px 0 1px;
+	float: left;
 }
 .settingsContainer .tabs ul li:hover{
+	margin: 0;
 	border-top: 1px solid var(--mainBrown);
 	border-left: 1px solid var(--mainBrown);
 	border-right: 1px solid var(--mainBrown);
@@ -695,6 +698,7 @@ header .menu-item{
 	border-right: 1px solid var(--mainBrown);
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
+	margin: 0;
 }
 .settingsContainer .tabs ul .active a{
 	color:white;

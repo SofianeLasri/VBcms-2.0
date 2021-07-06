@@ -39,7 +39,7 @@ foreach ($activatedExtensions as $activatedExtension){
             <div class="tabs">
                 <ul id="tabExtSettingsLinks">
                     <li id="ext-VBcms">
-                        <a href="#" onclick="change('VBcms')">Paramètres généraux</a>
+                        <a href="#" onclick="change('VBcms')">Paramètres de VBcms</a>
                     </li>
                     <?php
                         foreach ($activatedExtensions as $activatedExtension){

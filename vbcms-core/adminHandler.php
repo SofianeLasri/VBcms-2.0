@@ -8,8 +8,8 @@ if (!isset($_SESSION["user_id"])) { // Si l'utilisateur n'est pas connecté
         header("Location: https://vbcms.net/manager/login?from=".urlencode("$http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']));
     }
 } else {
-	// On va vérifier qu'il a un rôle
-	if (!in_array($_SESSION["user_role"], ["owner", "admin", "moderator"])){
+	// On va vérifier qu'il a accès au panel admin
+	if ($_SESSION['accessAdmin']!= 1){
 		if ($_SERVER['HTTP_HOST'] != "vbcms.net") {
 			session_destroy(); // On détruit la session
 		}

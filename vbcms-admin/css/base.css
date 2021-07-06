@@ -204,3 +204,11 @@ body {
 .modal-header{
   padding: .5rem 1rem;
 }
+.input-group-btn .btn-default{
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+}
+.input-group-btn .btn-default, .color-dropdown{
+  border-top-left-radius: 0!important;
+  border-bottom-left-radius: 0!important;
+}

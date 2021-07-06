@@ -109,7 +109,7 @@ if ($isUpToDate == 1) {
 		<div class="mt-3">
 			<h3>Merci de participer aux tests!</h3>
 			<p>Salut et merci d'avoir accepté de participer aux tests de pré-sortie. Tu es là sur une version très primaire de ce que sera VBcms 2.0 à la fin, et comme tu l'as peut-être déjà remarqué, il n'y a pas grand chose de terminé.</p><br>
-
+			<?php print_r($_SESSION); ?>
 			
 		</div>
 		
