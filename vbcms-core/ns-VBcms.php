@@ -56,7 +56,7 @@ namespace VBcms{
 
             $bdd=$this->bdd;
             include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/init.php"; // Le module appelé va se charger du reste
-            enable($name, $path);
+            enable($name, $path, $adminAccess, $clientAccess);
             $query = $bdd->prepare("INSERT INTO `vbcms-activatedExtensions` (`name`, `type`, `path`, `adminAccess`, `clientAccess`, `vbcmsVerId`, `workshopId`) VALUES (?,?,?,?,?,?,?)");
             $query->execute([$name, "module", $path, $adminAccess, $clientAccess, $vbcmsVerId, $this->workshopId]);
         }
@@ -65,6 +65,14 @@ namespace VBcms{
             $bdd=$this->bdd;
             $query = $bdd->prepare("DELETE FROM `vbcms-activatedExtensions` WHERE name=?");
             $query->execute([$this->name]);
+
+            $query = $bdd->prepare("SELECT * FROM `vbcms-adminNavbar` WHERE value1=?");
+            $query->execute([$this->name]);
+            $moduleNavParentsIds = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($moduleNavParentsIds as $parentId){
+                $query = $bdd->prepare("DELETE FROM `vbcms-adminNavbar` WHERE id=? OR parentId=?");
+                $query->execute([$parentId['id'],$parentId['id']]);
+            }
         }
     
         function call(array $parameters, $type){
