@@ -208,14 +208,34 @@ foreach ($requiredModulesNames as $requiredModuleName){
 					</div>
 
 					<div id="depedenciesInfosDiv">
-						<h5>Note</h5>
+						<h5><?=$translation["note"]?></h5>
 						<p><?=$translation['ws_enableRequiredDepedencies']?><br>
 						<?=$translation['ws_enableRequiredDepedenciesMarkerInfo']?></p>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-outline-brown" data-dismiss="modal">Fermer</button>
-					<button id="extensionActivationModalBtn" onclick="" type="button" class="btn btn-brown">Activer</button>
+					<button type="button" class="btn btn-outline-brown" data-dismiss="modal"><?=$translation["close"]?></button>
+					<button id="extensionActivationModalBtn" onclick="" type="button" class="btn btn-brown"><?=$translation["ws_enable"]?></button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="extensionDesactivationModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header bg-brown text-white">
+					<h5 id="extensionDesacctivationModalTitle" class="modal-title"><?=$translation["ws_disableExtension"]?></h5>
+					<button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p><?=$translation["ws_askExtToDeleteItsData"]?></p>
+				</div>
+				<div class="modal-footer">
+					<button id="extensionDesactivationModalBtnNo" onclick="" type="button" class="btn btn-outline-brown"><?=$translation["no"]?></button>
+					<button id="extensionDesactivationModalBtnYes" onclick="" type="button" class="btn btn-brown"><?=$translation["yes"]?></button>
 				</div>
 			</div>
 		</div>
@@ -315,34 +335,27 @@ foreach ($requiredModulesNames as $requiredModuleName){
 			}
 		}
 
-		function disableAddon(name, confirm){
-			$.get("<?=$websiteUrl?>vbcms-admin/backTasks/?checkIfModuleIsUsedByOthers="+name, function(depedenciesId) {
-				if (depedenciesId!="[]"&&confirm==0) {
-					$("#extensionActivationModalTitle").html("<?=$translation['ws_requireddependecies']?>");
-					$("#extensionActivationModalDesc").html("<?=$translation['ws_disableRequireddependecies']?>");
-					$("#extensionActivationModalBtn").attr("onclick", "disableAddon("+name+", 1)");
-					$("#extensionActivationModalBtn").html("<?=$translation['ws_disable']?>");
-					$('#extensionActivationModal').modal('toggle');
-				} else {
-					var array = [];
-					array.push(name);
-					array.push(depedenciesId);
-					console.log(name);
-					console.log(depedenciesId);
-					console.log("<?=$websiteUrl?>vbcms-admin/backTasks/?disableWSAddon="+encodeURIComponent(JSON.stringify(array)));
-					$.get("<?=$websiteUrl?>vbcms-admin/backTasks/?disableWSAddon="+encodeURIComponent(JSON.stringify(array)), function(data) {
-						if (data != "") {
-							SnackBar({
-								message: "<?=$translation['ws_errorDisableAddon']?>: "+data,
-								status: "danger",
-								timeout: false
-							});
-						} else {
-							document.location.reload();
-						}
-					});
-				}
-			})
+		function disableAddon(name, deleteData){
+			if(typeof deleteData === 'undefined'){
+				$("#extensionDesactivationModalBtnYes").attr("onclick", "disableAddon('"+name+"', true)");
+				$("#extensionDesactivationModalBtnNo").attr("onclick", "disableAddon('"+name+"', false)");
+				$('#extensionDesactivationModal').modal('toggle');
+			} else {
+				var array = {};
+				array.name=name;
+				array.deleteData=deleteData;
+				$.get("<?=$websiteUrl?>vbcms-admin/backTasks/?disableExtension="+encodeURIComponent(JSON.stringify(array)), function(data) {
+					if (data != "") {
+						SnackBar({
+							message: "<?=$translation['ws_errorDisableAddon']?>: "+data,
+							status: "danger",
+							timeout: false
+						});
+					} else {
+						document.location.reload();
+					}
+				})
+			}
 		}
 
 		function unsuscribeAddon(name){

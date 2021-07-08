@@ -3,7 +3,7 @@ function enable(){
 
 }
 
-function disable(){
+function disable($deleteData){
 
 }
 

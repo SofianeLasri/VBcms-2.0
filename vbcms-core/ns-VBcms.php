@@ -60,6 +60,12 @@ namespace VBcms{
             $query = $bdd->prepare("INSERT INTO `vbcms-activatedExtensions` (`name`, `type`, `path`, `adminAccess`, `clientAccess`, `vbcmsVerId`, `workshopId`) VALUES (?,?,?,?,?,?,?)");
             $query->execute([$name, "module", $path, $adminAccess, $clientAccess, $vbcmsVerId, $this->workshopId]);
         }
+
+        function disableModule($deleteData){
+            $bdd=$this->bdd;
+            $query = $bdd->prepare("DELETE FROM `vbcms-activatedExtensions` WHERE name=?");
+            $query->execute([$this->name]);
+        }
     
         function call(array $parameters, $type){
             //$mbdd=$this->mbdd;

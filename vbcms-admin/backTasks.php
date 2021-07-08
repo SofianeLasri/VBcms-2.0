@@ -78,6 +78,23 @@ if (isset($_GET["getNotifications"])) {
     	$calledmodule->initModule($extensionInfos["name"], $extensionInfos["path"], $extensionInfos["adminAccess"], $extensionInfos["clientAccess"], $extensionInfos["compatible"], $extensionInfos["workshopId"]);
 	}
 	
+} elseif (isset($_GET["disableExtension"])&&!empty($_GET["disableExtension"])){
+	$extensionToDisable = json_decode($_GET["disableExtension"],true);
+	
+	// On va récupérer les informations de l'extension en question
+	$extensionInfos = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE name = ?");
+	$extensionInfos->execute([$extensionToDisable['name']]);
+	$extensionInfos = $extensionInfos->fetch(PDO::FETCH_ASSOC);
+
+	if(empty($extensionInfos)) echo "L'extension ".$extensionToDisable['name']." n'a pas été trouvée dans la base de données.";
+	else {
+		// Maintenant on va créer l'instance de l'extension et la désactiver
+		if($extensionInfos["type"]=="module"){
+			$calledmodule = new VBcms\module($extensionInfos["name"]);
+			$calledmodule->disableModule($extensionToDisable['deleteData']);
+		}
+	}	
+	
 } elseif (isset($_GET["checkModulesAliases"])&&!empty($_GET["checkModulesAliases"])){
 	$aliases = json_decode($_GET["checkModulesAliases"],true);
 	$aliasesAlreadyUsed = array();
