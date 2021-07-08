@@ -57,6 +57,24 @@ function loadModule($type, $moduleAlias, $moduleParams){
 	}
 }
 
+function extensionCreatePage($panelMode, $creationMode, $pageToInclude, $title, $description, $depedencies){
+    // Le mode 0 correspond à l'inclusion d'une page qui retourne du code HTML
+	// Le mode 1 correspond à l'inclusion d'une page qui ne fait que passer des paramètres
+	// Le mode 2 correspond à l'inclusion d'une page qui n'utilise pas la maquette du thème, qui renvoie sa propre page
+	global $bdd, $http, $websiteUrl, $translation, $websiteName, $websiteMetaColor, $websiteDescription, $websiteLogo, $paths;
+    
+    if($creationMode == 0){
+        if($panelMode == "admin"){
+            $vbcmsRequest = true;
+            require $GLOBALS['vbcmsRootPath']."/vbcms-admin/includes/emptyPage.php";
+        }
+    } elseif($creationMode == 1){
+
+    } elseif($creationMode == 2){
+        require $pageToInclude;
+    }
+}
+
 function show404($type){
 	if ($type=="client") {
 		// Affiche la page 404 du site client

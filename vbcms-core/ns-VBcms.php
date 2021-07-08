@@ -78,6 +78,7 @@ namespace VBcms{
         function call(array $parameters, $type){
             //$mbdd=$this->mbdd;
             $bdd=$this->bdd;
+            global $translation;
             include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/pageHandler.php"; // Le module appelé va se charger du reste
             
         }
