@@ -304,3 +304,133 @@ class moduleDatabaseConnect {
     }
     
 }
+
+class module {
+    // Cette classe se chargera de charger les modules
+    private $name, $path, $adminAccess, $clientAccess, $vbcmsVerId, $workshopId;
+
+    private $extensionFullPath;
+    
+    private $bdd, $mbdd;
+
+    private $permissions = array();
+
+    public function __construct($name){
+        $this->name = $name;
+
+        // On va initialiser le driver sql
+        global $bdd;
+        $this->bdd = $bdd;
+        $moduleInfos = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE name=?");
+        $moduleInfos->execute([$name]);
+        $moduleInfos = $moduleInfos->fetch(PDO::FETCH_ASSOC);
+        if(!empty($moduleInfos)){
+            $this->path = $moduleInfos['path'];
+            $this->adminAccess = $moduleInfos['adminAccess'];
+            $this->clientAccess = $moduleInfos['clientAccess'];
+            $this->vbcmsVerId = $moduleInfos['vbcmsVerId'];
+            $this->workshopId = $moduleInfos['workshopId'];
+
+            $this->extensionFullPath = $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path;
+        }
+        
+        //$this->mbdd = new \moduleDatabaseConnect($name);
+        
+        // UPDATE 01/07/2021 : N'est plus utile après reflexion
+        // Maintenant on va vérifier que l'extension dispose bien des permissions demandées
+        /*
+        $response = $bdd->prepare("SELECT * FROM `vbcms-extensionsPermissions` WHERE extensionName = ?");
+        $response->execute([$name]);
+        $permissions = $response->fetch(\PDO::FETCH_ASSOC);
+        $this->permissions = json_decode($permissions['otherPerms'],true);
+        if(empty($this->permissions)){
+            // Ici, l'extension n'a aucune permission d'accordée
+            throw new Exception('ERREUR: Vous ne disposez d\'aucune autorisation.');
+        }
+        */
+        
+    }
+    function initModule($name, $path, $adminAccess, $clientAccess, $vbcmsVerId, $workshopId){
+        $this->name = $name;
+        $this->path = $path;
+        $this->adminAccess = $adminAccess;
+        $this->clientAccess = $clientAccess;
+        $this->vbcmsVerId = $vbcmsVerId;
+        if(empty($workshopId))$this->workshopId = NULL;
+        else $this->workshopId = $workshopId;
+
+        $bdd=$this->bdd;
+        include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/init.php"; // Le module appelé va se charger du reste
+        enable($name, $path, $adminAccess, $clientAccess);
+        $query = $bdd->prepare("INSERT INTO `vbcms-activatedExtensions` (`name`, `type`, `path`, `adminAccess`, `clientAccess`, `vbcmsVerId`, `workshopId`) VALUES (?,?,?,?,?,?,?)");
+        $query->execute([$name, "module", $path, $adminAccess, $clientAccess, $vbcmsVerId, $this->workshopId]);
+    }
+
+    function disableModule($deleteData){
+        $bdd=$this->bdd;
+        $query = $bdd->prepare("DELETE FROM `vbcms-activatedExtensions` WHERE name=?");
+        $query->execute([$this->name]);
+
+        $query = $bdd->prepare("SELECT * FROM `vbcms-adminNavbar` WHERE value1=?");
+        $query->execute([$this->name]);
+        $moduleNavParentsIds = $query->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($moduleNavParentsIds as $parentId){
+            $query = $bdd->prepare("DELETE FROM `vbcms-adminNavbar` WHERE id=? OR parentId=?");
+            $query->execute([$parentId['id'],$parentId['id']]);
+        }
+    }
+
+    function call(array $parameters, $type){
+        //$mbdd=$this->mbdd;
+        $bdd=$this->bdd;
+        $extensionFullPath = $this->extensionFullPath;
+        global $translation;
+        include $extensionFullPath."/pageHandler.php"; // Le module appelé va se charger du reste
+        
+    }
+
+    function getSettingsPage($parameters){
+        $bdd=$this->bdd;
+        include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/init.php";
+        getSettingsHTML($parameters);
+    }
+
+    function verifyUserPermission($userId, $action){
+        $bdd=$this->bdd;
+        
+        // On va récupérer les infos de l'utilisateur
+        $userInfos = $bdd->prepare("SELECT * FROM `vbcms-users` WHERE netId=?");
+        $userInfos->execute([$userId]);
+        $userInfos = $userInfos->fetch(PDO::FETCH_ASSOC);
+
+        // On va vérifier s'il a des perms à part
+        $usersPerms = $bdd->prepare("SELECT * FROM `vbcms-usersPerms` WHERE userId=? AND extensionName=?");
+        $usersPerms->execute([$userId, $this->name]);
+        $perms = $usersPerms->fetch(PDO::FETCH_ASSOC);
+        
+        if(empty($perms)){
+            // Il n'a pas de perms à part
+            // On va maintenant récupérer les infos de son groupe
+            $groupInfos = $bdd->prepare("SELECT * FROM `vbcms-userGroups` WHERE groupId=?");
+            $groupInfos->execute([$userInfos['groupId']]);
+            $groupInfos = $groupInfos->fetch(PDO::FETCH_ASSOC);
+
+             // Et maintenant les perms
+            if(!empty($groupInfos)){
+                if($groupInfos['groupName'] == "superadmins") return true; // Les superadmins ont tous les droits, pas besoin de spécifier leur perms
+
+                $groupsPerms = $bdd->prepare("SELECT * FROM `vbcms-groupsPerms` WHERE netId=? AND extensionName=?");
+                $groupsPerms->execute([$groupInfos['groupId'], $this->name]);
+                $perms = $groupsPerms->fetch(PDO::FETCH_ASSOC);
+            }
+        }
+
+        if(!empty($perms)){
+            $perms = json_decode($perms, true);
+            if($perms[$action]) return true;
+            else return false;
+        } else {
+            return false;
+        }
+    }
+}

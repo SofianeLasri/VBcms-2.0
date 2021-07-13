@@ -14,7 +14,7 @@ function loadModule($type, $moduleAlias, $moduleParams){
 
         if (!empty($response)) {
             //include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/pageHandler.php"; // Le module appelé va se charger du reste
-            $calledmodule = new VBcms\module($response["name"]);
+            $calledmodule = new module($response["name"]);
             $calledmodule->call($moduleParams, $type);
         } else {
             // Aucun module d'activé ne se charge de ce chemin
@@ -29,7 +29,7 @@ function loadModule($type, $moduleAlias, $moduleParams){
         
                 if (!empty($response)) {
                     // On a trouvé un module qui gère l'index, au cas où cet alias n'existe pas, ce sera ce module qui gérera la page 404
-                    $calledmodule = new VBcms\module($response["name"]);
+                    $calledmodule = new module($response["name"]);
                     $calledmodule->call($moduleParams, $type);
                     //include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/pageHandler.php"; // Le module appelé va se charger du reste
                 } else {
@@ -48,7 +48,7 @@ function loadModule($type, $moduleAlias, $moduleParams){
 
         if (!empty($response)) {
         	//include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/pageHandler.php"; // Le module appelé va se charger du reste
-            $calledmodule = new VBcms\module($response["name"]);
+            $calledmodule = new module($response["name"]);
             $calledmodule->call($moduleParams, $type);
         } else {
         	show404($type);

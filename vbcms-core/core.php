@@ -29,7 +29,7 @@ require_once 'functions.php';
 require_once 'classes.php';
 
 // On inclue les classes et fonctions du Namespace VBcms
-require_once 'ns-VBcms.php';
+//require_once 'ns-VBcms.php';
 
 // On inclue le fichier responsable de la session utilisateur
 require_once 'sessionHandler.php';
