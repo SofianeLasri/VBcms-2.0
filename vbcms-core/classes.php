@@ -394,43 +394,4 @@ class module {
         include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/init.php";
         getSettingsHTML($parameters);
     }
-
-    function verifyUserPermission($userId, $action){
-        $bdd=$this->bdd;
-        
-        // On va récupérer les infos de l'utilisateur
-        $userInfos = $bdd->prepare("SELECT * FROM `vbcms-users` WHERE netId=?");
-        $userInfos->execute([$userId]);
-        $userInfos = $userInfos->fetch(PDO::FETCH_ASSOC);
-
-        // On va vérifier s'il a des perms à part
-        $usersPerms = $bdd->prepare("SELECT * FROM `vbcms-usersPerms` WHERE userId=? AND extensionName=?");
-        $usersPerms->execute([$userId, $this->name]);
-        $perms = $usersPerms->fetch(PDO::FETCH_ASSOC);
-        
-        if(empty($perms)){
-            // Il n'a pas de perms à part
-            // On va maintenant récupérer les infos de son groupe
-            $groupInfos = $bdd->prepare("SELECT * FROM `vbcms-userGroups` WHERE groupId=?");
-            $groupInfos->execute([$userInfos['groupId']]);
-            $groupInfos = $groupInfos->fetch(PDO::FETCH_ASSOC);
-
-             // Et maintenant les perms
-            if(!empty($groupInfos)){
-                if($groupInfos['groupName'] == "superadmins") return true; // Les superadmins ont tous les droits, pas besoin de spécifier leur perms
-
-                $groupsPerms = $bdd->prepare("SELECT * FROM `vbcms-groupsPerms` WHERE netId=? AND extensionName=?");
-                $groupsPerms->execute([$groupInfos['groupId'], $this->name]);
-                $perms = $groupsPerms->fetch(PDO::FETCH_ASSOC);
-            }
-        }
-
-        if(!empty($perms)){
-            $perms = json_decode($perms, true);
-            if($perms[$action]) return true;
-            else return false;
-        } else {
-            return false;
-        }
-    }
 }

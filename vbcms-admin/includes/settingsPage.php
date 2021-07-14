@@ -24,21 +24,31 @@ function getSettingsHTML($params){
         <div class="flex-grow-1" >
             <div class="tabs">
                 <ul id="tabVBcmsSettingsLinks">
+                    <?php if(verifyUserPermission($_SESSION['user_id'], "vbcms", 'access-generalSettings')){ ?>
                     <li id="tab-general">
                         <a href="#" onclick="changeTab('general')">Paramètres généraux</a>
                     </li>
+                    <?php } ?>
+                    <?php if(verifyUserPermission($_SESSION['user_id'], "vbcms", 'access-usersSettings')){ ?>
                     <li id="tab-users">
                         <a href="#" onclick="changeTab('users')">Utilisateurs</a>
                     </li>
-                    <li id="tab-usersGroups">
-                        <a href="#" onclick="changeTab('usersGroups')">Groupes d'utilisateurs</a>
+                    <?php } ?>
+                    <?php if(verifyUserPermission($_SESSION['user_id'], "vbcms", 'access-userGroupsSettings')){ ?>
+                    <li id="tab-userGroups">
+                        <a href="#" onclick="changeTab('userGroups')">Groupes d'utilisateurs</a>
                     </li>
+                    <?php } ?>
+                    <?php if(verifyUserPermission($_SESSION['user_id'], "vbcms", 'access-permissionsSettings')){ ?>
                     <li id="tab-permissions">
                         <a href="#" onclick="changeTab('permissions')">Permissions</a>
                     </li>
+                    <?php } ?>
+                    <?php if(verifyUserPermission($_SESSION['user_id'], "vbcms", 'access-extAndWsSettings')){ ?>
                     <li id="tab-extAndWs">
                         <a href="#" onclick="changeTab('extAndWs')">Extensions & Worshop</a>
                     </li>
+                    <?php } ?>
                     <!-- Modèle
                     <li id="tab-nomTab">
                         <a href="#" class="active">Onglet</a>
@@ -51,6 +61,7 @@ function getSettingsHTML($params){
             ?>
             <h5 class="mt-2">Paramètres de mises à jour</h5>
             <form id="form" method="post">
+                <?php if(verifyUserPermission($_SESSION['user_id'], "vbcms", 'updatePanel')){ ?>
                 <div class="row">
                     <div class="col-sm">
                         <div class="form-group">
@@ -84,7 +95,9 @@ function getSettingsHTML($params){
     
                     </div>
                 </div>
-    
+                <?php } ?>
+                
+                <?php if(verifyUserPermission($_SESSION['user_id'], "vbcms", 'editWebsiteIdentity')){ ?>
                 <h5>Identité de l'installation <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="Nom du site, sa méta-couleur, description, etc."></i></h5>
                 <div class="row">
                     <div class="col-sm">
@@ -106,7 +119,9 @@ function getSettingsHTML($params){
     
                     </div>
                 </div>
-    
+                <?php } ?>
+                
+                <?php if(verifyUserPermission($_SESSION['user_id'], "vbcms", 'editOtherSettings')){ ?>
                 <h5>Autres paramètres</h5>
                 <div class="row">
                     <div class="col-sm">
@@ -124,28 +139,55 @@ function getSettingsHTML($params){
     
                     </div>
                 </div>
+                <?php } ?>
             </form>
 
             <button type="button" class="btn btn-brown" onclick="saveChanges()">Sauvegarder</button>
         </div>
         <div class="admin-tips" style="position: relative !important; ">
+            <?php if(verifyUserPermission($_SESSION['user_id'], "vbcms", 'editWebsiteIdentity')){ ?>
             <div class="tip">
-                <h5>À quoi servent ces paramètres?</h5>
+                <h5>Qu'est-ce que l'identité de l'installation?</h5>
                 <p><b>Ces paramètre permettent de donner une identité à votre site.</b> Ils permettent aux moteurs de recherches ainsi qu'aux applications de le reconnaître.<br><br>
                 <b>Il n'est pas primordial de les remplir si vous n'utilisez pas la fonction de site internet</b>, mais il reste préférable d'au moins renseigner le nom du serveur ainsi que son logo.</p>
             </div>
+            <?php } ?>
+            <?php if(verifyUserPermission($_SESSION['user_id'], "vbcms", 'editOtherSettings')){ ?>
             <div class="tip">
                 <h5>À quoi sert la clé Steam API?</h5>
                 <p>La clé API Steam permet à certains addons de communiquer avec votre serveur, mais également à certaines interractions la nécessitant.<br><br>
                 <b>Vous pouvez l'obtenir ici:</b> <a href="https://steamcommunity.com/dev/apikey" class="text-brown" target="_blank">Clé API Steam Web</a></p>
             </div>
+            <?php } ?>
+            <?php if(verifyUserPermission($_SESSION['user_id'], "vbcms", 'updatePanel')){ ?>
             <div class="tip">
                 <h5>Qu'est-ce que l'installation automatique de mises à jour critiques?</h5>
                 <p><b>VBcms dispose d'un système d'envoie de commande à distance sécurisé, permettant au serveur principal d'effectuer certaines opérations de maintenances d'extrême urgence.</b><br><br>
                 Cela signifie que si une faille de sécurité critique a été découvert dans le coeur du cms, VBcms sera en mesure d'automatiquement se mettre à jour dans les plus brefs délais.</p>
                 <p class="text-danger"><b>Il n'est pas pas recommandé de désactiver cette fonctionnalité, VBcms n'est pas encore à un stade de développement mature.</b></p>
             </div>
+            <?php } ?>
         </div>
+        <?php }elseif($params=="users"){ ?>
+        
+        <div class="d-flex">
+            <div class="flex-grow-1 d-flex flex-column">
+                <div>
+                    
+                </div>
+            </div>
+            <div class="admin-tips" style="position: relative !important; ">
+                <div class="tip">
+                    <h5>Gérer les utilisateurs</h5>
+                    <p>VBcms peut être utilisé par plusieurs peronnes en même temps. Ici tu peux gérer leur compte utilisateur, fais bien attention à qui à accès au panel admin.</p>
+                </div>
+                
+                
+            </div>
+            
+        </div>
+        
+
         <?php } ?>
     </div>
     <script type="text/javascript">

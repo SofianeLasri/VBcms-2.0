@@ -7,6 +7,30 @@ if ($isUpToDate == 1) {
 } else {
 	$updateMessage = $translation["isNotUpToDate"];
 }
+if($_SESSION['loginType']=='vbcms-account'){
+	$userHasLocalAccount = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE netIdAssoc = ?");
+	$userHasLocalAccount->execute([$_SESSION['user_id']]);
+	$userHasLocalAccount = $userHasLocalAccount->fetch(PDO::FETCH_ASSOC);
+
+	if(empty($userHasLocalAccount)){
+		if(isset($_POST['localUserUsername']) && !empty($_POST['localUserUsername'])){
+			$query = $bdd->prepare('INSERT INTO `vbcms-localAccounts` (`id`, `netIdAssoc`, `username`, `password`, `profilePic`) VALUES (NULL, ?,?,?,?)');
+			$query->execute([$_SESSION['user_id'], $_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT), $_SESSION['user_profilePic']]);
+
+			$userHasLocalAccount = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE netIdAssoc = ?");
+			$userHasLocalAccount->execute([$_SESSION['user_id']]);
+			$userHasLocalAccount = $userHasLocalAccount->fetch(PDO::FETCH_ASSOC);
+			if(empty($userHasLocalAccount)){
+				$localAccountCreationSuccess=false;
+			}else{
+				$localAccountCreationSuccess=true;
+			}
+		} else {
+			$showLocalAccountCreationModal = true;
+		}
+	}
+}
+
 
 ?>
 <!DOCTYPE html>
@@ -112,7 +136,127 @@ if ($isUpToDate == 1) {
 			<?php print_r($_SESSION); ?>
 			
 		</div>
+
+		
 		
 	</div>
+
+	<?php
+		if(isset($showLocalAccountCreationModal) && $showLocalAccountCreationModal){ ?>
+
+		<div class="modal fade" id="localAccountCreationModal" data-backdrop="static">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header bg-brown text-white">
+						<h5 id="extensionActivationModalTitle" class="modal-title"><?=$translation['localAccountCreation']?></h5>
+					</div>
+					<div class="modal-body">
+						<form method="post" class="needs-validation" novalidate>
+							<div class="form-group">
+								<label><?=$translation['username']?></label>
+								<input type="text" class="form-control" name="localUserUsername" placeholder="<?=$_SESSION['user_username']?>" value="<?=$_SESSION['user_username']?>" required>
+								<small class="form-text text-muted"><?=$translation["localAccountCreation_loginCanBeDifferent"]?></small>
+								<div class="invalid-feedback"><?=$translation["localAccountCreation_pleaseEnterLogin"]?></div>
+							</div>
+							<div class="form-group">
+								<label><?=$translation['password']?></label>
+								<input type="password" class="form-control" name="localUserPassword1" id="localUserPassword1" placeholder="" required>
+								<div class="invalid-feedback" id="localUserPassword1Alert">
+									<?=$translation['localAccountCreation_youCreateAnAccountWithoutPassword']?> <img height="16" src="<?=$websiteUrl?>vbcms-admin/images/emojis/thinkingHard.png">
+								</div>
+							</div>
+							<div class="form-group">
+								<label><?=$translation['repeatPassword']?></label>
+								<input type="password" class="form-control" name="localUserPassword2" id="localUserPassword2" placeholder="" required>
+								<div class="invalid-feedback" id="localUserPassword2Alert"><?=$translation["localAccountCreation_pleaseRewriteYourPassword"]?></div>
+							</div>
+
+							<div>
+								<h5><?=$translation["whyCreateALocalAccount"]?></h5>
+								<p>Autant le dire tout de suite, les serveurs de VBcms ne sont pas réputés pour être très fiables... Il sera assez fréquent de les voir inaccessibles, surtout à ce stade du développement.<br><br><strong>Le compte local te permettera d'accéder au panneau d'administration, même en cas de panne générale.</strong> Tu ne pourras pas télécharger d'extensions ni mettre VBcms à jour, mais au moins tu pourras continuer à gérer ton site. :D</p>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button id="registerBtn" type="submit" class="btn btn-brown"><?=$translation["create"]?></button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			(function() {
+			'use strict';
+			window.addEventListener('load', function() {
+				// Fetch all the forms we want to apply custom Bootstrap validation styles to
+				var forms = document.getElementsByClassName('needs-validation');
+				// Loop over them and prevent submission
+				var validation = Array.prototype.filter.call(forms, function(form) {
+				form.addEventListener('submit', function(event) {
+					if (form.checkValidity() === false) {
+					event.preventDefault();
+					event.stopPropagation();
+					}
+					form.classList.add('was-validated');
+				}, false);
+				});
+			}, false);
+			})();
+
+			$( document ).ready(function() {
+				$('#localAccountCreationModal').modal('show');
+			});
+
+			$("#localUserPassword1").change(function() {
+				checkPassword();
+			});
+			$("#localUserPassword2").change(function() {
+				checkPassword();
+			});
+
+			function checkPassword(){
+				if ($("#localUserPassword1").val()!=$("#localUserPassword2").val()) {
+					$("#localUserPassword1Alert").html("<?=$translation["localAccountCreation_passwordsDontMatches"]?>");
+					$("#localUserPassword1Alert").css("display","block");
+					$("#localUserPassword2Alert").html("<?=$translation["localAccountCreation_passwordsDontMatches"]?>");
+					$("#localUserPassword2Alert").css("display","block");
+					$("#registerBtn").attr("disabled", "");
+				} else {
+					var passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,32}$/;
+					if($("#localUserPassword1").val().match(passw)) { 
+						$("#localUserPassword1Alert").html('<?=$translation['localAccountCreation_youCreateAnAccountWithoutPassword']?> <img height="16" src="<?=$websiteUrl?>vbcms-admin/images/emojis/thinkingHard.png">');
+						$("#localUserPassword1Alert").css("display","");
+						$("#localUserPassword2Alert").html('<?=$translation["localAccountCreation_pleaseRewriteYourPassword"]?>');
+						$("#localUserPassword2Alert").css("display","");
+						$("#registerBtn").removeAttr("disabled");
+					} else { 
+						$("#localUserPassword1Alert").html("<?=$translation["localAccountCreation_yourPasswordIsTooWeak"]?>");
+						$("#localUserPassword1Alert").css("display","block");
+						$("#localUserPassword2Alert").html("<?=$translation["localAccountCreation_yourPasswordIsTooWeak"]?>");
+						$("#localUserPassword2Alert").css("display","block");
+						$("#registerBtn").attr("disabled", "");
+					}
+					
+				}
+			}
+		</script>
+		<?php }
+		
+		if(isset($localAccountCreationSuccess) && $localAccountCreationSuccess){ ?>
+		<script type="text/javascript">
+			SnackBar({
+				message: "<?=$translation['localAccountCreation_success']?>",
+				status: "success"
+			});
+		</script>
+		<?php }if(isset($localAccountCreationSuccess) && !$localAccountCreationSuccess){ ?>
+		<script type="text/javascript">
+			SnackBar({
+				message: "<?=$translation['localAccountCreation_error']?>",
+				status: "danger",
+				timeout: false
+			});
+		</script>
+		<?php } ?>
 </body>
 </html>

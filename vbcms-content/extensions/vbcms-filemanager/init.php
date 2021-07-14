@@ -1,7 +1,7 @@
 <?php
 function enable($name, $path, $adminAccess, $clientAccess){
     adminNavbarAddCategory($name, "gallery_medias");
-    adminNavbarAddItem($name, "fas fa-photo-video", "gallery_filemanager", "/vbcms-admin/".$adminAccess."/browse");
+    adminNavbarAddItem($name, "fas fa-photo-video", "gallery_filemanager", "/browse");
 }
 
 function disable(){

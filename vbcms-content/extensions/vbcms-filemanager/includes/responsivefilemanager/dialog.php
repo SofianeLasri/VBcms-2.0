@@ -1,10 +1,8 @@
 <?php
 // A cause du fait que l'on ne peut pas faire de global dans une sous-fonction (logique)
-// On doit utiliser cette page à part, on doit instancier le module
+// On doit utiliser cette page à part
 require_once "../../../../../vbcms-core/core.php";
-$filemanager = new module('vbcms-filemanager');
-
-if(!isset($_SESSION['user_id']) || !$filemanager->verifyUserPermission($_SESSION['user_id'], 'openFilemanager')){
+if(!isset($_SESSION['user_id']) || !verifyUserPermission($_SESSION['user_id'], 'vbcms-filemanager', 'openFilemanager')){
     die("Access Denied!");
 }
 

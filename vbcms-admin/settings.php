@@ -44,7 +44,7 @@ foreach ($activatedExtensions as $activatedExtension){
                     <?php
                         foreach ($activatedExtensions as $activatedExtension){
                             $extJsonPath = $extensionsFolder.$activatedExtension['path'].'/extensionInfos.json';
-                            if(file_exists($extJsonPath)){
+                            if(file_exists($extJsonPath) && verifyUserPermission($_SESSION['user_id'], $activatedExtension["name"], 'access-settings')){
                                 $extInfos = json_decode(file_get_contents($extJsonPath), true);
                                 echo "<li id=\"ext-".$activatedExtension["name"]."\"><a href=\"#\" onclick=\"change('".$activatedExtension["name"]."')\">".$extInfos['showname']."</a></li>";
                             }

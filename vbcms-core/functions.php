@@ -134,3 +134,41 @@ function modifyNavItem($item){
     $response = $bdd->prepare("UPDATE `vbcms-clientNavbar` SET value1=?, value2=? WHERE id=?");
     $response->execute([$item[1], $item[2], $item[0]]);
 }
+
+function verifyUserPermission($userId, $extensionName, $action){
+    global $bdd;    
+    // On va récupérer les infos de l'utilisateur
+    $userInfos = $bdd->prepare("SELECT * FROM `vbcms-users` WHERE netId=?");
+    $userInfos->execute([$userId]);
+    $userInfos = $userInfos->fetch(PDO::FETCH_ASSOC);
+
+    // On va vérifier s'il a des perms à part
+    $usersPerms = $bdd->prepare("SELECT * FROM `vbcms-usersPerms` WHERE userId=? AND extensionName=?");
+    $usersPerms->execute([$userId, $extensionName]);
+    $perms = $usersPerms->fetch(PDO::FETCH_ASSOC);
+    
+    if(empty($perms)){
+        // Il n'a pas de perms à part
+        // On va maintenant récupérer les infos de son groupe
+        $groupInfos = $bdd->prepare("SELECT * FROM `vbcms-userGroups` WHERE groupId=?");
+        $groupInfos->execute([$userInfos['groupId']]);
+        $groupInfos = $groupInfos->fetch(PDO::FETCH_ASSOC);
+
+         // Et maintenant les perms
+        if(!empty($groupInfos)){
+            if($groupInfos['groupName'] == "superadmins") return true; // Les superadmins ont tous les droits, pas besoin de spécifier leur perms
+
+            $groupsPerms = $bdd->prepare("SELECT * FROM `vbcms-groupsPerms` WHERE netId=? AND extensionName=?");
+            $groupsPerms->execute([$groupInfos['groupId'], $extensionName]);
+            $perms = $groupsPerms->fetch(PDO::FETCH_ASSOC);
+        }
+    }
+
+    if(!empty($perms)){
+        $perms = json_decode($perms, true);
+        if($perms[$action]) return true;
+        else return false;
+    } else {
+        return false;
+    }
+}

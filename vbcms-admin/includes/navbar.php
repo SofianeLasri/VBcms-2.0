@@ -67,14 +67,17 @@ $debugMode = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='debugMo
 					<span class="menu-text"><?=$translation["settings"]?></span>
 				</a>
 			</div>
+			<?php if(verifyUserPermission($_SESSION['user_id'], 'vbcms', 'updatePanel')) { ?>
 			<div class="menu-item">
 				<a href="/vbcms-admin/updater" class="menu-link">
 					<span class="menu-icon"><i class="fas fa-cloud-download-alt"></i></span>
 					<span class="menu-text"><?=$translation["update"]?></span>
 				</a>
 			</div>
+			<?php } ?>
+
 			<?php 
-			if($debugMode == "1"){
+			if($debugMode == "1" && verifyUserPermission($_SESSION['user_id'], 'vbcms', 'accessDebug')){
 				echo '<div class="menu-item">
 				<a href="/vbcms-admin/debug" class="menu-link">
 					<span class="menu-icon"><i class="fas fa-bug"></i></span>
@@ -82,23 +85,48 @@ $debugMode = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='debugMo
 				</a>
 			</div>';
 			}
-			?>			
+			?>
+			
+			<?php if(verifyUserPermission($_SESSION['user_id'], 'vbcms', 'manageExtensions')) { ?>
+			<div class="menu-divider"></div>
+			<div class="menu-header"><?=$translation["workshop"]?></div>
+			<div class="menu-item">
+				<a href="/vbcms-admin/workshop/manage" class="menu-link">
+					<span class="menu-icon"><i class="fas fa-wrench"></i></span>
+					<span class="menu-text"><?=$translation["ws_manage"]?></span>
+				</a>
+			</div>
+			<?php } ?>
 
 			<!-- Insérer les liens ici -->
 
 			<?php
 			$navbarItems = $bdd->query("SELECT * FROM `vbcms-adminNavbar`")->fetchAll(PDO::FETCH_ASSOC);
+			$parent = null;
 			foreach ($navbarItems as $navbarItem) {
 				if ($navbarItem["parentId"]==0) {
-					echo '<div class="menu-divider"></div>';
-					echo '<div class="menu-header">'.$translation[$navbarItem["value2"]].'</div>';
-				} else {
-					echo '<div class="menu-item">
-				<a href="'.$navbarItem["value3"].'" class="menu-link">
-					<span class="menu-icon"><i class="fas '.$navbarItem["value1"].'"></i></span>
-					<span class="menu-text">'.$translation[$navbarItem["value2"]].'</span>
-				</a>
-			</div>';
+					$parent['id'] = $navbarItem['id'];
+					$parent['name'] = $navbarItem['value1'];
+					$response = $bdd->prepare("SELECT adminAccess FROM `vbcms-activatedExtensions` WHERE name=?");
+					$response->execute([$parent['name']]);
+					$parent['alias'] = $response->fetchColumn();
+					$parent['access'] = verifyUserPermission($_SESSION['user_id'], $parent['name'], 'access'); // true ou false
+
+					if($parent['access']){
+						echo '<div class="menu-divider"></div>';
+						echo '<div class="menu-header">'.$translation[$navbarItem["value2"]].'</div>';
+					}
+					
+				} elseif($navbarItem["parentId"]==$parent['id'] && $parent['access']) {
+					if(verifyUserPermission($_SESSION['user_id'], $parent['name'], 'access-'.$navbarItem["value3"])){
+						echo '<div class="menu-item">
+						<a href="/vbcms-admin/'.$parent['alias'].$navbarItem["value3"].'" class="menu-link">
+							<span class="menu-icon"><i class="fas '.$navbarItem["value1"].'"></i></span>
+							<span class="menu-text">'.$translation[$navbarItem["value2"]].'</span>
+						</a>
+					</div>';
+					}
+					
 				}
 			}
 			?>
