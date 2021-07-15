@@ -1,4 +1,7 @@
 <?php
+// Ici on est sur le script des tâches automatisées
+
+
 // On check les mises à jour
 $datetime = new DateTime(date("Y-m-d H:i:s"));
 

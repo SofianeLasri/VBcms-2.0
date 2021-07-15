@@ -80,7 +80,7 @@ if(isset($_POST['paths'])){
 			$name = $_POST['names'][$key];
 		}
 		list($path,$path_thumb,$name) = returnPaths($path,$name,$config);
-		$paths[] = $path;
+		$urlPath[] = $path;
 		$paths_thumb[] = $path_thumb;
 		$names = $name;
 	}

@@ -1,4 +1,8 @@
 <?php
+// Ici j'ai recréé la fonction que l'on appel pour les modules, car la flemme de faire autrement
+// Et puis ça marche pareil donc bon...
+
+// Une amélioration de la structure pourrait en revanche être une bonne idée, là c'est un peu le bazar
 function getSettingsHTML($params){
     global $bdd, $translation;
     $curentUpdateCanal = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='updateCanal'")->fetchColumn();
@@ -173,6 +177,10 @@ function getSettingsHTML($params){
         
         <div class="d-flex">
             <div class="flex-grow-1 d-flex flex-column">
+                <div class="mt-2">
+                    <a href="#" class="btn btn-brown btn-sm"><i class="fas fa-envelope"></i> Inviter un utilisateur</a>
+                    <a href="#" class="btn btn-outline-brown btn-sm"><i class="fas fa-user-plus"></i> Créer un utilisateur local</a>
+                </div>
                 <?php
                     $userGroups=$bdd->query("SELECT * FROM `vbcms-userGroups` ORDER BY `groupId` ASC")->fetchAll(PDO::FETCH_ASSOC);
                     foreach($userGroups as $userGroup){
@@ -250,7 +258,7 @@ function getSettingsHTML($params){
             <div class="admin-tips" style="position: relative !important; ">
                 <div class="tip">
                     <h5>Gérer les utilisateurs</h5>
-                    <p>VBcms peut être utilisé par plusieurs peronnes en même temps. Ici tu peux gérer leur compte utilisateur, fais bien attention à qui à accès au panel admin.</p>
+                    <p>VBcms peut être utilisé par plusieurs peronnes en même temps. Ici tu peux gérer leur compte, mais également inviter d'autres personnes.<br><strong>Fais bien attention à qui aura accès au panneau d'administration.</strong></p>
                 </div>
                 
                 

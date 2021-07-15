@@ -1,9 +1,7 @@
 <?php
 // Ce qu'on fait ici c'est récupérer le dossier racine de VBcms
-// Sur la pre2.0 toute la partie logique se passait dans /vbcms-admin
-// Ce raisonnement était donc logique car toujours valable.
+// On pourra récupérer cette variable sur l'ensemble du cms
 
-// Il faudra en revanche, voir si cela fonctionnera toujours avec la nouvelle architecture.
 if(!isset($vbcmsRootPath)){
 	$vbcmsRootPath = getcwd();
 	if(strpos($vbcmsRootPath, "/vbcms-core") !== false){
@@ -28,33 +26,12 @@ require_once 'functions.php';
 // On inclue le fichier des classes
 require_once 'classes.php';
 
-// On inclue les classes et fonctions du Namespace VBcms
-//require_once 'ns-VBcms.php';
-
 // On inclue le fichier responsable de la session utilisateur
+// L'API de la pre 2.0 est encore UP, mais il faudra revoir ce fichier dès que la pre 2.1 sera terminée
 require_once 'sessionHandler.php';
 
-/*
-// Switch pour la langue
-if(!isset($_SESSION["language"])){
-	$geoPlugin_array = unserialize( file_get_contents('http://www.geoplugin.net/php.gp?ip=' . $_SERVER['REMOTE_ADDR']) );
-	$language = $geoPlugin_array['geoplugin_countryCode'];
-} else $language = $_SESSION["language"];
-switch ($language) {
-    case "FR":
-        require_once $GLOBALS['vbcmsRootPath'].'/vbcms-content/translations/FR.php';
-        break;
-    case "EN":
-        require_once $GLOBALS['vbcmsRootPath'].'/vbcms-content/translations/EN.php';
-        break;
-    default:
-    	require_once $GLOBALS['vbcmsRootPath'].'/vbcms-content/translations/FR.php';
-        break;
-}
-*/
-
 // Maintenant on va gérer l'affichage des pages selon l'url
-if($paths[1]=="vbcms-admin"){
+if($urlPath[1]=="vbcms-admin"){
 	// L'utilisateur est sur le panel admin du cms
 	require_once "adminHandler.php";
 	// On va executer les tâches de fond du panel admin

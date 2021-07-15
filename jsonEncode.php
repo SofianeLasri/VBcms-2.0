@@ -1,4 +1,5 @@
 <?php
+// Fichier de test
 $deTest = function($index){
   $translation['test1'] = "Magnifique premier test";
   $translation['test2'] = "Magnifique premier test";

@@ -57,6 +57,7 @@ function loadModule($type, $moduleAlias, $moduleParams){
 	}
 }
 
+// Cette fonction est appelée par les modules afin de créer des pages selon 3 modes (pas vraiment besoin de l'appeler pour le 3ème)
 function extensionCreatePage($panelMode, $creationMode, $pageToInclude, $title, $description, $depedencies){
     // Le mode 0 correspond à l'inclusion d'une page qui retourne du code HTML
 	// Le mode 1 correspond à l'inclusion d'une page qui ne fait que passer des paramètres
@@ -75,8 +76,10 @@ function extensionCreatePage($panelMode, $creationMode, $pageToInclude, $title, 
     }
 }
 
+// Cette fonction permet la traduction des textures en fcontion de la langue utilisée par l'utilisateur
 function translate($index){
     global $bdd;
+    // Peut probable, mais il se peut que la langue n'ai pas été définie plus tôt
     if(!isset($_SESSION["language"])){
         $geoPlugin_array = unserialize( file_get_contents('http://www.geoplugin.net/php.gp?ip=' . $_SERVER['REMOTE_ADDR']) );
         $_SESSION["language"] = $geoPlugin_array['geoplugin_countryCode'];
@@ -95,8 +98,11 @@ function translate($index){
             break;
     }
 
+    // En gros, s'il existe une traduction, on la récupère
     if(isset($translation[$index])) $response = $translation[$index];
     else {
+        // Sinon on suppose que c'est une traduction d'un module
+        // Et donc on va la chercher
         $response = $bdd->query("SELECT * FROM `vbcms-activatedExtensions`");
         $activatedExtensions = $response->fetchAll(PDO::FETCH_ASSOC);
         foreach ($activatedExtensions as $activatedExtension){
@@ -107,6 +113,7 @@ function translate($index){
         }
     }
     
+    // S'il n'y a vraiment rien....
     if(!isset($translation[$index])) $response = $translation["unknownTranslation"];
     return $response;
 }
@@ -164,13 +171,8 @@ function adminNavbarAddItem($moduleName, $icon, $name, $link){
     $response = $bdd->prepare("INSERT INTO `vbcms-adminNavbar` (id, parentId, position, parentPosition, value1, value2, value3) VALUES (?,?,?,?,?,?,?)");
     $response->execute([null, $parentInfos["id"], $parentInfos["position"], $parentPosition, $icon, $name, $link]);
 }
-function modifyNavItem($item){
-    global $bdd;
-    $item = json_decode($item);
-    $response = $bdd->prepare("UPDATE `vbcms-clientNavbar` SET value1=?, value2=? WHERE id=?");
-    $response->execute([$item[1], $item[2], $item[0]]);
-}
 
+// Permet de vérifier qu'un utilisateur a bien les permissions pour visualiser ou effectuer une tâche
 function verifyUserPermission($userId, $extensionName, $action){
     global $bdd;    
     // On va récupérer les infos de l'utilisateur
