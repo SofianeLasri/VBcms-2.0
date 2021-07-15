@@ -19,7 +19,7 @@ if ((abs($datetime->getTimestamp()-$lastUpdateCheck->getTimestamp())) > 1800){
         $response = $bdd->query("SELECT COUNT(*) FROM `vbcms-notifications` WHERE origin = '[\"vbcms-updater\", \"notifyUpdate\"]'")->fetchColumn();
         if ($response!=1) {
             $response = $bdd->prepare("INSERT INTO `vbcms-notifications` (`id`, `origin`, `link`, `content`, `dismissible`, `date`, `userId`) VALUES (NULL, '[\"vbcms-updater\", \"notifyUpdate\"]', '/vbcms-admin/updater\"', ?, '0', ?, 0)");
-            $response->execute([$translation["isNotUpToDate"], date("Y-m-d H:i:s")]);
+            $response->execute([translate("isNotUpToDate"), date("Y-m-d H:i:s")]);
         }
     }
     $response = $bdd->prepare("UPDATE `vbcms-settings` SET `value` = ? WHERE `vbcms-settings`.`name` = 'lastUpdateCheck'");

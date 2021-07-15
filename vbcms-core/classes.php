@@ -394,4 +394,12 @@ class module {
         include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/init.php";
         getSettingsHTML($parameters);
     }
+
+    function getTranslationFile($langCode){
+        if(file_exists($this->extensionFullPath."/includes/translations/".strtoupper($langCode).".php")){
+            return $this->extensionFullPath."/includes/translations/".strtoupper($langCode).".php";
+        }elseif(file_exists($this->extensionFullPath."/includes/translations/EN.php")){
+            return $this->extensionFullPath."/includes/translations/EN.php";
+        }
+    }
 }

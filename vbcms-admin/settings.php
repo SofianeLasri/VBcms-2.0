@@ -16,7 +16,7 @@ foreach ($activatedExtensions as $activatedExtension){
 <html>
 <head>
 	<meta charset="utf-8">
-	<title><?=$websiteName?> | <?=$translation["settings"]?></title>
+	<title><?=$websiteName?> | <?=translate("settings")?></title>
 	<?php include 'includes/depedencies.php';?>
 	<link rel="stylesheet" href="<?=$websiteUrl?>vbcms-admin/vendors/pick-a-color/css/pick-a-color-1.2.3.min.css">
 </head>
@@ -32,7 +32,7 @@ foreach ($activatedExtensions as $activatedExtension){
                 echo '<div class="alert alert-danger" role="alert">'.$error.'</div>';
             }
         ?>
-		<h3><?=$translation["settings"]?></h3>
+		<h3><?=translate("settings")?></h3>
         <p>C'est ici que sont regroupés les paramètres de VBcms, mais également des différentes extensions.</p>
 		
         <div class="settingsContainer flex-grow-1 d-flex flex-column">

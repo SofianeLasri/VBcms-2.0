@@ -71,7 +71,7 @@ foreach ($requiredModulesNames as $requiredModuleName){
 <html>
 <head>
 	<meta charset="utf-8">
-	<title><?=$websiteName?> | <?=$translation["ws_addonsLists"]?></title>
+	<title><?=$websiteName?> | <?=translate("ws_addonsLists")?></title>
 	<?php include 'includes/depedencies.php';?>
 </head>
 <body>
@@ -95,8 +95,8 @@ foreach ($requiredModulesNames as $requiredModuleName){
 
 	<!-- Contenu -->
 	<div class="page-content" leftSidebar="240" rightSidebar="0">
-		<h3><?=$translation["ws_manage"]?></h3>
-		<p><?=$translation["ws_pageDesc"]?></p>
+		<h3><?=translate("ws_manage")?></h3>
+		<p><?=translate("ws_pageDesc")?></p>
 
 		<div class="width-50em d-flex flex-column">
 		<?php
@@ -109,11 +109,11 @@ foreach ($requiredModulesNames as $requiredModuleName){
 			
 			<?php
 			foreach ($extensionsList as $extensionTypeName => $extensionTypeExtensions){
-				echo "<h5>".$translation["ws_".$extensionTypeName.'s']."</h5>";
+				echo "<h5>".translate("ws_".$extensionTypeName.'s')."</h5>";
 				foreach ($extensionTypeExtensions as $extension){
 					if(!empty($extension['extensionLogo'])) $backgroundLogo = 'style="background-image: url(\''.$extension['extensionLogo'].'\')"';
 					else $backgroundLogo = null;
-					if(isset($extension['isAnUnsatisfiedDependency'])&&$extension['isAnUnsatisfiedDependency'] == true) $depedencyWarning = '<i class="fas fa-exclamation-circle warningBlink ml-1" data-toggle="tooltip" data-placement="top" title="'.$translation["ws_requireddependece"].'"></i>';
+					if(isset($extension['isAnUnsatisfiedDependency'])&&$extension['isAnUnsatisfiedDependency'] == true) $depedencyWarning = '<i class="fas fa-exclamation-circle warningBlink ml-1" data-toggle="tooltip" data-placement="top" title="'.translate("ws_requireddependece").'"></i>';
 					else $depedencyWarning = null;
 
 					echo('<div class="workshop-suscribedCard my-2" id="'.$extension['name'].'" depedencies=\''.json_encode($extension['requiredModules']).'\' adminAccess="'.$extension['adminAccess'].'" clientAccess="'.$extension['clientAccess'].'" type="'.$extension['type'].'">
@@ -125,9 +125,9 @@ foreach ($requiredModulesNames as $requiredModuleName){
 					</div>
 					<div class="addonControl">');
 					if($extension['activated'])
-						echo '<button class="btn btn-sm btn-brown float-right my-1" id="toogle-addon-'.$extension['name'].'" onclick="disableAddon(\''.$extension['name'].'\')">'.$translation["ws_disable"].'</button>';
+						echo '<button class="btn btn-sm btn-brown float-right my-1" id="toogle-addon-'.$extension['name'].'" onclick="disableAddon(\''.$extension['name'].'\')">'.translate("ws_disable").'</button>';
 					else
-						echo '<button class="btn btn-sm btn-brown float-right my-1" id="toogle-addon-'.$extension['name'].'" onclick="enableAddon(\''.$extension['name'].'\')">'.$translation["ws_enable"].'</button>';
+						echo '<button class="btn btn-sm btn-brown float-right my-1" id="toogle-addon-'.$extension['name'].'" onclick="enableAddon(\''.$extension['name'].'\')">'.translate("ws_enable").'</button>';
 					
 					if($extension['isWsSuscribed'])
 						echo '<button class="btn btn-sm btn-danger float-right my-1" onclick="unsuscribeAddon('.$extension['name'].')">Se désabonner</button>';
@@ -186,7 +186,7 @@ foreach ($requiredModulesNames as $requiredModuleName){
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header bg-brown text-white">
-					<h5 id="extensionActivationModalTitle" class="modal-title"><?=$translation['ws_activateModule']?></h5>
+					<h5 id="extensionActivationModalTitle" class="modal-title"><?=translate('ws_activateModule')?></h5>
 					<button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -194,28 +194,28 @@ foreach ($requiredModulesNames as $requiredModuleName){
 				<div class="modal-body" id="extensionActivationModalBody">
 					<div id="moduleAccessDiv" moduleName="">
 						<div class="form-group">
-							<label><?=$translation['ws_clientAccess']?></label>
+							<label><?=translate('ws_clientAccess')?></label>
 							<input type="text" class="form-control" id="clientAccessInput" placeholder="">
-							<small class="form-text text-muted"><?=$translation["ws_clientAccessExplaination"]?></small>
+							<small class="form-text text-muted"><?=translate("ws_clientAccessExplaination")?></small>
 							<div class="invalid-feedback">Veuillez renter un alias unique</div>
 						</div>
 						<div class="form-group">
-							<label><?=$translation['ws_adminAccess']?></label>
+							<label><?=translate('ws_adminAccess')?></label>
 							<input type="text" class="form-control" id="adminAccessInput" placeholder="">
-							<small class="form-text text-muted"><?=$translation["ws_adminAccessExplaination"]?></small>
+							<small class="form-text text-muted"><?=translate("ws_adminAccessExplaination")?></small>
 							<div class="invalid-feedback">Veuillez renter un alias unique</div>
 						</div>
 					</div>
 
 					<div id="depedenciesInfosDiv">
-						<h5><?=$translation["note"]?></h5>
-						<p><?=$translation['ws_enableRequiredDepedencies']?><br>
-						<?=$translation['ws_enableRequiredDepedenciesMarkerInfo']?></p>
+						<h5><?=translate("note")?></h5>
+						<p><?=translate('ws_enableRequiredDepedencies')?><br>
+						<?=translate('ws_enableRequiredDepedenciesMarkerInfo')?></p>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-outline-brown" data-dismiss="modal"><?=$translation["close"]?></button>
-					<button id="extensionActivationModalBtn" onclick="" type="button" class="btn btn-brown"><?=$translation["ws_enable"]?></button>
+					<button type="button" class="btn btn-outline-brown" data-dismiss="modal"><?=translate("close")?></button>
+					<button id="extensionActivationModalBtn" onclick="" type="button" class="btn btn-brown"><?=translate("ws_enable")?></button>
 				</div>
 			</div>
 		</div>
@@ -225,17 +225,17 @@ foreach ($requiredModulesNames as $requiredModuleName){
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header bg-brown text-white">
-					<h5 id="extensionDesacctivationModalTitle" class="modal-title"><?=$translation["ws_disableExtension"]?></h5>
+					<h5 id="extensionDesacctivationModalTitle" class="modal-title"><?=translate("ws_disableExtension")?></h5>
 					<button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<p><?=$translation["ws_askExtToDeleteItsData"]?></p>
+					<p><?=translate("ws_askExtToDeleteItsData")?></p>
 				</div>
 				<div class="modal-footer">
-					<button id="extensionDesactivationModalBtnNo" onclick="" type="button" class="btn btn-outline-brown"><?=$translation["no"]?></button>
-					<button id="extensionDesactivationModalBtnYes" onclick="" type="button" class="btn btn-brown"><?=$translation["yes"]?></button>
+					<button id="extensionDesactivationModalBtnNo" onclick="" type="button" class="btn btn-outline-brown"><?=translate("no")?></button>
+					<button id="extensionDesactivationModalBtnYes" onclick="" type="button" class="btn btn-brown"><?=translate("yes")?></button>
 				</div>
 			</div>
 		</div>
@@ -262,7 +262,7 @@ foreach ($requiredModulesNames as $requiredModuleName){
 			$.get("<?=$websiteUrl?>vbcms-admin/backTasks/?checkModulesAliases="+encodeURIComponent(JSON.stringify(array)), function(data) {
 				if (!isJson(data)) {
 					SnackBar({
-						message: "<?=$translation['ws_cantVerifyModulesAlias']?>: "+data,
+						message: "<?=translate('ws_cantVerifyModulesAlias')?>: "+data,
 						status: "danger",
 						timeout: false
 					});
@@ -298,7 +298,7 @@ foreach ($requiredModulesNames as $requiredModuleName){
 			if(($("#"+name).attr("type")=="module") && ((typeof adminAccess === 'undefined') || (typeof clientAccess === 'undefined'))){
 				$("#moduleAccessDiv").css('display', 'block');
 				$("#moduleAccessDiv").attr('moduleName', name);
-				$("#extensionActivationModalTitle").html('<?=$translation["ws_enableModule"]?>');
+				$("#extensionActivationModalTitle").html('<?=translate("ws_enableModule")?>');
 
 				$("#clientAccessInput").attr("placeholder", $("#"+name).attr("clientAccess"));
 				$("#adminAccessInput").attr("placeholder", $("#"+name).attr("adminAccess"));
@@ -306,7 +306,7 @@ foreach ($requiredModulesNames as $requiredModuleName){
 				$("#adminAccessInput").attr("value", $("#"+name).attr("adminAccess"));
 
 				$("#extensionActivationModalBtn").attr("onclick", "enableAddon('"+name+"', '"+$("#"+name).attr("adminAccess")+"', '"+$("#"+name).attr("clientAccess")+"')");
-				$("#extensionActivationModalBtn").html("<?=$translation['ws_enable']?>");
+				$("#extensionActivationModalBtn").html("<?=translate('ws_enable')?>");
 				$('#extensionActivationModal').modal('toggle');
 
 				if($("#"+name).attr("depedencies") != "[]"){
@@ -324,7 +324,7 @@ foreach ($requiredModulesNames as $requiredModuleName){
 				$.get("<?=$websiteUrl?>vbcms-admin/backTasks/?enableExtension="+encodeURIComponent(JSON.stringify(array)), function(data) {
 					if (data != "") {
 						SnackBar({
-							message: "<?=$translation['ws_errorEnableAddon']?>: "+data,
+							message: "<?=translate('ws_errorEnableAddon')?>: "+data,
 							status: "danger",
 							timeout: false
 						});
@@ -347,7 +347,7 @@ foreach ($requiredModulesNames as $requiredModuleName){
 				$.get("<?=$websiteUrl?>vbcms-admin/backTasks/?disableExtension="+encodeURIComponent(JSON.stringify(array)), function(data) {
 					if (data != "") {
 						SnackBar({
-							message: "<?=$translation['ws_errorDisableAddon']?>: "+data,
+							message: "<?=translate('ws_errorDisableAddon')?>: "+data,
 							status: "danger",
 							timeout: false
 						});

@@ -40,9 +40,9 @@ $debugMode = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='debugMo
 						<span class="brand-name">VBcms</span><small class="ml-1"><?=$vbcmsVer?></small>
 					</div>
 					
-					<a class="dropdown-item" target="_blank" href="https://vbcms.net/manager/myaccount"><?=$translation["myProfil"]?></a>
-				    <a class="dropdown-item" target="_blank" href="https://vbcms.net/manager/myliscence"><?=$translation["manageliscence"]?></a>
-				    <a class="dropdown-item" href="?logout"><?=$translation["disconnect"]?></a>
+					<a class="dropdown-item" target="_blank" href="https://vbcms.net/manager/myaccount"><?=translate("myProfil")?></a>
+				    <a class="dropdown-item" target="_blank" href="https://vbcms.net/manager/myliscence"><?=translate("manageliscence")?></a>
+				    <a class="dropdown-item" href="?logout"><?=translate("disconnect")?></a>
 				</div>
 			</div>
 		</div>
@@ -54,24 +54,24 @@ $debugMode = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='debugMo
 <div class="sidebar sidebarminify">
 	<div class="scrollLinks">
 		<div class="menu" >
-			<div class="menu-header"><?=$translation["naviguation"]?></div>
+			<div class="menu-header"><?=translate("naviguation")?></div>
 			<div class="menu-item">
 				<a href="/vbcms-admin" class="menu-link">
 					<span class="menu-icon"><i class="fas fa-home"></i></span>
-					<span class="menu-text"><?=$translation["dashboard"]?></span>
+					<span class="menu-text"><?=translate("dashboard")?></span>
 				</a>
 			</div>
 			<div class="menu-item">
 				<a href="/vbcms-admin/settings" class="menu-link">
 					<span class="menu-icon"><i class="fas fa-wrench"></i></span>
-					<span class="menu-text"><?=$translation["settings"]?></span>
+					<span class="menu-text"><?=translate("settings")?></span>
 				</a>
 			</div>
 			<?php if(verifyUserPermission($_SESSION['user_id'], 'vbcms', 'updatePanel')) { ?>
 			<div class="menu-item">
 				<a href="/vbcms-admin/updater" class="menu-link">
 					<span class="menu-icon"><i class="fas fa-cloud-download-alt"></i></span>
-					<span class="menu-text"><?=$translation["update"]?></span>
+					<span class="menu-text"><?=translate("update")?></span>
 				</a>
 			</div>
 			<?php } ?>
@@ -89,11 +89,11 @@ $debugMode = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='debugMo
 			
 			<?php if(verifyUserPermission($_SESSION['user_id'], 'vbcms', 'manageExtensions')) { ?>
 			<div class="menu-divider"></div>
-			<div class="menu-header"><?=$translation["workshop"]?></div>
+			<div class="menu-header"><?=translate("workshop")?></div>
 			<div class="menu-item">
 				<a href="/vbcms-admin/workshop/manage" class="menu-link">
 					<span class="menu-icon"><i class="fas fa-wrench"></i></span>
-					<span class="menu-text"><?=$translation["ws_manage"]?></span>
+					<span class="menu-text"><?=translate("ws_manage")?></span>
 				</a>
 			</div>
 			<?php } ?>
@@ -114,7 +114,7 @@ $debugMode = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='debugMo
 
 					if($parent['access']){
 						echo '<div class="menu-divider"></div>';
-						echo '<div class="menu-header">'.$translation[$navbarItem["value2"]].'</div>';
+						echo '<div class="menu-header">'.translate($navbarItem["value2"]).'</div>';
 					}
 					
 				} elseif($navbarItem["parentId"]==$parent['id'] && $parent['access']) {
@@ -122,7 +122,7 @@ $debugMode = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='debugMo
 						echo '<div class="menu-item">
 						<a href="/vbcms-admin/'.$parent['alias'].$navbarItem["value3"].'" class="menu-link">
 							<span class="menu-icon"><i class="fas '.$navbarItem["value1"].'"></i></span>
-							<span class="menu-text">'.$translation[$navbarItem["value2"]].'</span>
+							<span class="menu-text">'.translate($navbarItem["value2"]).'</span>
 						</a>
 					</div>';
 					}

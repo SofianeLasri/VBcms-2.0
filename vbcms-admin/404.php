@@ -15,8 +15,8 @@
 		<div class="d-flex flex-column">
 			<div class="align-self-center text-center">
 				<img src="<?=$websiteUrl?>/vbcms-admin/images/vbcms-logo/raccoon-512x.png">
-				<h1 class="mt-5"><?=$translation["404oups"]?></h1>
-				<p><?=$translation["404message"]?></p>
+				<h1 class="mt-5"><?=translate("404oups")?></h1>
+				<p><?=translate("404message")?></p>
 			</div>
 		</div>
 	</div>

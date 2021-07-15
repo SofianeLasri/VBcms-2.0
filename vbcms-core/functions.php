@@ -75,6 +75,41 @@ function extensionCreatePage($panelMode, $creationMode, $pageToInclude, $title, 
     }
 }
 
+function translate($index){
+    global $bdd;
+    if(!isset($_SESSION["language"])){
+        $geoPlugin_array = unserialize( file_get_contents('http://www.geoplugin.net/php.gp?ip=' . $_SERVER['REMOTE_ADDR']) );
+        $_SESSION["language"] = $geoPlugin_array['geoplugin_countryCode'];
+    }
+
+    $language = $_SESSION["language"];
+    switch ($language) {
+        case "FR":
+            include $GLOBALS['vbcmsRootPath'].'/vbcms-content/translations/FR.php';
+            break;
+        case "EN":
+            include $GLOBALS['vbcmsRootPath'].'/vbcms-content/translations/EN.php';
+            break;
+        default:
+            include $GLOBALS['vbcmsRootPath'].'/vbcms-content/translations/FR.php';
+            break;
+    }
+
+    if(isset($translation[$index])) $response = $translation[$index];
+    else {
+        $response = $bdd->query("SELECT * FROM `vbcms-activatedExtensions`");
+        $activatedExtensions = $response->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($activatedExtensions as $activatedExtension){
+            $ext = new module($activatedExtension["name"]);
+            $ext->getTranslationFile($language);
+            if(isset($translation[$index])) return $translation[$index];
+        }
+    }
+    
+    if(!isset($translation[$index])) $response = $translation["unknownTranslation"];
+    return $response;
+}
+
 function show404($type){
 	if ($type=="client") {
 		// Affiche la page 404 du site client

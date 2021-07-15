@@ -3,9 +3,9 @@ require_once '../vbcms-core/core.php';
 
 $isUpToDate = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name = 'upToDate'")->fetchColumn();
 if ($isUpToDate == 1) {
-	$updateMessage = $translation["isUpToDate"];
+	$updateMessage = translate("isUpToDate");
 } else {
-	$updateMessage = $translation["isNotUpToDate"];
+	$updateMessage = translate("isNotUpToDate");
 }
 if($_SESSION['loginType']=='vbcms-account'){
 	$userHasLocalAccount = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE netIdAssoc = ?");
@@ -37,7 +37,7 @@ if($_SESSION['loginType']=='vbcms-account'){
 <html>
 <head>
 	<meta charset="utf-8">
-	<title><?=$websiteName?> | <?=$translation["dashboard"]?></title>
+	<title><?=$websiteName?> | <?=translate("dashboard")?></title>
 	<?php include 'includes/depedencies.php';?>
 </head>
 <body>
@@ -148,36 +148,36 @@ if($_SESSION['loginType']=='vbcms-account'){
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header bg-brown text-white">
-						<h5 id="extensionActivationModalTitle" class="modal-title"><?=$translation['localAccountCreation']?></h5>
+						<h5 id="extensionActivationModalTitle" class="modal-title"><?=translate('localAccountCreation')?></h5>
 					</div>
 					<div class="modal-body">
 						<form method="post" class="needs-validation" novalidate>
 							<div class="form-group">
-								<label><?=$translation['username']?></label>
+								<label><?=translate('username')?></label>
 								<input type="text" class="form-control" name="localUserUsername" placeholder="<?=$_SESSION['user_username']?>" value="<?=$_SESSION['user_username']?>" required>
-								<small class="form-text text-muted"><?=$translation["localAccountCreation_loginCanBeDifferent"]?></small>
-								<div class="invalid-feedback"><?=$translation["localAccountCreation_pleaseEnterLogin"]?></div>
+								<small class="form-text text-muted"><?=translate("localAccountCreation_loginCanBeDifferent")?></small>
+								<div class="invalid-feedback"><?=translate("localAccountCreation_pleaseEnterLogin")?></div>
 							</div>
 							<div class="form-group">
-								<label><?=$translation['password']?></label>
+								<label><?=translate('password')?></label>
 								<input type="password" class="form-control" name="localUserPassword1" id="localUserPassword1" placeholder="" required>
 								<div class="invalid-feedback" id="localUserPassword1Alert">
-									<?=$translation['localAccountCreation_youCreateAnAccountWithoutPassword']?> <img height="16" src="<?=$websiteUrl?>vbcms-admin/images/emojis/thinkingHard.png">
+									<?=translate('localAccountCreation_youCreateAnAccountWithoutPassword')?> <img height="16" src="<?=$websiteUrl?>vbcms-admin/images/emojis/thinkingHard.png">
 								</div>
 							</div>
 							<div class="form-group">
-								<label><?=$translation['repeatPassword']?></label>
+								<label><?=translate('repeatPassword')?></label>
 								<input type="password" class="form-control" name="localUserPassword2" id="localUserPassword2" placeholder="" required>
-								<div class="invalid-feedback" id="localUserPassword2Alert"><?=$translation["localAccountCreation_pleaseRewriteYourPassword"]?></div>
+								<div class="invalid-feedback" id="localUserPassword2Alert"><?=translate("localAccountCreation_pleaseRewriteYourPassword")?></div>
 							</div>
 
 							<div>
-								<h5><?=$translation["whyCreateALocalAccount"]?></h5>
+								<h5><?=translate("whyCreateALocalAccount")?></h5>
 								<p>Autant le dire tout de suite, les serveurs de VBcms ne sont pas réputés pour être très fiables... Il sera assez fréquent de les voir inaccessibles, surtout à ce stade du développement.<br><br><strong>Le compte local te permettera d'accéder au panneau d'administration, même en cas de panne générale.</strong> Tu ne pourras pas télécharger d'extensions ni mettre VBcms à jour, mais au moins tu pourras continuer à gérer ton site. :D</p>
 							</div>
 						</div>
 						<div class="modal-footer">
-							<button id="registerBtn" type="submit" class="btn btn-brown"><?=$translation["create"]?></button>
+							<button id="registerBtn" type="submit" class="btn btn-brown"><?=translate("create")?></button>
 						</div>
 					</form>
 				</div>
@@ -216,23 +216,23 @@ if($_SESSION['loginType']=='vbcms-account'){
 
 			function checkPassword(){
 				if ($("#localUserPassword1").val()!=$("#localUserPassword2").val()) {
-					$("#localUserPassword1Alert").html("<?=$translation["localAccountCreation_passwordsDontMatches"]?>");
+					$("#localUserPassword1Alert").html("<?=translate("localAccountCreation_passwordsDontMatches")?>");
 					$("#localUserPassword1Alert").css("display","block");
-					$("#localUserPassword2Alert").html("<?=$translation["localAccountCreation_passwordsDontMatches"]?>");
+					$("#localUserPassword2Alert").html("<?=translate("localAccountCreation_passwordsDontMatches")?>");
 					$("#localUserPassword2Alert").css("display","block");
 					$("#registerBtn").attr("disabled", "");
 				} else {
 					var passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,32}$/;
 					if($("#localUserPassword1").val().match(passw)) { 
-						$("#localUserPassword1Alert").html('<?=$translation['localAccountCreation_youCreateAnAccountWithoutPassword']?> <img height="16" src="<?=$websiteUrl?>vbcms-admin/images/emojis/thinkingHard.png">');
+						$("#localUserPassword1Alert").html('<?=translate('localAccountCreation_youCreateAnAccountWithoutPassword')?> <img height="16" src="<?=$websiteUrl?>vbcms-admin/images/emojis/thinkingHard.png">');
 						$("#localUserPassword1Alert").css("display","");
-						$("#localUserPassword2Alert").html('<?=$translation["localAccountCreation_pleaseRewriteYourPassword"]?>');
+						$("#localUserPassword2Alert").html('<?=translate("localAccountCreation_pleaseRewriteYourPassword")?>');
 						$("#localUserPassword2Alert").css("display","");
 						$("#registerBtn").removeAttr("disabled");
 					} else { 
-						$("#localUserPassword1Alert").html("<?=$translation["localAccountCreation_yourPasswordIsTooWeak"]?>");
+						$("#localUserPassword1Alert").html("<?=translate("localAccountCreation_yourPasswordIsTooWeak")?>");
 						$("#localUserPassword1Alert").css("display","block");
-						$("#localUserPassword2Alert").html("<?=$translation["localAccountCreation_yourPasswordIsTooWeak"]?>");
+						$("#localUserPassword2Alert").html("<?=translate("localAccountCreation_yourPasswordIsTooWeak")?>");
 						$("#localUserPassword2Alert").css("display","block");
 						$("#registerBtn").attr("disabled", "");
 					}
@@ -245,14 +245,14 @@ if($_SESSION['loginType']=='vbcms-account'){
 		if(isset($localAccountCreationSuccess) && $localAccountCreationSuccess){ ?>
 		<script type="text/javascript">
 			SnackBar({
-				message: "<?=$translation['localAccountCreation_success']?>",
+				message: "<?=translate('localAccountCreation_success')?>",
 				status: "success"
 			});
 		</script>
 		<?php }if(isset($localAccountCreationSuccess) && !$localAccountCreationSuccess){ ?>
 		<script type="text/javascript">
 			SnackBar({
-				message: "<?=$translation['localAccountCreation_error']?>",
+				message: "<?=translate('localAccountCreation_error')?>",
 				status: "danger",
 				timeout: false
 			});

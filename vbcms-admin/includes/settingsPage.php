@@ -29,7 +29,7 @@ function getSettingsHTML($params){
                         <a href="#" onclick="changeTab('general')">Paramètres généraux</a>
                     </li>
                     <?php } ?>
-                    <?php if(verifyUserPermission($_SESSION['user_id'], "vbcms", 'access-usersSettings')){ ?>
+                    <?php if(verifyUserPermission($_SESSION['user_id'], "vbcms", 'access-manageUsersSettings')){ ?>
                     <li id="tab-users">
                         <a href="#" onclick="changeTab('users')">Utilisateurs</a>
                     </li>
@@ -57,11 +57,12 @@ function getSettingsHTML($params){
                 </ul>
             </div>
             <?php 
-                if(!isset($params)||empty($params)||$params=="general"){
+                if((!isset($params)||empty($params)||$params=="general") && verifyUserPermission($_SESSION['user_id'], "vbcms", 'access-generalSettings')){
             ?>
-            <h5 class="mt-2">Paramètres de mises à jour</h5>
+            
             <form id="form" method="post">
                 <?php if(verifyUserPermission($_SESSION['user_id'], "vbcms", 'updatePanel')){ ?>
+                <h5 class="mt-2">Paramètres de mises à jour</h5>
                 <div class="row">
                     <div class="col-sm">
                         <div class="form-group">
@@ -168,7 +169,7 @@ function getSettingsHTML($params){
             </div>
             <?php } ?>
         </div>
-        <?php }elseif($params=="users"){ ?>
+        <?php }elseif($params=="users" && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')){ ?>
         
         <div class="d-flex">
             <div class="flex-grow-1 d-flex flex-column">
@@ -239,7 +240,7 @@ function getSettingsHTML($params){
                     });
                 } else {
                     SnackBar({
-                        message: '<?=$translation["success-saving"]?>',
+                        message: '<?=translate("success-saving")?>',
                         status: "success"
                     });
                     // On peut reload le contenu de la page avec cette fonction

@@ -74,7 +74,7 @@ if (isset($_GET["getNotifications"])) {
 
 	// Maintenant on va créer l'instance de l'extension et l'activer
 	if($extensionInfos["type"]=="module"){
-		$calledmodule = new VBcms\module($extensionInfos["name"]);
+		$calledmodule = new module($extensionInfos["name"]);
     	$calledmodule->initModule($extensionInfos["name"], $extensionInfos["path"], $extensionInfos["adminAccess"], $extensionInfos["clientAccess"], $extensionInfos["compatible"], $extensionInfos["workshopId"]);
 	}
 	
@@ -90,7 +90,7 @@ if (isset($_GET["getNotifications"])) {
 	else {
 		// Maintenant on va créer l'instance de l'extension et la désactiver
 		if($extensionInfos["type"]=="module"){
-			$calledmodule = new VBcms\module($extensionInfos["name"]);
+			$calledmodule = new module($extensionInfos["name"]);
 			$calledmodule->disableModule($extensionToDisable['deleteData']);
 		}
 	}	
@@ -124,7 +124,7 @@ if (isset($_GET["getNotifications"])) {
 
 		if(!empty($moduleExist)){
 			$extensionsFolder = $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/';
-			$calledModule = new VBcms\module($moduleToCall['moduleName']);
+			$calledModule = new module($moduleToCall['moduleName']);
 			$calledModule->getSettingsPage($moduleToCall['parameters']);
 		}else{
 			echo "<h5>Impossible d'afficher la page</h5><p>L'extension <code>".$moduleToCall['moduleName']."</code> n'a pas été trouvée. 😢</p>";
