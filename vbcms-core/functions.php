@@ -101,7 +101,8 @@ function translate($index){
         $activatedExtensions = $response->fetchAll(PDO::FETCH_ASSOC);
         foreach ($activatedExtensions as $activatedExtension){
             $ext = new module($activatedExtension["name"]);
-            $ext->getTranslationFile($language);
+            $extTrsl = $ext->getTranslationFile($language);
+            if(!empty($extTrsl)) include $extTrsl;
             if(isset($translation[$index])) return $translation[$index];
         }
     }

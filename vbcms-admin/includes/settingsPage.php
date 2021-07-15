@@ -173,9 +173,79 @@ function getSettingsHTML($params){
         
         <div class="d-flex">
             <div class="flex-grow-1 d-flex flex-column">
-                <div>
-                    
+                <?php
+                    $userGroups=$bdd->query("SELECT * FROM `vbcms-userGroups` ORDER BY `groupId` ASC")->fetchAll(PDO::FETCH_ASSOC);
+                    foreach($userGroups as $userGroup){
+                        echo ('<div class="d-flex flex-column p-4">
+                            <div class="text-brown border-bottom">');
+
+                        $usersCount = $bdd->prepare("SELECT COUNT(*) FROM `vbcms-users` WHERE groupId = ?");
+                        $usersCount->execute([$userGroup['groupId']]);
+                        $usersCount=$usersCount->fetchColumn();
+
+                        echo translate($userGroup['groupName'])." (".$usersCount;
+
+                        if($usersCount>1) echo " ".strtolower(translate("users")).")";
+                        else echo " ".strtolower(translate("user")).")";
+
+                        echo ('</div>
+                        <div class="d-flex flex-wrap userList">');
+
+                        $users = $bdd->prepare("SELECT * FROM `vbcms-users` WHERE groupId = ?");
+                        $users->execute([$userGroup['groupId']]);
+                        $users=$users->fetchAll(PDO::FETCH_ASSOC);
+
+                        foreach($users as $user){
+                            $userProfilPic = file_get_contents("https://api.vbcms.net/profiles/v1/".$user['netId']);
+                            if(isJson($userProfilPic)){
+                                $userProfilPic = json_decode($userProfilPic, true);
+                                $userProfilPic = $userProfilPic['profilePic'];
+                            } else {
+                                // Ici on a soit pas trouvé l'utilisateur, soit les serveurs sont down
+                                // Du coup on va check dans localAccounts
+                                $userProfilPic = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE netIdAssoc = ?");
+                                $userProfilPic->execute([$user['netId']]);
+                                $userProfilPic=$userProfilPic->fetch(PDO::FETCH_ASSOC);
+                                if(!empty($userProfilPic)){
+                                    $userProfilPic = $userProfilPic['profilePic'];
+                                }else{
+                                    // Ici l'utilisateur n'existe pas dans la liste des comptes locaux
+                                    // Donc on va lui mettre une image placeholder
+                                    $userProfilPic = $GLOBALS['websiteUrl']."vbcms-admin/images/misc/programmer.png";
+                                }
+                            }
+
+                            $joinedDate = new DateTime($user['localJoinedDate']);
+
+                            echo ('<div class="userCard d-flex">
+                                <div class="userProfilPic" style="background-image:url(\''.$userProfilPic.'\')"></div>
+                                <div class="ml-2">
+                                    <h6 class="mb-n1">'.$user['username'].'</h6>
+                                    <small class="text-muted">'.translate('joinedOn').': '. $joinedDate->format('l jS F').'</small><br>
+                                    <small><a href="#" class="text-brown">'.translate("modifyUser").'</a></small>
+                                </div>
+                            </div>');
+                        }
+                        echo "</div></div>";
+                    }
+                ?>
+                <!--
+                <div class="d-flex flex-column p-4">
+                    <div class="text-brown border-bottom">
+                        Un groupe trop génial (1 utilisateur)
+                    </div>
+                    <div class="d-flex flex-wrap userList">
+                        <div class="userCard d-flex">
+                            <div class="userProfilPic" style="background-image:url('https://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/ee/ee6f9c9ffd6bb2fd2114a378f3f03d997f79e4b9_full.jpg')"></div>
+                            <div class="ml-2">
+                                <h6 class="mb-n1">sofianelasri</h6>
+                                <small class="text-muted">A rejoint le: </small><br>
+                                <a href="#" class="text-brown"><?=translate("modifyUser")?></a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                -->
             </div>
             <div class="admin-tips" style="position: relative !important; ">
                 <div class="tip">
