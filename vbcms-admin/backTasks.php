@@ -93,7 +93,15 @@ if (isset($_GET["getNotifications"])) {
 			$calledmodule = new module($extensionInfos["name"]);
 			$calledmodule->disableModule($extensionToDisable['deleteData']);
 		}
-	}	
+	}
+
+	// Elle peut être utilisée comme fonction de base
+	$baseFunctions = $bdd->prepare("SELECT * FROM `vbcms-baseModulesAssoc` WHERE extensionName = ?");
+	$baseFunctions->execute([$extensionToDisable['name']]);
+	foreach($baseFunctions as $baseFunction){
+		$fixedAssoc = $bdd->prepare("UPDATE `vbcms-baseModulesAssoc` SET extensionName = '' WHERE name = ?");
+		$fixedAssoc->execute([$baseFunction['name']]);
+	}
 	
 } elseif (isset($_GET["checkModulesAliases"])&&!empty($_GET["checkModulesAliases"])){
 	$aliases = json_decode($_GET["checkModulesAliases"],true);
@@ -161,6 +169,11 @@ if (isset($_GET["getNotifications"])) {
 	if (isset($_POST["autoInstallCriticalUpdates"])) $response = $bdd->query("UPDATE `vbcms-settings` SET value='1' WHERE name='autoInstallCriticalUpdates'");
 	else $response = $bdd->query("UPDATE `vbcms-settings` SET value='0' WHERE name='autoInstallCriticalUpdates'");
 	
+}elseif (isset($_GET["fixBaseFunctionAssoc"])&& (isset($_POST)&&!empty($_POST))) {
+	foreach ($_POST as $assocName => $extName){
+		$fixedAssoc = $bdd->prepare("UPDATE `vbcms-baseModulesAssoc` SET extensionName = ? WHERE name = ?");
+		$fixedAssoc->execute([$extName, $assocName]);
+	}
 } elseif(isset($_GET)&&!empty($_GET)){
 	echo "Commande \"".array_key_first($_GET)."(".$_GET[array_key_first($_GET)].")\" non reconnue.";
 } else {?>

@@ -66,6 +66,10 @@ foreach ($requiredModulesNames as $requiredModuleName){
 	}
 }
 
+
+// Maintenant on va vérifier que les modules de bases ont bien des associations
+$emptyBaseModules = $bdd->query("SELECT * FROM `vbcms-baseModulesAssoc` WHERE extensionName  = ''")->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -108,6 +112,10 @@ foreach ($requiredModulesNames as $requiredModuleName){
 		<?php } ?>
 			
 			<?php
+			if(!empty($emptyBaseModules)){
+				echo '<div class="alert alert-danger" role="alert">'.translate("younHaveOneOrMoreUnsatisfiedBaseModuleAssotiation").' <strong><a href="#" class="alert-link" data-toggle="modal" data-target="#unsatisfiedBaseFunctionsModal">'.translate("clickHereToSolveThoseAssiociations").'</a></strong></div>';
+			}
+
 			foreach ($extensionsList as $extensionTypeName => $extensionTypeExtensions){
 				echo "<h5>".translate("ws_".$extensionTypeName.'s')."</h5>";
 				foreach ($extensionTypeExtensions as $extension){
@@ -241,6 +249,43 @@ foreach ($requiredModulesNames as $requiredModuleName){
 		</div>
 	</div>
 
+	<div class="modal fade" id="unsatisfiedBaseFunctionsModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header bg-brown text-white">
+					<h5 id="extensionDesacctivationModalTitle" class="modal-title"><?=translate("fixAssoc")?></h5>
+					<button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="unsatisfiedBaseFunctionsModalBody" method="post">
+					<p><?=translate("chooseAnExtForEachNonSatisfiedFunc")?></p>
+					<?php
+						if(!empty($emptyBaseModules)){
+							$activatedModules = $bdd->query("SELECT * FROM `vbcms-activatedExtensions` WHERE type='module'")->fetchAll(PDO::FETCH_ASSOC);
+							foreach($emptyBaseModules as $emptyBaseModule){
+								echo '<div class="form-group">';
+								echo '<label for="exampleFormControlSelect1">'.translate($emptyBaseModule['name']).'</label>';
+								echo '<select class="form-control" name="'.$emptyBaseModule['name'].'">';
+								echo '<option selected>'.translate("none-f").'</option>';
+								foreach($activatedModules as $activatedModule){
+									echo '<option value="'.$activatedModule['name'].'">'.$activatedModule['name'].'</option>';
+								}
+								echo '</select></div>';
+							}
+						}
+					?>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-brown" data-dismiss="modal"><?=translate("close")?></button>
+					<button onclick="fixBaseFunctionAssoc()" type="button" class="btn btn-brown"><?=translate("save")?></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<script type="text/javascript">
 		$(function () {
 			$('[data-toggle="tooltip"]').tooltip()
@@ -360,6 +405,26 @@ foreach ($requiredModulesNames as $requiredModuleName){
 
 		function unsuscribeAddon(name){
 
+		}
+
+		function fixBaseFunctionAssoc(){
+			$.post( "<?=$GLOBALS['websiteUrl']?>vbcms-admin/backTasks?fixBaseFunctionAssoc", $( "#unsatisfiedBaseFunctionsModalBody" ).serialize() )
+            .done(function( data ) {
+                if(data!=""){
+                    SnackBar({
+                        message: data,
+                        status: "danger",
+                        timeout: false
+                    });
+                } else {
+                    SnackBar({
+                        message: '<?=translate("success-saving")?>',
+                        status: "success"
+                    });
+                    // On peut reload le contenu de la page avec cette fonction
+                    setSettingsContent();
+                }
+            });
 		}
 	</script>
 </body>
