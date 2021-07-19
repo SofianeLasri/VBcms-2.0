@@ -180,7 +180,7 @@ function checkUser() {
                 $("#netUserList").html();
                 var json = JSON.parse(data);
                 $.each( json, function( index, user ) {
-                    $("#netUserList").append('<div class="userCard d-flex align-items-center" onclick="fillInviteUser('');">\
+                    $("#netUserList").append('<div class="userCard d-flex align-items-center" onclick="fillInviteUser(\'\');">\
                                     <div class="userProfilPic" style="background-image:url(\''+user.profilePic+'\')"></div>\
                                     <div class="ml-2">\
                                         <h6>'+user.username+'</h6>\
@@ -205,9 +205,9 @@ function fillInviteUser(username){
 function sendInvite(){
     var array = {
         username: $("#searchNetUser").val(),
-        key: "<?=$encryptionKey?>"
+        key: "<?=$GLOBALS['encryptionKey']?>"
     };
-    .get("https://api.vbcms.net/profiles/v1/invite/"+encodeURIComponent(JSON.stringify(array)), function(data, statusText, xhr) {
+    $.get("https://api.vbcms.net/profiles/v1/invite/"+encodeURIComponent(JSON.stringify(array)), function(data, statusText, xhr) {
         if(xhr.status==200){
             if (!isJson(data)) {
                 $("#netUserList").html("<div class='p-2'><i class='fas fa-exclamation-circle warningBlink'></i><span class='text-danger ml-1'><b>VBcms.net renvoie:</b></span><br><code><pre>"+data+"</pre></code></div>");
