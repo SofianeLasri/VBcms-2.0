@@ -213,6 +213,9 @@ $emptyBaseModules = $bdd->query("SELECT * FROM `vbcms-baseModulesAssoc` WHERE ex
 							<small class="form-text text-muted"><?=translate("ws_adminAccessExplaination")?></small>
 							<div class="invalid-feedback">Veuillez renter un alias unique</div>
 						</div>
+						
+						<h5><?=translate('note')?></h5>
+						<p><?=translate('noneFieldForModuleActivation')?></p>
 					</div>
 
 					<div id="depedenciesInfosDiv">

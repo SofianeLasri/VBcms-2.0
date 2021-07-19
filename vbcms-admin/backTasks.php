@@ -150,8 +150,10 @@ if (isset($_GET["getNotifications"])) {
 	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='websiteMetaColor'");
 	$response->execute([$_POST["websiteMetaColor"]]);
 
-	//$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='websiteLogo'");
-	//$response->execute([$_POST["websiteLogo"]]);
+	if(isset($_POST["websiteLogo"])){
+		$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='websiteLogo'");
+		$response->execute([$_POST["websiteLogo"]]);
+	}
 
 	$response = $bdd->prepare("UPDATE `vbcms-settings` SET value=? WHERE name='steamApiKey'");
 	$response->execute([$_POST["steamApiKey"]]);

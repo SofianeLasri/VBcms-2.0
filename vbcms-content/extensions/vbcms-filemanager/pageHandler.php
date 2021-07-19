@@ -9,11 +9,12 @@ if($type =="admin"){
             
             break;
         
-        case 'backTasks':
+        case 'openFilemanager':
             if(isset($parameters[2]) && !empty($parameters[2])){
-                if($parameters[2]=="include"){
-                    // On ne peut pas inclure le gestionnaire de fichier ici car cela créé bcp de problèmes à cause du fait qu'il s'agisse d'une classe
-                    echo $GLOBALS['websiteUrl']."vbcms-content/extensions/vbcms-filemanager/includes/responsivefilemanager/dialog.php";
+                if(isJson(urldecode($parameters[2]))){
+                    // Ici on les paramètres sont les mêmes que ceux du gestionnaire de fichiers
+                    // Donc pas besoin de faire d'association, on va simplement les sortir
+                    echo $GLOBALS['websiteUrl']."vbcms-content/extensions/vbcms-filemanager/includes/responsivefilemanager/dialog.php?".http_build_query(json_decode(urldecode($parameters[2]), true));
                 }
             }else{
                 echo "ERREUR: Aucun paramètre de spécifié.";

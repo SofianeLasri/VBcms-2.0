@@ -83,7 +83,7 @@ $translation["younHaveOneOrMoreUnsatisfiedBaseModuleAssotiation"] = "Tu as une o
 $translation["clickHereToSolveThoseAssiociations"] = "Clique ici pour résoudre les associations";
 $translation["fixAssoc"] = "Corriger les associations";
 $translation["chooseAnExtForEachNonSatisfiedFunc"] = "Choisi une extension pour chaque fonction non associée.";
-$translation["sample"] = "sample";
+$translation["noneFieldForModuleActivation"] = "Pour désactiver l'accès au module ou si ce dernier ne gère pas une partie, tu dois mettre <code>none</code> dans le champs d'accès correspondant.<br><strong class='text-danger'>Laisser le champ vide reviendra à demander la gestion de l'index.</strong>";
 $translation["sample"] = "sample";
 $translation["sample"] = "sample";
 $translation["sample"] = "sample";

@@ -1,10 +1,8 @@
 <?php
 // Fichier de test
-$deTest = function($index){
-  $translation['test1'] = "Magnifique premier test";
-  $translation['test2'] = "Magnifique premier test";
+$deTest['type'] = 1;
+$deTest['fldr'] = "";
+$deTest['sort_by'] = "name";
+$deTest['ascending'] = 1;
 
-  return $translation[$index];
-}
-?>
-<p>La phrase traduite est la suivante: <?=$deTest('test1')?></p>
+echo urlencode(json_encode($deTest));

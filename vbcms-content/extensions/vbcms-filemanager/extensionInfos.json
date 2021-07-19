@@ -8,7 +8,7 @@
   "compatible": "48",
   "author": "1",
   "description": "Il s'agit du gestionnaire de fichers inclu avec VBcms. ",
-  "clientAccess": "",
+  "clientAccess": "none",
   "adminAccess": "filemanager",
   "permissions": ""
 }

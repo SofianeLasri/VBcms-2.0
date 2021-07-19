@@ -7,53 +7,56 @@ function loadModule($type, $moduleAlias, $moduleParams){
 	$response->execute([null, date("Y-m-d H:i:s"), $moduleAlias, "loadModule($type, $moduleAlias, ".json_encode($moduleParams).")", $GLOBALS['http']."://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]", $GLOBALS['ip']]);
 
 	if ($type=="client") {
-		// On cherche le module correspondant à l'alias clientAccess dans la liste des modules activés
-        $response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess=? AND type='module'");
-        $response->execute([$moduleAlias]);
-        $response = $response->fetch(PDO::FETCH_ASSOC);
+        if($moduleAlias != "none"){
+            // On cherche le module correspondant à l'alias clientAccess dans la liste des modules activés
+            $response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess=? AND type='module'");
+            $response->execute([$moduleAlias]);
+            $response = $response->fetch(PDO::FETCH_ASSOC);
 
-        if (!empty($response)) {
-            //include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/pageHandler.php"; // Le module appelé va se charger du reste
-            $calledmodule = new module($response["name"]);
-            $calledmodule->call($moduleParams, $type);
-        } else {
-            // Aucun module d'activé ne se charge de ce chemin
-            if (empty($moduleAlias)) {
-                // Ici on est donc sur l'index du site
-                // Si aucun module ne s'en charge, on va afficher la page par défaut
-                include $GLOBALS['vbcmsRootPath'].'/vbcms-core/defaultPages/index.php';
+            if (!empty($response)) {
+                //include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/pageHandler.php"; // Le module appelé va se charger du reste
+                $calledmodule = new module($response["name"]);
+                $calledmodule->call($moduleParams, $type);
             } else {
-                // Il s'agit peut-être d'une page du module gérant l'index du site Internet
-                // Nous allons donc vérifier si un module gère l'index, puis on va l'éxecuter
-                $response = $bdd->query("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess='' AND type='module'")->fetch(PDO::FETCH_ASSOC);
-        
-                if (!empty($response)) {
-                    // On a trouvé un module qui gère l'index, au cas où cet alias n'existe pas, ce sera ce module qui gérera la page 404
-                    $calledmodule = new module($response["name"]);
-                    $calledmodule->call($moduleParams, $type);
-                    //include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/pageHandler.php"; // Le module appelé va se charger du reste
+                // Aucun module d'activé ne se charge de ce chemin
+                if (empty($moduleAlias)) {
+                    // Ici on est donc sur l'index du site
+                    // Si aucun module ne s'en charge, on va afficher la page par défaut
+                    include $GLOBALS['vbcmsRootPath'].'/vbcms-core/defaultPages/index.php';
                 } else {
-                    // Si on arrive ici c'est qu'il n'y a vraiment aucun module qui gère cet alias
-                    show404($type);
+                    // Il s'agit peut-être d'une page du module gérant l'index du site Internet
+                    // Nous allons donc vérifier si un module gère l'index, puis on va l'éxecuter
+                    $response = $bdd->query("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess='' AND type='module'")->fetch(PDO::FETCH_ASSOC);
+            
+                    if (!empty($response)) {
+                        // On a trouvé un module qui gère l'index, au cas où cet alias n'existe pas, ce sera ce module qui gérera la page 404
+                        $calledmodule = new module($response["name"]);
+                        $calledmodule->call($moduleParams, $type);
+                        //include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/pageHandler.php"; // Le module appelé va se charger du reste
+                    } else {
+                        // Si on arrive ici c'est qu'il n'y a vraiment aucun module qui gère cet alias
+                        show404($type);
+                    }
+                    
                 }
-                
             }
-        }
+        } else show404($type);
         
 	} elseif($type=="admin") {
-		// On cherche le module correspondant à l'alias adminAccess dans la liste des modules activés
-		$response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE adminAccess=? AND type='module'");
-        $response->execute([$moduleAlias]);
-        $response = $response->fetch(PDO::FETCH_ASSOC);
+        if($moduleAlias != "none"){
+            // On cherche le module correspondant à l'alias adminAccess dans la liste des modules activés
+            $response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE adminAccess=? AND type='module'");
+            $response->execute([$moduleAlias]);
+            $response = $response->fetch(PDO::FETCH_ASSOC);
 
-        if (!empty($response)) {
-        	//include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/pageHandler.php"; // Le module appelé va se charger du reste
-            $calledmodule = new module($response["name"]);
-            $calledmodule->call($moduleParams, $type);
-        } else {
-        	show404($type);
-        }
-        
+            if (!empty($response)) {
+                //include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/pageHandler.php"; // Le module appelé va se charger du reste
+                $calledmodule = new module($response["name"]);
+                $calledmodule->call($moduleParams, $type);
+            } else {
+                show404($type);
+            }
+        } else show404($type);
 	}
 }
 
@@ -208,5 +211,30 @@ function verifyUserPermission($userId, $extensionName, $action){
         else return false;
     } else {
         return false;
+    }
+}
+
+/////////////////////////////////
+// FONCTIONS DES MODULES DE BASES
+/////////////////////////////////
+
+function openFilemanager($mode, $parameters = array()){
+    // Mode pour client ou admin, mais c'est pas encore prévu pour les clients
+    // Parameters est une liste
+    global $bdd;
+    $filemanagerAssoc = $bdd->query("SELECT extensionName FROM `vbcms-baseModulesAssoc`")->fetchColumn();
+    if(empty($filemanagerAssoc)){
+        return $GLOBALS['websiteUrl'].'/vbcms-core/defaultPages/ext404.php';
+    }else{
+        $filemanagerExt = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE name = ?");
+        $filemanagerExt->execute([$filemanagerAssoc]);
+        $filemanagerExt=$filemanagerExt->fetch(PDO::FETCH_ASSOC);
+
+        $callParams[1] = "openFilemanager";
+        $callParams[2] = json_encode($parameters);
+
+        $filemanagerModule = new module($filemanagerExt["name"]);
+        $filemanagerModule->call($callParams, 'admin');
+
     }
 }

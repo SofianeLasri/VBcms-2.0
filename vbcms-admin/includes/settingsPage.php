@@ -121,6 +121,14 @@ function getSettingsHTML($params){
                             <label>Courte description du internet</label>
                             <input required type="text" class="form-control" value="<?=$GLOBALS['websiteDescription']?>" name="websiteDescription">
                         </div>
+                        <div class="form-group">
+                            <label>Icône du internet</label>
+                            <div class="d-flex">
+                                <input id="websiteLogo" type="text" class="form-control" value="<?=$GLOBALS['websiteLogo']?>" name="websiteLogo">
+                                <button type="button" class="btn btn-sm btn-brown ml-2" data-toggle="modal" data-target="#websiteLogoPicker"><i class="fas fa-image"></i></button>
+                            </div>
+                            
+                        </div>
     
                     </div>
                 </div>
@@ -269,6 +277,27 @@ function getSettingsHTML($params){
 
         <?php } ?>
     </div>
+                    
+    <?php if(verifyUserPermission($_SESSION['user_id'], "vbcms", 'editWebsiteIdentity')){ ?>
+
+    <!-- MODAL POUR LOGO DU SITE -->
+    <div class="modal fade" id="websiteLogoPicker">
+		<div class="modal-dialog" style="max-width: 50em;">
+			<div class="modal-content">
+				<div class="modal-header bg-brown text-white">
+					<h5 class="modal-title"><?=translate("chooseAPicture")?></h5>
+					<button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body d-flex">
+                    <iframe class="flex-grow-1" style="height: 25em;" src="<?=openFilemanager('admin', array('field_id' => 'websiteLogo', 'type' => 1))?>"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
+    <?php } ?>
+
     <script type="text/javascript">
         // S'éxecute une fois la page chargée
         $( document ).ready(function() {
