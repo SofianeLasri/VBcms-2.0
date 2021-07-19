@@ -614,13 +614,13 @@ header .menu-item{
 }
 
 .loadingBack {
-    animation-duration: 0.75s;
+    animation-duration: 6s;
     animation-fill-mode: forwards;
     animation-iteration-count: infinite;
     animation-name: placeHolderShimmer;
     animation-timing-function: linear;
     background: #e6e6e6;
-    background: linear-gradient(to right, #e6e6e6 10%, #dadada 18%, #e6e6e6 33%);
+    background: linear-gradient(to right, #e6e6e6 0%, #dadada 25%, #dadada 75%, #e6e6e6 100%);
     position: relative;
 }
 
@@ -764,18 +764,18 @@ header .menu-item{
 	justify-content: center;
 }
 
-.userList .userCard{
+.userCard{
 	width: 100%;
 	margin: 5px 0 5px 0;
 	border-radius: 5px;
 	padding: .5em;
 }
 
-.userList .userCard:hover{
+.userCard:hover{
 	background-color: #dadada;
 }
 
-.userList .userCard .userProfilPic{
+.userCard .userProfilPic{
 	height: 56px;
 	width: 56px;
 	background-size: cover;
@@ -787,4 +787,17 @@ header .menu-item{
 		width:calc(50% - 10px);
 		margin: 5px;
 	}
+}
+
+.warningBlink{
+	animation:warningBlinkText 2.4s infinite !important;
+}
+@keyframes warningBlinkText{
+	0%{     color: #FFC107;    }
+	22.5%{    color: transparent; }
+	27.5%{    color: transparent;  }
+	50%{   color: #DC3545;    }
+	72.5%{    color: transparent; }
+	77.5%{    color: transparent;  }
+	100%{     color: #FFC107;    }
 }

@@ -79,20 +79,6 @@ $emptyBaseModules = $bdd->query("SELECT * FROM `vbcms-baseModulesAssoc` WHERE ex
 	<?php include 'includes/depedencies.php';?>
 </head>
 <body>
-	<style type="text/css">
-		.warningBlink{
-		    animation:warningBlinkText 2.4s infinite;
-		}
-		@keyframes warningBlinkText{
-		    0%{     color: #FFC107;    }
-		    22.5%{    color: transparent; }
-		    27.5%{    color: transparent;  }
-		    50%{   color: #DC3545;    }
-			72.5%{    color: transparent; }
-		    77.5%{    color: transparent;  }
-			100%{     color: #FFC107;    }
-		}
-	</style>
 	<?php 
 	include ('includes/navbar.php');
 	?>
