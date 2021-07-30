@@ -153,6 +153,16 @@ function getRandomString($length) {
     return $randomString;
 }
 
+function tableExist($tableName){
+    global $bdd;
+    try{
+        $response = $bdd->query("SELECT 1 FROM $tableName LIMIT 1"); // Aîe les injections SQL, ça va qu'ici c'est interne
+    } catch(Exception $e){
+        return false;
+    }
+    return $response !== FALSE; // Retourne l'objet si != faux
+}
+
 // Fonctions pour la barre de naviguation admin
 function adminNavbarAddCategory($moduleName, $title){
     global $bdd;

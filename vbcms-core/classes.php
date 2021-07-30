@@ -378,6 +378,11 @@ class module {
             $query = $bdd->prepare("DELETE FROM `vbcms-adminNavbar` WHERE id=? OR parentId=?");
             $query->execute([$parentId['id'],$parentId['id']]);
         }
+
+        if($deleteData){ // L'utilisateur a demandé la suppression des données, on va alors demander à l'extension de le faire
+            include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/init.php";
+            deleteData();
+        }
     }
 
     function call(array $parameters, $type){

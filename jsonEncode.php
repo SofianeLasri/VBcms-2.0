@@ -1,8 +1,6 @@
 <?php
 // Fichier de test
-$deTest['type'] = 1;
-$deTest['fldr'] = "";
-$deTest['sort_by'] = "name";
-$deTest['ascending'] = 1;
+$deTest['width'] = 1920;
+$deTest['height'] = 1080;
 
-echo urlencode(json_encode($deTest));
+echo json_encode($deTest);
