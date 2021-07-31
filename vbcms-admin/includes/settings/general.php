@@ -42,23 +42,23 @@
             <div class="col-sm">
                 <div class="form-group">
                     <label>Nom du site internet</label>
-                    <input required type="text" value="<?=$GLOBALS['websiteName']?>" class="form-control" name="websiteName">
+                    <input required type="text" value="<?=VBcmsGetSetting("websiteName")?>" class="form-control" name="websiteName">
                 </div>
                 <div class="form-group">
                     <label>Couleur globale du site</label>
-                    <input required type="text" value="<?=$GLOBALS['websiteMetaColor']?>" name="websiteMetaColor" class="pick-a-color form-control">
+                    <input required type="text" value="<?=VBcmsGetSetting("websiteMetaColor")?>" name="websiteMetaColor" class="pick-a-color form-control">
                 </div>
             </div>
 
             <div class="col-sm">
                 <div class="form-group">
                     <label>Courte description du internet</label>
-                    <input required type="text" class="form-control" value="<?=$GLOBALS['websiteDescription']?>" name="websiteDescription">
+                    <input required type="text" class="form-control" value="<?=VBcmsGetSetting("websiteDescription")?>" name="websiteDescription">
                 </div>
                 <div class="form-group">
                     <label>Icône du internet</label>
                     <div class="d-flex">
-                        <input id="websiteLogo" type="text" class="form-control" value="<?=$GLOBALS['websiteLogo']?>" name="websiteLogo">
+                        <input id="websiteLogo" type="text" class="form-control" value="<?=VBcmsGetSetting("websiteLogo")?>" name="websiteLogo">
                         <button type="button" class="btn btn-sm btn-brown ml-2" data-toggle="modal" data-target="#websiteLogoPicker"><i class="fas fa-image"></i></button>
                     </div>
                     
@@ -74,13 +74,13 @@
             <div class="col-sm">
                 <div class="form-group">
                     <label>Steam API Key</label>
-                    <input type="text" value="<?=$steamApiKey?>" class="form-control" name="steamApiKey">
+                    <input type="text" value="<?=VBcmsGetSetting("steamApiKey")?>" class="form-control" name="steamApiKey">
                 </div>
             </div>
 
             <div class="col-sm">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="debugMode" <?=$debugMode?>>
+                    <input class="form-check-input" type="checkbox" name="debugMode" <?=$debugModeChecked?>>
                     <label class="form-check-label"><i class="fas fa-bug"></i> Debug mode</label>
                 </div>
 
