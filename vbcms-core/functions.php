@@ -1,5 +1,5 @@
 <?php
-// Cette fonctions permettra de récupérer des variables propres au panel dans des endroits où les variables de variables.php ne sont plus accessibles
+// Cette fonctions permettra de récupérer des variables propres au panel
 function VBcmsGetSetting($setting){
     global $bdd;
     
@@ -122,7 +122,7 @@ function show404($type){
 	} elseif($type=="admin") {
         // A REFAIRE
         
-		global $bdd, $http, $websiteUrl, $translation, $websiteName, $websiteMetaColor, $websiteDescription, $websiteLogo;
+		global $bdd;
 		// Affiche la page 404 du panel admin
         include $GLOBALS['vbcmsRootPath']."/vbcms-admin/404.php";
         
@@ -226,7 +226,7 @@ function openFilemanager($mode, $parameters = array()){
     global $bdd;
     $filemanagerAssoc = $bdd->query("SELECT extensionName FROM `vbcms-baseModulesAssoc`")->fetchColumn();
     if(empty($filemanagerAssoc)){
-        return $GLOBALS['websiteUrl'].'/vbcms-core/defaultPages/ext404.php';
+        return VBcmsGetSetting("websiteUrl").'/vbcms-core/defaultPages/ext404.php';
     }else{
         $filemanagerExt = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE name = ?");
         $filemanagerExt->execute([$filemanagerAssoc]);

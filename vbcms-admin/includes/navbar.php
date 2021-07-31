@@ -1,6 +1,5 @@
 <?php
 $vbcmsVer = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='vbcmsVersion'")->fetchColumn();
-$debugMode = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='debugMode'")->fetchColumn();
 ?>
 <header>
 	<div class="navbar managerHeader d-flex">
@@ -8,7 +7,7 @@ $debugMode = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='debugMo
 			<div class="desktop-toggler mx-2">
 				<a href="#" class="menu-toggler" data-action="toggle" data-side="left"><i class="fas fa-bars"></i></a>
 			</div>
-			<a href="index.php" class="brand-name"><?=$websiteName?></a>
+			<a href="index.php" class="brand-name"><?=VBcmsGetSetting("websiteName")?></a>
 		</div>
 
 		<div class="menu d-flex ml-auto justify-content-end">
@@ -77,7 +76,7 @@ $debugMode = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='debugMo
 			<?php } ?>
 
 			<?php 
-			if($debugMode == "1" && verifyUserPermission($_SESSION['user_id'], 'vbcms', 'accessDebug')){
+			if(VBcmsGetSetting("debugMode") == "1" && verifyUserPermission($_SESSION['user_id'], 'vbcms', 'accessDebug')){
 				echo '<div class="menu-item">
 				<a href="/vbcms-admin/debug" class="menu-link">
 					<span class="menu-icon"><i class="fas fa-bug"></i></span>
@@ -154,7 +153,7 @@ $debugMode = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='debugMo
 		}
 	});
 	async function loadNotifications(){
-		await $.get("<?=$websiteUrl?>vbcms-admin/backTasks/?getNotifications", function(data){
+		await $.get("<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks/?getNotifications", function(data){
 			var notifications = JSON.parse(data);
 			if (notifications.length!=0) {
 				$("#notificationsNumber").html(notifications.length);

@@ -4,7 +4,7 @@ if($type =="admin"){
         case 'browse':
             if(verifyUserPermission($_SESSION['user_id'], $this->name, 'access-browse')){
                 $pageToInclude = $extensionFullPath."/admin/browse.php";
-                extensionCreatePage($type, 0, $pageToInclude, translate("gallery_filemanager"), "", "");
+                $this->extensionCreatePage($type, 0, $pageToInclude, translate("gallery_filemanager"), "", "");
             }
             
             break;
@@ -14,7 +14,7 @@ if($type =="admin"){
                 if(isJson(urldecode($parameters[2]))){
                     // Ici on les paramètres sont les mêmes que ceux du gestionnaire de fichiers
                     // Donc pas besoin de faire d'association, on va simplement les sortir
-                    echo $GLOBALS['websiteUrl']."vbcms-content/extensions/vbcms-filemanager/includes/responsivefilemanager/dialog.php?".http_build_query(json_decode(urldecode($parameters[2]), true));
+                    echo VBcmsGetSetting("websiteUrl")."vbcms-content/extensions/vbcms-filemanager/includes/responsivefilemanager/dialog.php?".http_build_query(json_decode(urldecode($parameters[2]), true));
                 }
             }else{
                 echo "ERREUR: Aucun paramètre de spécifié.";

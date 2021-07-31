@@ -6,7 +6,7 @@ if (isset($_GET["session"]) && !empty($_GET["session"])){
 
     if (isset($_SESSION["user_id"])) session_unset(); // Utilisateur déjà connecté -> je réinitialise les variables de la session
 
-	$sessionJson = file_get_contents("https://api.vbcms.net/auth/v1/checkToken/?token=".$_GET["session"]."&ip=".urlencode($ip)."&serverId=".$serverId);
+	$sessionJson = file_get_contents("https://api.vbcms.net/auth/v1/checkToken/?token=".$_GET["session"]."&ip=".urlencode($ip)."&serverId=".VBcmsGetSetting("serverId"));
 	//echo $json;
 	$sessionData = json_decode($sessionJson, true);
 

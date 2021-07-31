@@ -7,7 +7,7 @@ if(isset($vbcmsRequest)){
 <html>
 <head>
 	<meta charset="utf-8">
-	<title><?=$websiteName?> | <?=$title?></title>
+	<title><?=VBcmsGetSetting("websiteName")?> | <?=$title?></title>
 	<?php include 'depedencies.php';?>
 	<?=$depedencies?>
 </head>

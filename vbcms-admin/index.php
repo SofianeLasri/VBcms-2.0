@@ -37,7 +37,7 @@ if($_SESSION['loginType']=='vbcms-account'){
 <html>
 <head>
 	<meta charset="utf-8">
-	<title><?=$websiteName?> | <?=translate("dashboard")?></title>
+	<title><?=VBcmsGetSetting("websiteName")?> | <?=translate("dashboard")?></title>
 	<?php include 'includes/depedencies.php';?>
 </head>
 <body>
@@ -65,7 +65,7 @@ if($_SESSION['loginType']=='vbcms-account'){
 		<div id="indexCards" class="row" style="">
 			<div class="col-xl-6">
 				<div id="indexCardOne" class="indexCard mb-3 overflow-hidden">
-					<div style="position: absolute; z-index: 1;height: 100%; width: 100%; background-image: url(<?=$websiteUrl?>vbcms-admin/images/misc/mainIndexCardBg.png); background-position: right bottom; background-repeat: no-repeat; background-size: 100%;"></div>
+					<div style="position: absolute; z-index: 1;height: 100%; width: 100%; background-image: url(<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/images/misc/mainIndexCardBg.png); background-position: right bottom; background-repeat: no-repeat; background-size: 100%;"></div>
 					<div class="indexCardBody">
 						<h5>Nouvelles licences</h5>
 						<h3>15</h3>
@@ -79,7 +79,7 @@ if($_SESSION['loginType']=='vbcms-account'){
 					<div class="col-sm-6">
 						<div id="indexCardTwo" class="indexCard overflow-hidden">
 							<div class="indexCardImg">
-								<img src="<?=$websiteUrl?>vbcms-admin/images/misc/globe.png">
+								<img src="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/images/misc/globe.png">
 							</div>
 							<div class="indexCardBody">
 								<h5>Visites</h5>
@@ -90,7 +90,7 @@ if($_SESSION['loginType']=='vbcms-account'){
 						</div>
 						<div id="indexCardThree" class="indexCard overflow-hidden">
 							<div class="indexCardImg">
-								<img src="<?=$websiteUrl?>vbcms-admin/images/misc/ticket.png">
+								<img src="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/images/misc/ticket.png">
 							</div>
 							<div class="indexCardBody">
 								<h5>Tickets support</h5>
@@ -103,7 +103,7 @@ if($_SESSION['loginType']=='vbcms-account'){
 					<div class="col-sm-6">
 						<div id="indexCardFour" class="indexCard overflow-hidden">
 							<div class="indexCardImg">
-								<img src="<?=$websiteUrl?>vbcms-admin/images/misc/puzzle.png">
+								<img src="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/images/misc/puzzle.png">
 							</div>
 							<div class="indexCardBody">
 								<h5>Nouveaux addons</h5>
@@ -114,7 +114,7 @@ if($_SESSION['loginType']=='vbcms-account'){
 						</div>
 						<div id="indexCardFive" class="indexCard overflow-hidden">
 							<div class="indexCardImg">
-								<img src="<?=$websiteUrl?>vbcms-admin/images/misc/hourglass.png">
+								<img src="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/images/misc/hourglass.png">
 							</div>
 							<div class="indexCardBody">
 								<h5>Inscriptions en attente</h5>
@@ -162,7 +162,7 @@ if($_SESSION['loginType']=='vbcms-account'){
 								<label><?=translate('password')?></label>
 								<input type="password" class="form-control" name="localUserPassword1" id="localUserPassword1" placeholder="" required>
 								<div class="invalid-feedback" id="localUserPassword1Alert">
-									<?=translate('localAccountCreation_youCreateAnAccountWithoutPassword')?> <img height="16" src="<?=$websiteUrl?>vbcms-admin/images/emojis/thinkingHard.png">
+									<?=translate('localAccountCreation_youCreateAnAccountWithoutPassword')?> <img height="16" src="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/images/emojis/thinkingHard.png">
 								</div>
 							</div>
 							<div class="form-group">
@@ -224,7 +224,7 @@ if($_SESSION['loginType']=='vbcms-account'){
 				} else {
 					var passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,32}$/;
 					if($("#localUserPassword1").val().match(passw)) { 
-						$("#localUserPassword1Alert").html('<?=translate('localAccountCreation_youCreateAnAccountWithoutPassword')?> <img height="16" src="<?=$websiteUrl?>vbcms-admin/images/emojis/thinkingHard.png">');
+						$("#localUserPassword1Alert").html('<?=translate('localAccountCreation_youCreateAnAccountWithoutPassword')?> <img height="16" src="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/images/emojis/thinkingHard.png">');
 						$("#localUserPassword1Alert").css("display","");
 						$("#localUserPassword2Alert").html('<?=translate("localAccountCreation_pleaseRewriteYourPassword")?>');
 						$("#localUserPassword2Alert").css("display","");

@@ -38,7 +38,7 @@ if(isset($_GET['id'])){
            </div>
            <div class="flex-grow-1 ">
                <h4>Prévisualisation</h4>
-               <div id="loadingScreenPreview" class="rounded" style="background-image: url('https://api.apiflash.com/v1/urltoimage?access_key=65e037cb81b44087ba537b58dd19e4ff&format=jpeg&quality=80&response_type=image&url=<?php echo urlencode($websiteUrl."loadingscreen/".$loadingScreenIdentifier."?preview"); ?>&width=1920&height=1080');"></div>
+               <div id="loadingScreenPreview" class="rounded" style="background-image: url('https://api.apiflash.com/v1/urltoimage?access_key=65e037cb81b44087ba537b58dd19e4ff&format=jpeg&quality=80&response_type=image&url=<?php echo urlencode(VBcmsGetSetting("websiteUrl")."loadingscreen/".$loadingScreenIdentifier."?preview"); ?>&width=1920&height=1080');"></div>
            </div>
         </div>
     </div>
@@ -84,7 +84,7 @@ if(isset($_GET['id'])){
         $( document ).ready(function() {
             <?php
             if(isset($redirectToList)){
-                echo 'window.location.href = "'.$GLOBALS['websiteUrl'].'vbcms-admin/'.$urlPath[2].'/browse";';
+                echo 'window.location.href = "'.VBcmsGetSetting("websiteUrl").'vbcms-admin/'.$urlPath[2].'/browse";';
             }
             ?>
             resizePreview();

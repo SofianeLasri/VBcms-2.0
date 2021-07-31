@@ -1,6 +1,6 @@
 <?php
 if($type =="admin"){
-    $pageDepedencies = '<link href="'.$GLOBALS['websiteUrl'].'vbcms-content/extensions/'.$this->path.'/assets/css/admin.css" rel="stylesheet">';
+    $pageDepedencies = '<link href="'.VBcmsGetSetting("websiteUrl").'vbcms-content/extensions/'.$this->path.'/assets/css/admin.css" rel="stylesheet">';
     switch($parameters[1]){
         case 'browse':
             if(verifyUserPermission($_SESSION['user_id'], $this->name, 'access-browse')){

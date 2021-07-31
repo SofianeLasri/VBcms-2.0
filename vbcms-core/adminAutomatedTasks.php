@@ -8,12 +8,11 @@ $datetime = new DateTime(date("Y-m-d H:i:s"));
 $lastUpdateCheck = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name = 'lastUpdateCheck'")->fetchColumn();
 $lastUpdateCheck = DateTime::createFromFormat('Y-m-d H:i:s', $lastUpdateCheck);
 if ((abs($datetime->getTimestamp()-$lastUpdateCheck->getTimestamp())) > 1800){
-    $serverId = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='serverId'")->fetchColumn();
     $key = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='encryptionKey'")->fetchColumn();
     $vbcmsVer = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='vbcmsVersion'")->fetchColumn();
     $curentUpdateCanal = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='updateCanal'")->fetchColumn();
     
-    $json = file_get_contents("https://api.vbcms.net/updater/lastest?serverId=".$serverId."&key=".$key."&version=".$vbcmsVer."&canal=".$curentUpdateCanal);
+    $json = file_get_contents("https://api.vbcms.net/updater/lastest?serverId=".VBcmsGetSetting("serverId")."&key=".$key."&version=".$vbcmsVer."&canal=".$curentUpdateCanal);
     $jsonData = json_decode($json, true);
 
     if (!empty($jsonData) && !$jsonData["upToDate"]) {

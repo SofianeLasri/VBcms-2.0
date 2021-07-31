@@ -6,13 +6,10 @@
 function getSettingsHTML($params){
     global $bdd, $translation;
     $curentUpdateCanal = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='updateCanal'")->fetchColumn();
-    $steamApiKey = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='steamApiKey'")->fetchColumn();
 
     $autoUpdatesSearch = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='autoUpdatesSearch'")->fetchColumn();
     $autoUpdatesInstall = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='autoUpdatesInstall'")->fetchColumn();
     $autoInstallCriticalUpdates = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='autoInstallCriticalUpdates'")->fetchColumn();
-
-    $debugMode = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='debugMode'")->fetchColumn();
 
     if($autoUpdatesSearch == 1) $autoUpdatesSearch = "checked";
     else $autoUpdatesSearch = null;
@@ -21,8 +18,8 @@ function getSettingsHTML($params){
     if($autoInstallCriticalUpdates == 1) $autoInstallCriticalUpdates = "checked";
     else $autoInstallCriticalUpdates = null;
 
-    if($debugMode == 1) $debugMode = "checked";
-    else $debugMode = null;
+    if(VBcmsGetSetting("debugMode") == 1) $debugModeChecked = "checked";
+    else $debugModeChecked = null;
     ?>
     <div class="d-flex">
         <div class="flex-grow-1" >
@@ -107,7 +104,7 @@ function getSettingsHTML($params){
         }
 
         function saveChanges(){
-            $.post( "<?=$GLOBALS['websiteUrl']?>vbcms-admin/backTasks?saveSettings", $( "#form" ).serialize() )
+            $.post( "<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks?saveSettings", $( "#form" ).serialize() )
             .done(function( data ) {
                 if(data!=""){
                     SnackBar({

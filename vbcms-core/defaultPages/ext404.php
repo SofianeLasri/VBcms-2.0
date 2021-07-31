@@ -1,9 +1,9 @@
 <?php
 // Arrive si on charge la page seule, ce n'est pas censé arriver
-if(!isset($websiteUrl)){
+if(!isset(VBcmsGetSetting("websiteUrl"))){
     if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
     $url = parse_url("$http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
-    $websiteUrl = $url["scheme"]."://".$url["host"]."/";
+    VBcmsGetSetting("websiteUrl") = $url["scheme"]."://".$url["host"]."/";
 } 
 ?>
 <!DOCTYPE html>
@@ -12,7 +12,7 @@ if(!isset($websiteUrl)){
     <meta charset="utf-8">
 	<title>VBcms</title>
     <link rel="icon" type="image/png" href="https://vbcms.net/vbcms-content/uploads/vbcms-logo/raccoon-in-box-512x.png" />
-    <link rel="stylesheet" href="<?=$websiteUrl?>vbcms-admin/fonts/fonts.css">
+    <link rel="stylesheet" href="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/fonts/fonts.css">
 </head>
 <body>
     <style type="text/css">

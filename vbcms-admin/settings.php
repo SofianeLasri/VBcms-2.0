@@ -16,9 +16,9 @@ foreach ($activatedExtensions as $activatedExtension){
 <html>
 <head>
 	<meta charset="utf-8">
-	<title><?=$websiteName?> | <?=translate("settings")?></title>
+	<title><?=VBcmsGetSetting("websiteName")?> | <?=translate("settings")?></title>
 	<?php include 'includes/depedencies.php';?>
-	<link rel="stylesheet" href="<?=$websiteUrl?>vbcms-admin/vendors/pick-a-color/css/pick-a-color-1.2.3.min.css">
+	<link rel="stylesheet" href="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/vendors/pick-a-color/css/pick-a-color-1.2.3.min.css">
 </head>
 <body>
 	<?php 
@@ -63,8 +63,8 @@ foreach ($activatedExtensions as $activatedExtension){
         </div>
     </div>
     
-    <script src="<?=$websiteUrl?>vbcms-admin/vendors/pick-a-color/js/tinycolor-0.9.15.min.js"></script>
-	<script src="<?=$websiteUrl?>vbcms-admin/vendors/pick-a-color/js/pick-a-color-1.2.3.min.js"></script>
+    <script src="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/vendors/pick-a-color/js/tinycolor-0.9.15.min.js"></script>
+	<script src="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/vendors/pick-a-color/js/pick-a-color-1.2.3.min.js"></script>
     <script type="text/javascript">
         // S'éxecute une fois la page chargée
         $( document ).ready(function() {
@@ -106,9 +106,9 @@ foreach ($activatedExtensions as $activatedExtension){
             $("#ext-"+extSettingsQuery.moduleName).addClass("active");
 
             // Pour le debug
-            console.log("Debug - call:<?=$websiteUrl?>vbcms-admin/backTasks/?getSettingsHTML="+encodeURIComponent(search_params.get('p')));
+            console.log("Debug - call:<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks/?getSettingsHTML="+encodeURIComponent(search_params.get('p')));
             // On récupère le contenu de la page
-            $.get("<?=$websiteUrl?>vbcms-admin/backTasks/?getSettingsHTML="+encodeURIComponent(search_params.get('p')), function(data) {
+            $.get("<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks/?getSettingsHTML="+encodeURIComponent(search_params.get('p')), function(data) {
                 // On supprime l'animation de chargement
                 $("#settingsContent").removeClass("centerVerHori");
                 // Et on insère le contenu

@@ -42,7 +42,7 @@
                         }else{
                             // Ici l'utilisateur n'existe pas dans la liste des comptes locaux
                             // Donc on va lui mettre une image placeholder
-                            $userProfilPic = $GLOBALS['websiteUrl']."vbcms-admin/images/misc/programmer.png";
+                            $userProfilPic = VBcmsGetSetting("websiteUrl")."vbcms-admin/images/misc/programmer.png";
                         }
                     }
 

@@ -13,12 +13,12 @@
 			<?php
 			$loadingscreens = $bdd->query('SELECT * FROM `vbcmsLoadingScreens_list`')->fetchAll(PDO::FETCH_ASSOC);
 			foreach ($loadingscreens as $loadingscreen){
-				$backgroundImage = 'https://api.apiflash.com/v1/urltoimage?access_key=65e037cb81b44087ba537b58dd19e4ff&format=jpeg&quality=80&response_type=image&url='.urlencode($GLOBALS['websiteUrl'].$this->clientAccess.'/'.$loadingscreen['identifier']).'/&width=1920&height=1080';
+				$backgroundImage = 'https://api.apiflash.com/v1/urltoimage?access_key=65e037cb81b44087ba537b58dd19e4ff&format=jpeg&quality=80&response_type=image&url='.urlencode(VBcmsGetSetting("websiteUrl").$this->clientAccess.'/'.$loadingscreen['identifier']).'/&width=1920&height=1080';
 				echo('
 				<div class="ld-card border rounded mx-1 my-1" style="background-image: url(\''.$backgroundImage.'\');">
 				<div class="ld-card-content p-2">
 					<span><strong>'.$loadingscreen['showName'].'</strong></span>
-					<a href="'.$GLOBALS['websiteUrl'].'vbcms-admin/'.$this->adminAccess.'/edit?id='.$loadingscreen['identifier'].'" class="btn btn-sm btn-brown float-right">'.translate('modify').'</a>
+					<a href="'.VBcmsGetSetting("websiteUrl").'vbcms-admin/'.$this->adminAccess.'/edit?id='.$loadingscreen['identifier'].'" class="btn btn-sm btn-brown float-right">'.translate('modify').'</a>
 				</div>
 			</div>');
 			}
@@ -95,7 +95,7 @@
 			let array = {};
 			array.type="showName";
 			array.name=this.value;
-			$.get("<?=$websiteUrl?>vbcms-admin/<?=$urlPath[2]?>/backTasks?checkIdentifierOrName="+encodeURIComponent(JSON.stringify(array)), function(data) {
+			$.get("<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/<?=$urlPath[2]?>/backTasks?checkIdentifierOrName="+encodeURIComponent(JSON.stringify(array)), function(data) {
 				let json = JSON.parse(data);
 				if(typeof json.error === 'undefined'){
 					if(json.used == false){
@@ -129,7 +129,7 @@
 			let array = {};
 			array.type="identifier";
 			array.name=this.value;
-			$.get("<?=$websiteUrl?>vbcms-admin/<?=$urlPath[2]?>/backTasks?checkIdentifierOrName="+encodeURIComponent(JSON.stringify(array)), function(data) {
+			$.get("<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/<?=$urlPath[2]?>/backTasks?checkIdentifierOrName="+encodeURIComponent(JSON.stringify(array)), function(data) {
 				let json = JSON.parse(data);
 				if(typeof json.error === 'undefined'){
 					if(json.used == false){
@@ -160,10 +160,10 @@
         });
 
 		function createLoadingScreen(){
-			$.post( "<?=$GLOBALS['websiteUrl']?>vbcms-admin/<?=$urlPath[2]?>/backTasks?createLoadingScreen", $( "#createLoadingScreenForm" ).serialize() )
+			$.post( "<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/<?=$urlPath[2]?>/backTasks?createLoadingScreen", $( "#createLoadingScreenForm" ).serialize() )
             .done(function( data ) {
 				if(data == ""){
-					window.location.href = "<?=$GLOBALS['websiteUrl']?>vbcms-admin/<?=$urlPath[2]?>/edit?id="+$("#identifier").val();
+					window.location.href = "<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/<?=$urlPath[2]?>/edit?id="+$("#identifier").val();
 				} else {
 					SnackBar({
                         message: data,

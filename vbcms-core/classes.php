@@ -414,10 +414,6 @@ class module {
         // Le mode 1 correspond à l'inclusion d'une page qui ne fait que passer des paramètres
         // Le mode 2 correspond à l'inclusion d'une page qui n'utilise pas la maquette du thème, qui renvoie sa propre page
         global $bdd;
-        $websiteUrl = VBcmsGetSetting("websiteUrl");
-        $websiteName = VBcmsGetSetting("websiteName");
-        $websiteDescription = VBcmsGetSetting("websiteDescription");
-        $websiteLogo = VBcmsGetSetting("websiteLogo");
         
         // Ici on ne peut pas récupérer $http et $urlPath, on va réécrire le code ici
         if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";

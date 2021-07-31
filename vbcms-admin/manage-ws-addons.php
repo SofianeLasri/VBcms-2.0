@@ -22,9 +22,9 @@ foreach ($extensionsFolderContent as $extensionFolder){
 			}
 			// On vérifie que l'extension dispose d'une icône
 			if(file_exists($extensionsFolder.$extensionFolder.'/extension-logo.jpg')){
-				$extensionsList[$extensionInfos['type']][$extensionListIndex]['extensionLogo'] = $GLOBALS['websiteUrl'].'vbcms-content/extensions/'.$extensionFolder.'/extension-logo.jpg';
+				$extensionsList[$extensionInfos['type']][$extensionListIndex]['extensionLogo'] = VBcmsGetSetting("websiteUrl").'vbcms-content/extensions/'.$extensionFolder.'/extension-logo.jpg';
 			}elseif(file_exists($extensionsFolder.$extensionFolder.'/extension-logo.png')){
-				$extensionsList[$extensionInfos['type']][$extensionListIndex]['extensionLogo'] = $GLOBALS['websiteUrl'].'vbcms-content/extensions/'.$extensionFolder.'/extension-logo.png';
+				$extensionsList[$extensionInfos['type']][$extensionListIndex]['extensionLogo'] = VBcmsGetSetting("websiteUrl").'vbcms-content/extensions/'.$extensionFolder.'/extension-logo.png';
 			}else{
 				$extensionsList[$extensionInfos['type']][$extensionListIndex]['extensionLogo'] = null;
 			}
@@ -75,7 +75,7 @@ $emptyBaseModules = $bdd->query("SELECT * FROM `vbcms-baseModulesAssoc` WHERE ex
 <html>
 <head>
 	<meta charset="utf-8">
-	<title><?=$websiteName?> | <?=translate("ws_addonsLists")?></title>
+	<title><?=VBcmsGetSetting("websiteName")?> | <?=translate("ws_addonsLists")?></title>
 	<?php include 'includes/depedencies.php';?>
 </head>
 <body>
@@ -90,7 +90,7 @@ $emptyBaseModules = $bdd->query("SELECT * FROM `vbcms-baseModulesAssoc` WHERE ex
 
 		<div class="width-50em d-flex flex-column">
 		<?php
-		if($debugMode == "1"){ ?>
+		if(VBcmsGetSetting("debugMode") == "1"){ ?>
 			<h5>Debug</h5>
 			<div class="border rounded my-2">
 			<pre><code><?php echo 'extensionsFolderContent:<br>'; print_r($extensionsFolderContent); echo '<br>extensionsList:<br>'; print_r($extensionsList); ?></code></pre>
@@ -165,12 +165,12 @@ $emptyBaseModules = $bdd->query("SELECT * FROM `vbcms-baseModulesAssoc` WHERE ex
 			<div class="tip">
 				<h5>Créer une extension</h5>
 				<p><b>Créer une extension pour VBcms est un jeu d'enfant!</b><br><a href="#" class="text-brown">Check la documentation</a> pour en savoir plus, les créateurs sont régulièrement mis en avant sur le Workshop!</p>
-				<img class="mt-n3" width="96" src="<?=$websiteUrl?>vbcms-admin/images/misc/create-addon.jpg">
+				<img class="mt-n3" width="96" src="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/images/misc/create-addon.jpg">
 			</div>
 			<div class="tip">
 				<h5>Quèsaco une dépendance?</h5>
 				<p>Tu as très probablement déjà du voir ce message d'avertissement lors de l'activation de la désactivation d'une extension, sans trop savoir ce qu'est une dépendance.</p>
-				<img class="mt-n1 mb-1" src="<?=$websiteUrl?>vbcms-admin/images/misc/alerte-dependance.jpg">
+				<img class="mt-n1 mb-1" src="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/images/misc/alerte-dependance.jpg">
 				<p><b>Une dépendance est une extension nécessaire au bon fonctionnement d'autres extensions</b>. La désactiver pourrait provoquer une erreur fatale, c'est pour cela que VBcms désactive tous ses liens par défaut.</p>
 			</div>
 		</div>
@@ -293,7 +293,7 @@ $emptyBaseModules = $bdd->query("SELECT * FROM `vbcms-baseModulesAssoc` WHERE ex
 				adminAccess: $("#adminAccessInput").val(),
 				clientAccess: $("#clientAccessInput").val()
 			};
-			$.get("<?=$websiteUrl?>vbcms-admin/backTasks/?checkModulesAliases="+encodeURIComponent(JSON.stringify(array)), function(data) {
+			$.get("<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks/?checkModulesAliases="+encodeURIComponent(JSON.stringify(array)), function(data) {
 				if (!isJson(data)) {
 					SnackBar({
 						message: "<?=translate('ws_cantVerifyModulesAlias')?>: "+data,
@@ -355,7 +355,7 @@ $emptyBaseModules = $bdd->query("SELECT * FROM `vbcms-baseModulesAssoc` WHERE ex
 					array.adminAccess=adminAccess;
 					array.clientAccess=clientAccess;
 				}
-				$.get("<?=$websiteUrl?>vbcms-admin/backTasks/?enableExtension="+encodeURIComponent(JSON.stringify(array)), function(data) {
+				$.get("<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks/?enableExtension="+encodeURIComponent(JSON.stringify(array)), function(data) {
 					if (data != "") {
 						SnackBar({
 							message: "<?=translate('ws_errorEnableAddon')?>: "+data,
@@ -378,7 +378,7 @@ $emptyBaseModules = $bdd->query("SELECT * FROM `vbcms-baseModulesAssoc` WHERE ex
 				var array = {};
 				array.name=name;
 				array.deleteData=deleteData;
-				$.get("<?=$websiteUrl?>vbcms-admin/backTasks/?disableExtension="+encodeURIComponent(JSON.stringify(array)), function(data) {
+				$.get("<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks/?disableExtension="+encodeURIComponent(JSON.stringify(array)), function(data) {
 					if (data != "") {
 						SnackBar({
 							message: "<?=translate('ws_errorDisableAddon')?>: "+data,
@@ -397,7 +397,7 @@ $emptyBaseModules = $bdd->query("SELECT * FROM `vbcms-baseModulesAssoc` WHERE ex
 		}
 
 		function fixBaseFunctionAssoc(){
-			$.post( "<?=$GLOBALS['websiteUrl']?>vbcms-admin/backTasks?fixBaseFunctionAssoc", $( "#unsatisfiedBaseFunctionsModalBody" ).serialize() )
+			$.post( "<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks?fixBaseFunctionAssoc", $( "#unsatisfiedBaseFunctionsModalBody" ).serialize() )
             .done(function( data ) {
                 if(data!=""){
                     SnackBar({
