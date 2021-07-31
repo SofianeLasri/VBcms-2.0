@@ -386,7 +386,7 @@ class module {
     }
 
     function call(array $parameters, $type){
-        //$mbdd=$this->mbdd;
+        $moduleName=$this->name; $adminAccess=$this->adminAccess; $clientAccess=$this->clientAccess;
         $bdd=$this->bdd;
         $extensionFullPath = $this->extensionFullPath;
         global $translation;
@@ -405,6 +405,36 @@ class module {
             return $this->extensionFullPath."/includes/translations/".strtoupper($langCode).".php";
         }elseif(file_exists($this->extensionFullPath."/includes/translations/EN.php")){
             return $this->extensionFullPath."/includes/translations/EN.php";
+        }
+    }
+
+    // Cette fonction est appelée par les modules afin de créer des pages selon 3 modes (pas vraiment besoin de l'appeler pour le 3ème)
+    function extensionCreatePage($panelMode, $creationMode, $pageToInclude, $title, $description, $depedencies){
+        // Le mode 0 correspond à l'inclusion d'une page qui retourne du code HTML
+        // Le mode 1 correspond à l'inclusion d'une page qui ne fait que passer des paramètres
+        // Le mode 2 correspond à l'inclusion d'une page qui n'utilise pas la maquette du thème, qui renvoie sa propre page
+        global $bdd;
+        $websiteUrl = VBcmsGetSetting("websiteUrl");
+        $websiteName = VBcmsGetSetting("websiteName");
+        $websiteDescription = VBcmsGetSetting("websiteDescription");
+        $websiteLogo = VBcmsGetSetting("websiteLogo");
+        
+        // Ici on ne peut pas récupérer $http et $urlPath, on va réécrire le code ici
+        if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
+
+        $url = parse_url("$http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");	
+        $urlPath = explode("/", $url["path"]);
+
+        
+        if($creationMode == 0){
+            if($panelMode == "admin"){
+                $vbcmsRequest = true;
+                require $GLOBALS['vbcmsRootPath']."/vbcms-admin/includes/emptyPage.php";
+            }
+        } elseif($creationMode == 1){
+
+        } elseif($creationMode == 2){
+            require $pageToInclude;
         }
     }
 }

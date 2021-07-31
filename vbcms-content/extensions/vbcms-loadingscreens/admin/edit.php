@@ -2,7 +2,7 @@
 if(isset($_GET['id'])){
     $loadingScreenIdentifier = $_GET['id'];
 } else {
-    $loadingScreenIdentifier = "temp-".$_SESSION['user_id'];
+    $redirectToList = true;
 }
 
 ?>
@@ -12,6 +12,8 @@ if(isset($_GET['id'])){
     <div style="padding: 30px 50px; background-color:#3e3e3e;">
         <div class="d-flex text-white">
            <div style="margin-right: 50px;">
+                <h4><?=translate("loadingscreens_openEditor")?></h4>
+                <button type="button" class="btn btn-brown"><?=translate("loadingscreens_openEditor")?></button>
                 <h4><?=translate("modifyProperties")?></h4>
                 <div class="form-group">
                     <label><?=translate("theme")?></label>
@@ -25,7 +27,7 @@ if(isset($_GET['id'])){
                 </div>
 
                 <div class="form-group">
-                    <label><?=translate("previewResolution")?></label>
+                    <label><?=translate("loadingscreens_previewResolution")?></label>
                     <select class="form-control form-control-sm" id="previewResolution">
                         <option value='{"width":2560,"height":1440}'>2560 x 1440</option>
                         <option value='{"width":1920,"height":1080}' selected>1920 x 1080</option>
@@ -80,6 +82,11 @@ if(isset($_GET['id'])){
 
 	<script type="text/javascript">
         $( document ).ready(function() {
+            <?php
+            if(isset($redirectToList)){
+                echo 'window.location.href = "'.$GLOBALS['websiteUrl'].'vbcms-admin/'.$urlPath[2].'/browse";';
+            }
+            ?>
             resizePreview();
         });
         $( window ).resize(function() {

@@ -1,6 +1,15 @@
 <?php
+// Cette fonctions permettra de récupérer des variables propres au panel dans des endroits où les variables de variables.php ne sont plus accessibles
+function VBcmsGetSetting($setting){
+    global $bdd;
+    
+    $response = $bdd->prepare("SELECT value FROM `vbcms-settings` WHERE name = ?");
+    $response->execute([$setting]);
+    return $response->fetchColumn();
+}
+
 function loadModule($type, $moduleAlias, $moduleParams){
-	global $bdd, $http, $websiteUrl, $translation;
+	global $bdd;
 
 	// On va enregistrer l'évènement
 	$response = $bdd->prepare("INSERT INTO `vbcms-events` (id,date,module,content,url,ip) VALUES (?,?,?,?,?,?)");
@@ -60,24 +69,7 @@ function loadModule($type, $moduleAlias, $moduleParams){
 	}
 }
 
-// Cette fonction est appelée par les modules afin de créer des pages selon 3 modes (pas vraiment besoin de l'appeler pour le 3ème)
-function extensionCreatePage($panelMode, $creationMode, $pageToInclude, $title, $description, $depedencies){
-    // Le mode 0 correspond à l'inclusion d'une page qui retourne du code HTML
-	// Le mode 1 correspond à l'inclusion d'une page qui ne fait que passer des paramètres
-	// Le mode 2 correspond à l'inclusion d'une page qui n'utilise pas la maquette du thème, qui renvoie sa propre page
-	global $bdd, $http, $websiteUrl, $translation, $websiteName, $websiteMetaColor, $websiteDescription, $websiteLogo, $paths;
-    
-    if($creationMode == 0){
-        if($panelMode == "admin"){
-            $vbcmsRequest = true;
-            require $GLOBALS['vbcmsRootPath']."/vbcms-admin/includes/emptyPage.php";
-        }
-    } elseif($creationMode == 1){
 
-    } elseif($creationMode == 2){
-        require $pageToInclude;
-    }
-}
 
 // Cette fonction permet la traduction des textures en fcontion de la langue utilisée par l'utilisateur
 function translate($index){

@@ -1,6 +1,6 @@
 <?php
 // Fichier de test
-$deTest['width'] = 1920;
-$deTest['height'] = 1080;
+$deTest['type'] = "identifier";
+$deTest['name'] = "test";
 
-echo json_encode($deTest);
+echo urlencode(json_encode($deTest));
