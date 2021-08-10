@@ -27,8 +27,8 @@
                                 <td>
                                     <span class="text-muted">'.$usersCount.' <i class="fas fa-user"></i></span>
                                 </td>
-                                <td>
-                                    <div class="roundedLink" data-toggle="tooltip" data-placement="top" title="Plus"><i class="fas fa-ellipsis-h"></i></div>
+                                <td label="plusMenu">
+                                    <div class="roundedLink" data-toggle="tooltip" data-placement="top" title="Plus" onclick="showPlusMenu('.$userGroup['groupId'].')"><i class="fas fa-ellipsis-h"></i></div>
                                 </td>
                             </tr>');
                             }
@@ -51,6 +51,15 @@
     </div>
 </div>
 
+<div class="plusMenu border" id="plusMenu">
+    <ul>
+        <li><span><?=translate('rename')?></span></li>
+        <li><span>Copier le nom (slug)</span></li>
+        <li><span>Copier l'identifiant (ID)</span></li>
+        <li class="danger"><span><?=translate('deleteGroup')?></span></li>
+    </ul>
+</div>
+
 <script type="text/javascript">
 $(function() {
     $('.userCard').hover(function() {
@@ -63,4 +72,15 @@ $(function() {
     });
 });
 
+function showPlusMenu(groupId){
+    $('#plusMenu').css("top", event.clientY);
+    $('#plusMenu').css("left", event.clientX);
+    $('#plusMenu').css("display", "block");
+}
+
+$(document).click(function(event) {
+    if($('#plusMenu').css('display')!='none' && $(event.target).closest(".plusMenu").attr('id')!='plusMenu' && $(event.target).closest("td").attr("label")!='plusMenu'){
+        $('#plusMenu').css("display", "none");
+    }
+});
 </script>

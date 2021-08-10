@@ -818,3 +818,42 @@ header .menu-item{
 	77.5%{    color: transparent;  }
 	100%{     color: #FFC107;    }
 }
+
+.plusMenu{
+	position: fixed;
+	display: none;
+	background-color: white;
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+.plusMenu ul{
+	padding: 0px;
+    margin: 0px;
+    min-width: 150px;
+    list-style: none;
+}
+
+.plusMenu ul li{
+	padding-bottom: 7px;
+    padding-top: 7px;
+	color: black;
+	background-color: white;
+	margin: .25em;
+	border-radius: 5px;
+	padding-left: .5em;
+	padding-right: .5em;
+}
+
+.plusMenu ul li.danger{
+	color: #DC3545;
+}
+
+.plusMenu ul li:hover {
+    background-color: var(--mainBrown);
+    color: white;
+}
+.plusMenu ul li.danger:hover {
+    background-color: #DC3545;
+    color: white;
+}
