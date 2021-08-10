@@ -12,9 +12,13 @@ if(isset($_GET['id'])){
     <div style="padding: 30px 50px; background-color:#3e3e3e;">
         <div class="d-flex text-white">
            <div style="margin-right: 50px;">
-                <h4><?=translate("loadingscreens_openEditor")?></h4>
-                <button type="button" class="btn btn-brown"><?=translate("loadingscreens_openEditor")?></button>
-                <h4><?=translate("modifyProperties")?></h4>
+                <h4><?=translate("commands")?></h4>
+                <div class="d-flex">
+                    <button type="button" class="btn btn-brown btn-sm flex-fill"><?=translate("loadingscreens_openEditor")?></button>
+                    <a href="<?=VBcmsGetSetting("websiteUrl")?><?=$this->clientAccess?>/<?=$loadingScreenIdentifier?>" class="btn btn-brown btn-sm mx-2 flex-fill"><?=translate("visualize")?></a>
+                    <button type="button" class="btn btn-danger btn-sm flex-fill"><i class="fas fa-trash-alt"></i></button>
+                </div>
+                <h4 style="margin-top: 50px;"><?=translate("modifyProperties")?></h4>
                 <div class="form-group">
                     <label><?=translate("theme")?></label>
                     <select class="form-control form-control-sm" id="themeSelection">
@@ -38,7 +42,7 @@ if(isset($_GET['id'])){
            </div>
            <div class="flex-grow-1 ">
                <h4>Prévisualisation</h4>
-               <div id="loadingScreenPreview" class="rounded" style="background-image: url('https://api.apiflash.com/v1/urltoimage?access_key=65e037cb81b44087ba537b58dd19e4ff&format=jpeg&quality=80&response_type=image&url=<?php echo urlencode(VBcmsGetSetting("websiteUrl")."loadingscreen/".$loadingScreenIdentifier."?preview"); ?>&width=1920&height=1080');"></div>
+               <div id="loadingScreenPreview" class="rounded" style="background-image: url('https://api.apiflash.com/v1/urltoimage?access_key=65e037cb81b44087ba537b58dd19e4ff&format=jpeg&quality=80&response_type=image&url=<?php echo urlencode(VBcmsGetSetting("websiteUrl").$this->clientAccess.'/'.$loadingScreenIdentifier.'?preview'); ?>&width=1920&height=1080');"></div>
            </div>
         </div>
     </div>

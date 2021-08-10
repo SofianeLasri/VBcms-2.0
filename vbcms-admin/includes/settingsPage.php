@@ -62,6 +62,8 @@ function getSettingsHTML($params){
                     include "settings/general.php";    
                 }elseif($params=="users" && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')){ 
                     include "settings/users.php"; 
+                }elseif($params=="userGroups" && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageuserGroupsSettings')){ 
+                    include "settings/groups.php"; 
                 } ?>
     </div>
 
@@ -101,26 +103,6 @@ function getSettingsHTML($params){
 
             // Enfin on lance la fonction qui affiche la page
             setSettingsContent();
-        }
-
-        function saveChanges(){
-            $.post( "<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks?saveSettings", $( "#form" ).serialize() )
-            .done(function( data ) {
-                if(data!=""){
-                    SnackBar({
-                        message: data,
-                        status: "danger",
-                        timeout: false
-                    });
-                } else {
-                    SnackBar({
-                        message: '<?=translate("success-saving")?>',
-                        status: "success"
-                    });
-                    // On peut reload le contenu de la page avec cette fonction
-                    setSettingsContent();
-                }
-            });
         }
     </script>
     <?php

@@ -61,14 +61,14 @@
                             <div class="userProfilPic" style="background-image:url(\''.$userProfilPic.'\')"></div>
                             <div class="ml-2">
                                 <h6 class="mb-n1">'.$user['username'].'</h6>
-                                <small class="text-muted">'.translate('joinedOn').': '. $joinedDate->format('l jS F').'</small><br>
-                                <small><a href="#" class="text-brown">'.translate("modifyUser").'</a></small>
+                                <small class="text-muted">'.translate('joinedOn').': '. $joinedDate->format('l jS F Y').'</small><br>
+                                <small><a href="#" onclick="toogle(\'edit-'.$user['username'].'\')" class="text-brown">'.translate("modifyUser").'</a> <a href="#" onclick="editLocalAccount(\''.$user['netId'].'\')" class="text-brown">'.translate("modifyLocalAccount").'</a></small>
                             </div>
                         </div>');
-                        echo ('<div class="d-flex flex-column mt-2" id="edit-'.$user['username'].'">
+                        echo ('<div id="edit-'.$user['username'].'" style="display: none;"><div class="d-flex flex-column mt-2"">
                             <div class="form-inline">
                                 <label>Changer de groupe</label>
-                                <select class="form-control form-control-sm flex-grow-1 ml-2" id="newGroup">
+                                <select class="form-control form-control-sm flex-grow-1 ml-2" id="groupUser'.$user['netId'].'" onchange="changeUserGroup('.$user['netId'].')">
                                     '.$groupsOptions.'
                                 </select>
                             </div>
@@ -76,15 +76,15 @@
                                 <button class="btn btn-sm btn-brown">Modifier ses permissions</button>
                                 <button class="btn btn-sm btn-danger ml-2">Expulser</button>
                             </div>
-                        </div>');
+                        </div></div>');
                     }else{
                         echo ('<div class="userCard d-flex flex-column">
                         <div class="d-flex">
                             <div class="userProfilPic" style="background-image:url(\''.$userProfilPic.'\')"></div>
                             <div class="ml-2">
                                 <h6 class="mb-n1">'.$user['username'].'</h6>
-                                <small class="text-muted">'.translate('joinedOn').': '. $joinedDate->format('l jS F').'</small><br>
-                                <small class="text-brown">Toi :)</small>
+                                <small class="text-muted">'.translate('joinedOn').': '. $joinedDate->format('l jS F Y').'</small><br>
+                                <small class="text-brown"><a href="#" onclick="editLocalAccount(\''.$user['netId'].'\')" class="text-brown">'.translate("modifyLocalAccount").'</a></small>
                             </div>
                         </div>');
                     }
@@ -114,7 +114,7 @@
     <div class="admin-tips" style="position: relative !important; ">
         <div class="tip">
             <h5>Gérer les utilisateurs</h5>
-            <p>VBcms peut être utilisé par plusieurs peronnes en même temps. Ici tu peux gérer leur compte, mais également inviter d'autres personnes.<br><strong>Fais bien attention à qui aura accès au panneau d'administration.</strong></p>
+            <p>VBcms peut être utilisé par plusieurs personnes en même temps. Ici tu peux gérer leur compte, mais également inviter d'autres personnes.<br><strong>Fais bien attention à qui aura accès au panneau d'administration.</strong></p>
         </div>
     </div>
 </div>
@@ -157,7 +157,165 @@
     </div>
 </div>
 
+<div class="modal fade" id="localAccountCreationModal" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-brown text-white">
+                <h5 id="extensionActivationModalTitle" class="modal-title"><?=translate('modifyLocalAccount')?></h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="localAccountCreationForm" class="needs-validation" novalidate>
+                    <div class="form-group">
+                        <label><?=translate('username')?></label>
+                        <input type="text" class="form-control" name="localUserUsername" id="localUserUsername" placeholder="" value="<?=$_SESSION['user_username']?>" required>
+                        <small class="form-text text-muted"><?=translate("localAccountCreation_loginCanBeDifferent")?></small>
+                        <div class="invalid-feedback"><?=translate("localAccountCreation_pleaseEnterLogin")?></div>
+                    </div>
+                    <div class="form-group">
+                        <label><?=translate('password')?></label>
+                        <input type="password" class="form-control" name="localUserPassword1" id="localUserPassword1" placeholder="" required>
+                        <div class="invalid-feedback" id="localUserPassword1Alert">
+                            <?=translate('localAccountCreation_youCreateAnAccountWithoutPassword')?> <img height="16" src="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/images/emojis/thinkingHard.png">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><?=translate('repeatPassword')?></label>
+                        <input type="password" class="form-control" name="localUserPassword2" id="localUserPassword2" placeholder="" required>
+                        <div class="invalid-feedback" id="localUserPassword2Alert"><?=translate("localAccountCreation_pleaseRewriteYourPassword")?></div>
+                    </div>
+
+                    <div>
+                        <h5><?=translate("whyCreateALocalAccount")?></h5>
+                        <p>Autant le dire tout de suite, les serveurs de VBcms ne sont pas réputés pour être très fiables... Il sera assez fréquent de les voir inaccessibles, surtout à ce stade du développement.<br><br><strong>Le compte local te permettera d'accéder au panneau d'administration, même en cas de panne générale.</strong> Tu ne pourras pas télécharger d'extensions ni mettre VBcms à jour, mais au moins tu pourras continuer à gérer ton site. :D</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-brown" data-dismiss="modal"><?=translate("cancel")?></button>
+                    <button id="registerBtn" type="button" class="btn btn-brown" disabled><?=translate("create")?></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
+(function() {
+'use strict';
+window.addEventListener('load', function() {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function(form) {
+    form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    }, false);
+    });
+}, false);
+})();
+
+function editLocalAccount(netId) {
+    $.get("<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks/?getNetIdLocalAccount="+netId, function(data) {
+        var json = JSON.parse(data);
+        if(!jQuery.isEmptyObject(json)){
+            $("#localUserUsername").val(json.username);
+        } else{
+            $("#localUserUsername").val("");
+        }
+    });
+    $("#registerBtn").attr("onclick", "sendLocalAccountInfos('"+netId+"')");
+    $('#localAccountCreationModal').modal('show');
+}
+
+$("#localUserPassword1").change(function() {
+    checkPassword();
+});
+$("#localUserPassword2").change(function() {
+    checkPassword();
+});
+
+function sendLocalAccountInfos(netId){
+    $.post( "<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks?setNetIdLocalAccount="+netId, $( "#localAccountCreationForm" ).serialize() )
+    .done(function( data ) {
+        if(data!=""){
+            SnackBar({
+                message: data,
+                status: "danger",
+                timeout: false
+            });
+        } else {
+            SnackBar({
+                message: '<?=translate("success-saving")?>',
+                status: "success"
+            });
+            $('#localAccountCreationModal').modal('hide');
+        }
+    });
+}
+
+function changeUserGroup(netId){
+    var array = {
+        netId: netId,
+        groupId: $("#groupUser"+netId).val()
+    };
+    $.get("<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks/?changeUserGroup="+JSON.stringify(array), function(data) {
+        if(data!=""){
+            SnackBar({
+                message: data,
+                status: "danger",
+                timeout: false
+            });
+        } else {
+            SnackBar({
+                message: '<?=translate("success-saving")?>',
+                status: "success"
+            });
+        }
+    });
+
+    
+}
+
+function checkPassword(){
+    if ($("#localUserPassword1").val()!=$("#localUserPassword2").val()) {
+        $("#localUserPassword1Alert").html("<?=translate("localAccountCreation_passwordsDontMatches")?>");
+        $("#localUserPassword1Alert").css("display","block");
+        $("#localUserPassword2Alert").html("<?=translate("localAccountCreation_passwordsDontMatches")?>");
+        $("#localUserPassword2Alert").css("display","block");
+        $("#registerBtn").attr("disabled", "");
+    } else {
+        var passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,32}$/;
+        if($("#localUserPassword1").val().match(passw)) { 
+            $("#localUserPassword1Alert").html('<?=translate('localAccountCreation_youCreateAnAccountWithoutPassword')?> <img height="16" src="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/images/emojis/thinkingHard.png">');
+            $("#localUserPassword1Alert").css("display","");
+            $("#localUserPassword2Alert").html('<?=translate("localAccountCreation_pleaseRewriteYourPassword")?>');
+            $("#localUserPassword2Alert").css("display","");
+            $("#registerBtn").removeAttr("disabled");
+        } else { 
+            $("#localUserPassword1Alert").html("<?=translate("localAccountCreation_yourPasswordIsTooWeak")?>");
+            $("#localUserPassword1Alert").css("display","block");
+            $("#localUserPassword2Alert").html("<?=translate("localAccountCreation_yourPasswordIsTooWeak")?>");
+            $("#localUserPassword2Alert").css("display","block");
+            $("#registerBtn").attr("disabled", "");
+        }
+        
+    }
+}
+
+function toogle(idToToogle){
+    if($("#"+idToToogle).css("display") == "none"){
+        $("#"+idToToogle).css("display", "block");
+    }else{
+        $("#"+idToToogle).css("display", "none");
+    }
+}
+
 document.getElementById('searchNetUser').addEventListener("change", function (evt) {
     checkUser();
 }, false);
@@ -205,7 +363,7 @@ function fillInviteUser(username){
 function sendInvite(){
     var array = {
         username: $("#searchNetUser").val(),
-        key: "<?=$GLOBALS['encryptionKey']?>"
+        key: "<?=VBcmsGetSetting('encryptionKey')?>"
     };
     $.get("https://api.vbcms.net/profiles/v1/invite/"+encodeURIComponent(JSON.stringify(array)), function(data, statusText, xhr) {
         if(xhr.status==200){

@@ -176,6 +176,29 @@ if (isset($_GET["getNotifications"])) {
 		$fixedAssoc = $bdd->prepare("UPDATE `vbcms-baseModulesAssoc` SET extensionName = ? WHERE name = ?");
 		$fixedAssoc->execute([$extName, $assocName]);
 	}
+} elseif (isset($_GET["getNetIdLocalAccount"])&&!empty($_GET["getNetIdLocalAccount"]) && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')){
+	$localAccountExist = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE netIdAssoc = ?");
+	$localAccountExist->execute([$_GET["getNetIdLocalAccount"]]);
+	$localAccountExist = $localAccountExist->fetch(PDO::FETCH_ASSOC);
+	echo json_encode($localAccountExist);
+	
+}  elseif (isset($_GET["changeUserGroup"])&&!empty($_GET["changeUserGroup"]) && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')){
+	$modificationDetail = json_decode($_GET["changeUserGroup"], true);
+	$query = $bdd->prepare("UPDATE `vbcms-users` SET `groupId` = ? WHERE `vbcms-users`.`netId` = ?");
+	$query->execute([$modificationDetail['groupId'], $modificationDetail['netId']]);
+	
+} elseif (isset($_GET["setNetIdLocalAccount"])&&!empty($_GET["setNetIdLocalAccount"]) && (isset($_POST)&&!empty($_POST))  && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')) {
+	$localAccountExist = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE netIdAssoc = ?");
+	$localAccountExist->execute([$_GET["setNetIdLocalAccount"]]);
+	$localAccountExist = $localAccountExist->fetch(PDO::FETCH_ASSOC);
+	
+	if(!empty($localAccountExist)){
+		$modify = $bdd->prepare("UPDATE `vbcms-localAccounts` SET username = ?, password = ? WHERE netIdAssoc = ?");
+		$modify->execute([$_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT), $_GET["setNetIdLocalAccount"]]);
+	}else{
+		$query = $bdd->prepare('INSERT INTO `vbcms-localAccounts` (`id`, `netIdAssoc`, `username`, `password`, `profilePic`) VALUES (NULL, ?,?,?,?)');
+		$query->execute([$_GET["setNetIdLocalAccount"], $_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT), VBcmsGetSetting("websiteUrl")."vbcms-admin/images/misc/programmer.png"]);
+	}
 } elseif(isset($_GET)&&!empty($_GET)){
 	echo "Commande \"".array_key_first($_GET)."(".$_GET[array_key_first($_GET)].")\" non reconnue.";
 } else {?>

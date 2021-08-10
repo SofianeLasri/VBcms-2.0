@@ -23,6 +23,7 @@
 			</div>');
 			}
 			?>
+			<!--
 			<div class="ld-card border rounded mx-1 my-1" style="background-image: url('https://sofianelasri.mtxserv.com/vbcms-content/uploads/stayonline.jpg');">
 				<div class="ld-card-content p-2">
 					<span><strong>Un super loading screen</strong></span>
@@ -49,7 +50,7 @@
 					<span><strong>Un super loading screen</strong></span>
 					<a href="#" class="btn btn-sm btn-brown float-right">Modifier</a>
 				</div>
-			</div>
+			</div> -->
 		</div>
 	</div>
 
