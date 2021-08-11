@@ -360,8 +360,8 @@ class module {
         else $this->workshopId = $workshopId;
 
         $bdd=$this->bdd;
+        $initCall[0] = "enable";
         include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/init.php"; // Le module appelé va se charger du reste
-        enable($name, $path, $adminAccess, $clientAccess);
         $query = $bdd->prepare("INSERT INTO `vbcms-activatedExtensions` (`name`, `type`, `path`, `adminAccess`, `clientAccess`, `vbcmsVerId`, `workshopId`) VALUES (?,?,?,?,?,?,?)");
         $query->execute([$name, "module", $path, $adminAccess, $clientAccess, $vbcmsVerId, $this->workshopId]);
     }
@@ -380,8 +380,8 @@ class module {
         }
 
         if($deleteData){ // L'utilisateur a demandé la suppression des données, on va alors demander à l'extension de le faire
+            $initCall[0] = "deleteData";
             include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/init.php";
-            deleteData();
         }
     }
 
@@ -396,8 +396,10 @@ class module {
 
     function getSettingsPage($parameters){
         $bdd=$this->bdd;
+        $initCall[0] = "getSettingsHTML";
+        $initCall[1] = $parameters;
         include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/init.php";
-        getSettingsHTML($parameters);
+        
     }
 
     function getTranslationFile($langCode){
@@ -432,5 +434,10 @@ class module {
         } elseif($creationMode == 2){
             require $pageToInclude;
         }
+    }
+
+    // Cette fonction permet de réucpérer la liste des permissions de l'extension
+    function getPermissions(){
+        echo 'test';
     }
 }

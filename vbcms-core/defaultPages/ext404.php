@@ -1,18 +1,15 @@
 <?php
-// Arrive si on charge la page seule, ce n'est pas censé arriver
-if(!isset(VBcmsGetSetting("websiteUrl"))){
-    if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
-    $url = parse_url("$http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
-    VBcmsGetSetting("websiteUrl") = $url["scheme"]."://".$url["host"]."/";
-} 
+if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
+$url = parse_url("$http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+$websiteUrl = $url["scheme"]."://".$url["host"]."/";
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8">
 	<title>VBcms</title>
-    <link rel="icon" type="image/png" href="https://vbcms.net/vbcms-content/uploads/vbcms-logo/raccoon-in-box-512x.png" />
-    <link rel="stylesheet" href="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/fonts/fonts.css">
+    <link rel="icon" type="image/png" href="<?=$websiteUrl?>vbcms-admin/images/vbcms-logo/raccoon-in-box-512x.png" />
+    <link rel="stylesheet" href="<?=$websiteUrl?>vbcms-admin/fonts/fonts.css">
 </head>
 <body>
     <style type="text/css">
@@ -60,7 +57,7 @@ if(!isset(VBcmsGetSetting("websiteUrl"))){
     </style>
     <div class="pageContent">
         <div class="vbcmsLogo">
-            <img src="https://vbcms.net/vbcms-content/uploads/vbcms-logo/raccoon-in-box-512x.png">
+            <img src="<?=$websiteUrl?>vbcms-admin/images/vbcms-logo/raccoon-in-box-512x.png">
             <div class="text">
                 <span>VBcms</span>
                 <span class="sub">Erreur 404: L'extension demandée n'existe pas</span>
