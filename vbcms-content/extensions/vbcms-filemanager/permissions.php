@@ -1,0 +1,4 @@
+<?php
+$permissions = [
+    'access-browse'
+];

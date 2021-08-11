@@ -438,6 +438,9 @@ class module {
 
     // Cette fonction permet de réucpérer la liste des permissions de l'extension
     function getPermissions(){
-        echo 'test';
+        $initCall[0] = "getPermissions";
+        include $GLOBALS['vbcmsRootPath'].'/vbcms-content/extensions/'.$this->path."/init.php";
+        if(!isset($permissions)) $permissions = array();
+        return $permissions;
     }
 }

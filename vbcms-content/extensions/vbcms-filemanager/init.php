@@ -8,5 +8,7 @@ if(isset($initCall)&&!empty($initCall)){
     } elseif($initCall[0]=="getSettingsHTML"){
         // $initCall[1] contient les paramètres
         echo('<h5>C\'est bien la page du filemanager</h5>');
-    } 
+    } elseif($initCall[0]=="getPermissions"){
+        include 'permissions.php';
+    }
 }

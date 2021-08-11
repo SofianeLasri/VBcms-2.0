@@ -792,6 +792,10 @@ header .menu-item{
 	cursor: pointer;
 }
 
+.userCard.active{
+	background-color: #e6e6e6;
+}
+
 .userCard .userProfilPic{
 	height: 56px;
 	width: 56px;

@@ -6,7 +6,7 @@
         </div>
 
         <div class="d-flex p-4">
-            <div style="min-width:360px;">
+            <div class="p-2" style="min-width:360px;">
                 <h5>Groupes</h5>
                 <table style="width:100%;">
                     <tbody>
@@ -20,7 +20,7 @@
                                 $usersCount->execute([$userGroup['groupId']]);
                                 $usersCount=$usersCount->fetchColumn();
                                 
-                                echo('<tr class="userCard" style="height:2em;">
+                                echo('<tr class="userCard" id="group-'.$userGroup['groupId'].'" onclick="selectGroup('.$userGroup['groupId'].')" style="height:2em;">
                                 <th>
                                     <span>'.translate($userGroup['groupName']).'</span>
                                 </th>
@@ -36,8 +36,34 @@
                     </tbody>
                 </table>
             </div>
-            <div class="flex-fill">
+            <div class="flex-fill p-2">
                 <h5>Permissions</h5>
+                <form id="permsForm">
+                    <?php
+                    // Fait en JS
+                    /*
+                        $activatedExtensions = $bdd->query("SELECT * FROM `vbcms-activatedExtensions`")->fetchAll(PDO::FETCH_ASSOC);
+                        foreach ($activatedExtensions as $activatedExtension){
+                            $ext = new module($activatedExtension['name']);
+                            $permissions = $ext->getPermissions();
+                            foreach ($permissions as $permission){
+                                $hasPerm = verifyGroupPermission(1, $activatedExtension['name'], $permission);
+                                if($hasPerm) $hasPerm = "checked";
+                                $inputName['extension'] = $activatedExtension['name'];
+                                $inputName['permission'] = $permission;
+                                echo('<div>
+                                <h5 class="text-brown border-bottom">'.$activatedExtension['name'].'</h5>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="'.urlencode(json_encode($inputName)).'" '.$hasPerm.'>
+                                    <label class="form-check-label">'.$permission.'</label>
+                                </div>
+                            </div>');
+                            }
+                        }
+                    */
+                    ?>
+                    
+                </form>
             </div>
         </div>
     </div>
@@ -61,6 +87,20 @@
 </div>
 
 <script type="text/javascript">
+$( document ).ready(function() {
+    // On va récupérer l'url et ses paramètres
+    let url = new URL(window.location.href);
+    let search_params = url.searchParams;
+
+    // On récupère les infos de la requête
+    if(search_params.get('selectedGroup')==null){
+        selectGroup(1);
+    } else {
+        selectGroup(search_params.get('selectedGroup'));
+    }
+    
+});
+
 $(function() {
     $('.userCard').hover(function() {
         $(this).find('.roundedLink').css('background-color', 'var(--mainBrown)');
@@ -83,4 +123,56 @@ $(document).click(function(event) {
         $('#plusMenu').css("display", "none");
     }
 });
+
+function selectGroup(id){
+    // On va récupérer l'url et ses paramètres
+    let url = new URL(window.location.href);
+	let search_params = url.searchParams;
+
+    if(search_params.get('selectedGroup')!=null){
+        $("#group-"+search_params.get('selectedGroup')).removeClass("active");
+    }
+    // Et on modifie le paramètre
+    search_params.set('selectedGroup', id);
+    let newUrl = url.toString();
+    window.history.replaceState({}, '', newUrl);
+
+    var array = {
+        type: "group",
+        id: id
+    };
+
+    $.get("<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks/?getPermissions="+encodeURIComponent(JSON.stringify(array)), function(data) {
+        // On supprime l'animation de chargement
+        $("#group-"+id).addClass("active");
+        // Et on insère le contenu
+        $("#permsForm").html("");
+        if (!isJson(data)){
+            $("#permsForm").append('<h5><?=translate('error')?>: <?=translate('thisIsNotJSON')?></h5><br>'+data);
+        }else{
+            var json = JSON.parse(data);
+            $.each( json, function( extension, permissionList ) {
+                $('#permsForm').append('<div>\
+                                    <h5 class="text-brown border-bottom">'+extension+'</h5>');
+                $.each( permissionList, function( index, permission ){
+                    if(permission.access == true){
+                        var hasPerm = "checked";
+                    } else {
+                        var hasPerm = null;
+                    }
+
+                    var inputName = {
+                        extension: extension,
+                        permission: permission.name
+                    };
+                    $("#permsForm").append('<div class="form-check">\
+                                        <input class="form-check-input" type="checkbox" name="'+encodeURIComponent(JSON.stringify(inputName))+'" '+hasPerm+'>\
+                                        <label class="form-check-label">'+permission.name+'</label>\
+                                    </div>');
+                });
+                $('#permsForm').append('</div>');
+            });               
+        }
+    });
+}
 </script>

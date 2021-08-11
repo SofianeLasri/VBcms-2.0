@@ -182,10 +182,47 @@ if (isset($_GET["getNotifications"])) {
 	$localAccountExist = $localAccountExist->fetch(PDO::FETCH_ASSOC);
 	echo json_encode($localAccountExist);
 	
-}  elseif (isset($_GET["changeUserGroup"])&&!empty($_GET["changeUserGroup"]) && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')){
+} elseif (isset($_GET["changeUserGroup"])&&!empty($_GET["changeUserGroup"]) && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')){
 	$modificationDetail = json_decode($_GET["changeUserGroup"], true);
 	$query = $bdd->prepare("UPDATE `vbcms-users` SET `groupId` = ? WHERE `vbcms-users`.`netId` = ?");
 	$query->execute([$modificationDetail['groupId'], $modificationDetail['netId']]);
+	
+} elseif (isset($_GET["getPermissions"]) && verifyUserPermission($_SESSION['user_id'], "vbcms", 'viewPermissions')){
+	if(!empty($_GET["getPermissions"])){
+		if(isJson(urldecode($_GET["getPermissions"]))){
+			$requestDetails = json_decode($_GET["getPermissions"], true);
+
+		}
+	}
+	$permissions = array();
+	$activatedExtensions = $bdd->query("SELECT * FROM `vbcms-activatedExtensions`")->fetchAll(PDO::FETCH_ASSOC);
+
+	// On va ajouter vbcms au début
+	$vbcmsExt['name'] = 'vbcms';
+	array_unshift($activatedExtensions, $vbcmsExt);
+	foreach ($activatedExtensions as $activatedExtension){
+		$permissions[$activatedExtension['name']] = array();
+
+		if($activatedExtension['name'] == 'vbcms'){
+			$extPermissions = getVBcmsPermissions();
+		} else {
+			$ext = new module($activatedExtension['name']);
+			$extPermissions = $ext->getPermissions();
+		}
+
+		foreach ($extPermissions as $permission){
+			$permissionDetail['name'] = $permission;
+			if(isset($requestDetails['type'])&&isset($requestDetails['id'])){
+				if($requestDetails['type']=="user"){
+					$permissionDetail['access'] = verifyUserPermission($requestDetails['id'], $activatedExtension['name'], $permission);
+				}elseif($requestDetails['type']=="group"){
+					$permissionDetail['access'] = verifyGroupPermission($requestDetails['id'], $activatedExtension['name'], $permission);
+				}
+			}
+			array_push($permissions[$activatedExtension['name']], $permissionDetail);
+		}
+	}
+	echo json_encode($permissions);
 	
 } elseif (isset($_GET["setNetIdLocalAccount"])&&!empty($_GET["setNetIdLocalAccount"]) && (isset($_POST)&&!empty($_POST))  && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')) {
 	$localAccountExist = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE netIdAssoc = ?");
