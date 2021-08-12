@@ -62,7 +62,7 @@ function getSettingsHTML($params){
                     include "settings/general.php";    
                 }elseif($params=="users" && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')){ 
                     include "settings/users.php"; 
-                }elseif($params=="userGroups" && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageuserGroupsSettings')){ 
+                }elseif($params=="userGroups" && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUserGroupsSettings')){ 
                     include "settings/groups.php"; 
                 } ?>
     </div>

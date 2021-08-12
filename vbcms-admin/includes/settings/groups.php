@@ -166,12 +166,35 @@ function selectGroup(id){
                         permission: permission.name
                     };
                     $("#permsForm").append('<div class="form-check">\
-                                        <input class="form-check-input" type="checkbox" name="'+encodeURIComponent(JSON.stringify(inputName))+'" '+hasPerm+'>\
+                                        <input class="form-check-input" type="checkbox" name="'+encodeURIComponent(JSON.stringify(inputName))+'" onclick="editPermissions('+id+')" '+hasPerm+'>\
                                         <label class="form-check-label">'+permission.name+'</label>\
                                     </div>');
                 });
                 $('#permsForm').append('</div>');
             });               
+        }
+    });
+}
+
+function editPermissions(id){
+    var array = {
+        type: "group",
+        id: id
+    };
+
+    $.post( "<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks?editPermissions="+encodeURIComponent(JSON.stringify(array)), $( "#permsForm" ).serialize() )
+    .done(function( data ) {
+        if(data!=""){
+            SnackBar({
+                message: data,
+                status: "danger",
+                timeout: false
+            });
+        } else {
+            SnackBar({
+                message: '<?=translate("success-saving")?>',
+                status: "success"
+            });
         }
     });
 }

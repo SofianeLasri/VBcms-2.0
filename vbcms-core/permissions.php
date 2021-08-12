@@ -1,10 +1,11 @@
 <?php
 $permissions = [
-    'manageUsersSettings',
+    'accessAdmin',
     'viewPermissions',
+    'editPermissions',
     'access-generalSettings',
     'manageUsersSettings',
-    'manageuserGroupsSettings',
+    'manageUserGroupsSettings',
     'permissionsSettings',
     'extAndWsSettings'
 ];

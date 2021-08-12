@@ -224,7 +224,34 @@ if (isset($_GET["getNotifications"])) {
 	}
 	echo json_encode($permissions);
 	
-} elseif (isset($_GET["setNetIdLocalAccount"])&&!empty($_GET["setNetIdLocalAccount"]) && (isset($_POST)&&!empty($_POST))  && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')) {
+} elseif (isset($_GET["editPermissions"])&&!empty($_GET["editPermissions"]) && verifyUserPermission($_SESSION['user_id'], "vbcms", 'editPermissions')) {
+	if(isJson(urldecode($_GET["editPermissions"]))){
+		$requestDetails = json_decode($_GET["editPermissions"], true);
+
+		if($requestDetails['type'] == 'group' && $requestDetails['id']!=1){ // Le groupe n°1 étant celui des superadmins, ils auront tj tous les droits
+			$query = $bdd->prepare('DELETE FROM `vbcms-groupsPerms` WHERE groupId=?'); // On vide les perms du groupe
+			$query->execute([$requestDetails['id']]);
+			foreach($_POST as $permissionJson => $checked) { // Puis on les recréées
+				$permissionDetail = json_decode(urldecode($permissionJson), true);
+				$query = $bdd->prepare('INSERT INTO `vbcms-groupsPerms` (`groupId`, `extensionName`, `permission`) VALUES (?,?,?)');
+				$query->execute([$requestDetails['id'], $permissionDetail['extension'], $permissionDetail['permission']]);
+			}
+		}elseif($requestDetails['type'] == 'user'){
+			$query = $bdd->prepare('DELETE FROM `vbcms-usersPerms` WHERE userId=?'); // On vide les perms du groupe
+			$query->execute([$requestDetails['id']]);
+			foreach($_POST as $permissionJson => $checked) { // Puis on les recréées
+				$permissionDetail = json_decode(urldecode($permissionJson), true);
+				$query = $bdd->prepare('INSERT INTO `vbcms-usersPerms` (`userId`, `extensionName`, `permission`) VALUES (?,?,?)');
+				$query->execute([$requestDetails['id'], $permissionDetail['extension'], $permissionDetail['permission']]);
+			}
+		}else{
+			echo 'Paramètre non reconnu.';
+		}
+		
+	} else {
+		echo translate('error').': '.translate('thisIsNotJSON');
+	}
+} elseif (isset($_GET["setNetIdLocalAccount"])&&!empty($_GET["setNetIdLocalAccount"]) && (isset($_POST)&&!empty($_POST)) && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')) {
 	$localAccountExist = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE netIdAssoc = ?");
 	$localAccountExist->execute([$_GET["setNetIdLocalAccount"]]);
 	$localAccountExist = $localAccountExist->fetch(PDO::FETCH_ASSOC);
