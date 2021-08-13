@@ -181,7 +181,7 @@ function adminNavbarAddItem($moduleName, $icon, $name, $link){
 function verifyUserPermission($userId, $extensionName, $permission){
     global $bdd;    
     // On va récupérer les infos de l'utilisateur
-    $userInfos = $bdd->prepare("SELECT * FROM `vbcms-users` WHERE netId=?");
+    $userInfos = $bdd->prepare("SELECT * FROM `vbcms-users` WHERE id=?");
     $userInfos->execute([$userId]);
     $userInfos = $userInfos->fetch(PDO::FETCH_ASSOC);
 

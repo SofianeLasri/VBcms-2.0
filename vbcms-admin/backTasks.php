@@ -184,8 +184,8 @@ if (isset($_GET["getNotifications"])) {
 	
 } elseif (isset($_GET["changeUserGroup"])&&!empty($_GET["changeUserGroup"]) && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')){
 	$modificationDetail = json_decode($_GET["changeUserGroup"], true);
-	$query = $bdd->prepare("UPDATE `vbcms-users` SET `groupId` = ? WHERE `vbcms-users`.`netId` = ?");
-	$query->execute([$modificationDetail['groupId'], $modificationDetail['netId']]);
+	$query = $bdd->prepare("UPDATE `vbcms-users` SET `groupId` = ? WHERE `vbcms-users`.`id` = ?");
+	$query->execute([$modificationDetail['groupId'], $modificationDetail['id']]);
 	
 } elseif (isset($_GET["getPermissions"]) && verifyUserPermission($_SESSION['user_id'], "vbcms", 'viewPermissions')){
 	if(!empty($_GET["getPermissions"])){

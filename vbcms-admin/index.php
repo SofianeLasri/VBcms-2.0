@@ -7,18 +7,18 @@ if ($isUpToDate == 1) {
 } else {
 	$updateMessage = translate("isNotUpToDate");
 }
-if($_SESSION['loginType']=='vbcms-account'){
+if($_SESSION['auth']=='vbcms.net'){
 	$userHasLocalAccount = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE netIdAssoc = ?");
-	$userHasLocalAccount->execute([$_SESSION['user_id']]);
+	$userHasLocalAccount->execute([$_SESSION['netId']]);
 	$userHasLocalAccount = $userHasLocalAccount->fetch(PDO::FETCH_ASSOC);
 
 	if(empty($userHasLocalAccount)){
 		if(isset($_POST['localUserUsername']) && !empty($_POST['localUserUsername'])){
-			$query = $bdd->prepare('INSERT INTO `vbcms-localAccounts` (`id`, `netIdAssoc`, `username`, `password`, `profilePic`) VALUES (NULL, ?,?,?,?)');
-			$query->execute([$_SESSION['user_id'], $_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT), $_SESSION['user_profilePic']]);
+			$query = $bdd->prepare('INSERT INTO `vbcms-localAccounts` (`id`, `netIdAssoc`, `username`, `password`) VALUES (NULL, ?,?,?)');
+			$query->execute([$_SESSION['netId'], $_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT)]);
 
 			$userHasLocalAccount = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE netIdAssoc = ?");
-			$userHasLocalAccount->execute([$_SESSION['user_id']]);
+			$userHasLocalAccount->execute([$_SESSION['netId']]);
 			$userHasLocalAccount = $userHasLocalAccount->fetch(PDO::FETCH_ASSOC);
 			if(empty($userHasLocalAccount)){
 				$localAccountCreationSuccess=false;

@@ -27,26 +27,20 @@
                 $users=$users->fetchAll(PDO::FETCH_ASSOC);
 
                 foreach($users as $user){
-                    $userProfilPic = file_get_contents("https://api.vbcms.net/profiles/v1/get/".$user['netId']);
-                    if(isJson($userProfilPic)){
-                        $userProfilPic = json_decode($userProfilPic, true);
-                        $userProfilPic = $userProfilPic['profilePic'];
-                    } else {
-                        // Ici on a soit pas trouvé l'utilisateur, soit les serveurs sont down
-                        // Du coup on va check dans localAccounts
-                        $userProfilPic = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE netIdAssoc = ?");
-                        $userProfilPic->execute([$user['netId']]);
-                        $userProfilPic=$userProfilPic->fetch(PDO::FETCH_ASSOC);
-                        if(!empty($userProfilPic)){
-                            $userProfilPic = $userProfilPic['profilePic'];
-                        }else{
-                            // Ici l'utilisateur n'existe pas dans la liste des comptes locaux
-                            // Donc on va lui mettre une image placeholder
-                            $userProfilPic = VBcmsGetSetting("websiteUrl")."vbcms-admin/images/misc/programmer.png";
-                        }
+                    $userProfilPic = $bdd->prepare("SELECT value FROM `vbcms-usersSettings` WHERE userId = ? AND name = 'profilPic'");
+                    $userProfilPic->execute([$user['id']]);
+                    $userProfilPic=$userProfilPic->fetchColumn();
+                    if(empty($userProfilPic)){
+                        $userProfilPic = VBcmsGetSetting("websiteUrl")."vbcms-admin/images/misc/programmer.png";
                     }
-
-                    $joinedDate = new DateTime($user['localJoinedDate']);
+                    
+                    $joinedDate = $bdd->prepare("SELECT value FROM `vbcms-usersSettings` WHERE userId = ? AND name = 'joinedDate'");
+                    $joinedDate->execute([$user['id']]);
+                    $joinedDate = $joinedDate->fetchColumn();
+                    if(!empty($joinedDate)) {
+                        $joinedDate = new DateTime($joinedDate);
+                        $joinedDate = $joinedDate->format('l jS F Y');
+                    } else $joinedDate = translate('unknownF');
 
                     $groupsOptions = null;
                     foreach($userGroups as $userGroup){
@@ -54,40 +48,36 @@
                         else $groupsOptions = $groupsOptions."<option value='".$userGroup['groupId']."'>".translate($userGroup['groupName'])."</option>";
                     }
                     
-                    
-                    if($user['username'] != $_SESSION['user_username']){
-                        echo ('<div class="userCard d-flex flex-column">
+                    echo ('<div class="userCard d-flex flex-column">
                         <div class="d-flex">
                             <div class="userProfilPic" style="background-image:url(\''.$userProfilPic.'\')"></div>
                             <div class="ml-2">
                                 <h6 class="mb-n1">'.$user['username'].'</h6>
-                                <small class="text-muted">'.translate('joinedOn').': '. $joinedDate->format('l jS F Y').'</small><br>
-                                <small><a href="#" onclick="toogle(\'edit-'.$user['username'].'\')" class="text-brown">'.translate("modifyUser").'</a> <a href="#" onclick="editLocalAccount(\''.$user['netId'].'\')" class="text-brown">'.translate("modifyLocalAccount").'</a></small>
-                            </div>
+                                <small class="text-muted"><strong>Auth:</strong>'.$user['auth'].' <strong>'.translate('joinedOn').'</strong>: '. $joinedDate.'</small><br>
+                                <small>');
+                                    if($user['id']!=$_SESSION['user_id']){
+                                        echo ('<a href="#" onclick="toogle(\'edit-'.$user['username'].'\')" class="text-brown">'.translate("modifyUser").'</a>');
+                                    }
+                                    if($user['auth']=='vbcms.net'){
+                                        echo('<a href="#" onclick="editLocalAccount(\''.$user['authId'].'\')" class="text-brown">'.translate("modifyLocalAccount").'</a>');
+                                    }
+                                echo('</small></div>
                         </div>');
                         echo ('<div id="edit-'.$user['username'].'" style="display: none;"><div class="d-flex flex-column mt-2"">
-                            <div class="form-inline">
-                                <label>Changer de groupe</label>
-                                <select class="form-control form-control-sm flex-grow-1 ml-2" id="groupUser'.$user['netId'].'" onchange="changeUserGroup('.$user['netId'].')">
-                                    '.$groupsOptions.'
-                                </select>
-                            </div>
-                            <div class="d-flex mt-2">
-                                <button class="btn btn-sm btn-brown">Modifier ses permissions</button>
-                                <button class="btn btn-sm btn-danger ml-2">Expulser</button>
-                            </div>
-                        </div></div>');
-                    }else{
-                        echo ('<div class="userCard d-flex flex-column">
-                        <div class="d-flex">
-                            <div class="userProfilPic" style="background-image:url(\''.$userProfilPic.'\')"></div>
-                            <div class="ml-2">
-                                <h6 class="mb-n1">'.$user['username'].'</h6>
-                                <small class="text-muted">'.translate('joinedOn').': '. $joinedDate->format('l jS F Y').'</small><br>
-                                <small class="text-brown"><a href="#" onclick="editLocalAccount(\''.$user['netId'].'\')" class="text-brown">'.translate("modifyLocalAccount").'</a></small>
-                            </div>
-                        </div>');
-                    }
+                                    <div class="form-inline">
+                                        <label>Changer de groupe</label>
+                                        <select class="form-control form-control-sm flex-grow-1 ml-2" id="groupUser'.$user['id'].'" onchange="changeUserGroup('.$user['id'].')">
+                                            '.$groupsOptions.'
+                                        </select>
+                                    </div>
+                                    <div class="d-flex mt-2">
+                                        <button class="btn btn-sm btn-brown">Modifier ses permissions</button>');
+                                        if($user['id']!=$_SESSION['user_id']){
+                                            echo('<button class="btn btn-sm btn-danger ml-2">Expulser</button>');
+                                        }
+                                    echo('</div>
+                                </div>');
+                            echo('</div>');
                     echo ('</div>');
                 }
                 echo "</div></div>";
@@ -259,10 +249,10 @@ function sendLocalAccountInfos(netId){
     });
 }
 
-function changeUserGroup(netId){
+function changeUserGroup(id){
     var array = {
-        netId: netId,
-        groupId: $("#groupUser"+netId).val()
+        id: id,
+        groupId: $("#groupUser"+id).val()
     };
     $.get("<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks/?changeUserGroup="+JSON.stringify(array), function(data) {
         if(data!=""){
