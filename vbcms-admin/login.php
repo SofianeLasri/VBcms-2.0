@@ -12,22 +12,43 @@ if (isset($_POST['login'])) { // Ne s'éxécute que si le formulaire de connexio
     if ((isset($_POST['username']) AND !empty($_POST['username'])) AND (isset($_POST['password']) AND !empty($_POST['password']))){
 
 		// Permet de savoir si l'utilisateur s'est connecté avec une adresse mail
-		if(strpos($_POST['username'], '@') !== false) {
-			$response = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE email=?");
-		} else {
-			$response = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE username=?");
-		}
+		$response = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE username=?");
 		$response->execute([$_POST['username']]);
 		$user = $response->fetch(PDO::FETCH_ASSOC);
 		if(!empty($user)){
 			if(hash_equals($user["password"], crypt($_POST["password"], $user["password"]))){
+				$_SESSION['auth'] = "vbcms.net";
 				$_SESSION['loginType'] = "local";
-				$_SESSION['user_id'] = $user['id'];
+
+				$userDetails = $bdd->prepare("SELECT * FROM `vbcms-users` WHERE authId=? AND auth='vbcms.net'");
+				$userDetails->execute([$user["netIdAssoc"]]);
+				$userDetails = $userDetails->fetch(PDO::FETCH_ASSOC);
+
+				$_SESSION['user_id'] = $userDetails['id'];
+				$_SESSION['netId'] = $user['netIdAssoc'];
 				$_SESSION['user_username'] = $user['username'];
-				$_SESSION['user_role'] = $user['role'];
-				$_SESSION['user_profilePic'] = "VBcmsGetSetting("websiteUrl")/vbcms-admin/images/misc/programmer.png";
-				$geoPlugin_array = unserialize( file_get_contents('http://www.geoplugin.net/php.gp?ip=' . $_SERVER['REMOTE_ADDR']) );
-				$_SESSION['language'] = $geoPlugin_array['geoplugin_countryCode'];
+
+				$userProfilPic = $bdd->prepare("SELECT value FROM `vbcms-usersSettings` WHERE userId = ? AND name = 'profilPic'");
+				$userProfilPic->execute([$userDetails['id']]);
+
+				$_SESSION['user_profilePic'] = $userProfilPic->fetchColumn();
+				$language = $bdd->prepare("SELECT value FROM `vbcms-usersSettings` WHERE userId = ? AND name = 'language'");
+				$language->execute([$userDetails['id']]);
+				
+				$_SESSION['language'] = $language->fetchColumn();
+
+				// On va chercher le groupe auquel il appartient
+				$userGroup = $bdd->prepare("SELECT * FROM `vbcms-userGroups` WHERE groupId=?");
+				$userGroup->execute([$userDetails["groupId"]]);
+				$userGroup = $userGroup->fetch(PDO::FETCH_ASSOC);
+				if(empty($userGroup)){
+					// il sera un client si le groupe n'existe pas/plus
+					$userGroup = $bdd->query("SELECT groupId FROM `vbcms-userGroups` WHERE groupName = 'users'")->fetch(PDO::FETCH_ASSOC);
+				}
+
+				// On va appliquer les variables session
+				$_SESSION['groupName'] = $userGroup['groupName'];
+				$_SESSION['accessAdmin'] = $userGroup['accessAdmin'];
 				header('Location: '.urldecode($redirect));
 			} else {
 				$error = "Vous avez renseigné un mauvais couple identifiant/mot de passe.";

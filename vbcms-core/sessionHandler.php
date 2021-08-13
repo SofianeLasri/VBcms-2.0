@@ -44,6 +44,8 @@ if (isset($_GET["session"]) && !empty($_GET["session"])){
 			$insertSettings->execute([$userExistInDB['id'], 'profilPic', $sessionData["user_profilePic"]]);
 			$insertSettings = $bdd->prepare("INSERT INTO `vbcms-usersSettings` (`userId`, `name`, `value`) VALUES (?,?,?)");
 			$insertSettings->execute([$userExistInDB['id'], 'joinedDate', date("Y-m-d H:i:s")]);
+			$insertSettings = $bdd->prepare("INSERT INTO `vbcms-usersSettings` (`userId`, `name`, `value`) VALUES (?,?,?)");
+			$insertSettings->execute([$userExistInDB['id'], 'language', $sessionData["language"]]);
 		}
 
 		// On va pouvoir associer l'id local

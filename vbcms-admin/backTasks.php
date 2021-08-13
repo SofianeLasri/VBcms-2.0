@@ -4,38 +4,6 @@ if (isset($_GET["getNotifications"])) {
 	$response->execute([$_SESSION["user_id"]]);
 	$response = $response->fetchAll(PDO::FETCH_ASSOC);
 	echo json_encode($response);
-} elseif (isset($_GET["updateVBcms"])) {/*
-	$curentUpdateCanal = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='updateCanal'")->fetchColumn();
-	VBcmsGetSetting("serverId") = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='serverId'")->fetchColumn();
-	$key = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='encryptionKey'")->fetchColumn();
-	$vbcmsVer = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='vbcmsVersion'")->fetchColumn();
-	$curentUpdateCanal = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='updateCanal'")->fetchColumn();
-
-	$updateInfos = file_get_contents("https://api.vbcms.net/updater/lastest?serverId=".VBcmsGetSetting("serverId")."&key=".$key."&version=".$vbcmsVer."&canal=".$curentUpdateCanal);
-	$updateInfosData = json_decode($updateInfos, true);
-
-	$updateFilename = $GLOBALS['vbcmsRootPath']."/vbcms-content/updates/vbcms-update-v".$updateInfosData['version']."_from-".$vbcmsVer.".zip";
-	if (!file_exists($GLOBALS['vbcmsRootPath']."/vbcms-content/updates")) mkdir($GLOBALS['vbcmsRootPath']."/vbcms-content/updates", 0755);
-	//echo $updateInfosData["downloadLink"]."?serverId=".VBcmsGetSetting("serverId")."&key=".$key;
-	file_put_contents($updateFilename, file_get_contents($updateInfosData["downloadLink"]."?serverId=".VBcmsGetSetting("serverId")."&key=".$key));
-	if (file_exists($updateFilename)) {
-		$zip = new ZipArchive;
-		if ($zip->open($updateFilename) === TRUE) {
-		    $zip->extractTo($GLOBALS['vbcmsRootPath']);
-		    $zip->close();
-
-		    $response["success"] = true;
-		    $response["link"] = VBcmsGetSetting("websiteUrl")."update.php";
-		} else {
-			$response["success"] = false;
-			$response["code"] = 1; // Impossible d'ouvrir l'archive
-		}
-	} else {
-		$response["success"] = false;
-		$response["code"] = 0; // Impossible de télécharger la màj
-	}
-	echo json_encode($response);
-    */
 } elseif (isset($_GET["checkModulesAliases"])&&!empty($_GET["checkModulesAliases"])){
 	$aliases = json_decode($_GET["checkModulesAliases"],true);
 	$aliasesAlreadyUsed = array();
@@ -260,7 +228,7 @@ if (isset($_GET["getNotifications"])) {
 		$modify = $bdd->prepare("UPDATE `vbcms-localAccounts` SET username = ?, password = ? WHERE netIdAssoc = ?");
 		$modify->execute([$_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT), $_GET["setNetIdLocalAccount"]]);
 	}else{
-		$query = $bdd->prepare('INSERT INTO `vbcms-localAccounts` (`id`, `netIdAssoc`, `username`, `password`, `profilePic`) VALUES (NULL, ?,?,?,?)');
+		$query = $bdd->prepare('INSERT INTO `vbcms-localAccounts` (`netIdAssoc`, `username`, `password`, `profilePic`) VALUES (?,?,?,?)');
 		$query->execute([$_GET["setNetIdLocalAccount"], $_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT), VBcmsGetSetting("websiteUrl")."vbcms-admin/images/misc/programmer.png"]);
 	}
 } elseif(isset($_GET)&&!empty($_GET)){
