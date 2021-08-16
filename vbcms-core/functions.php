@@ -17,36 +17,70 @@ function loadModule($type, $moduleAlias, $moduleParams){
 
 	if ($type=="client") {
         if($moduleAlias != "none"){
-            // On cherche le module correspondant à l'alias clientAccess dans la liste des modules activés
-            $response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess=? AND type='module'");
-            $response->execute([$moduleAlias]);
-            $response = $response->fetch(PDO::FETCH_ASSOC);
+            // Dans un premier temps on va regarder si un module gère l'index
+            $isExistAModuleHandleClientRoot = $bdd->query("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess='' AND type='module'")->fetch(PDO::FETCH_ASSOC);
 
-            if (!empty($response)) {
-                //include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/pageHandler.php"; // Le module appelé va se charger du reste
-                $calledmodule = new module($response["name"]);
-                $calledmodule->call($moduleParams, $type);
-            } else {
-                // Aucun module d'activé ne se charge de ce chemin
-                if (empty($moduleAlias)) {
-                    // Ici on est donc sur l'index du site
-                    // Si aucun module ne s'en charge, on va afficher la page par défaut
-                    include $GLOBALS['vbcmsRootPath'].'/vbcms-core/defaultPages/index.php';
-                } else {
-                    // Il s'agit peut-être d'une page du module gérant l'index du site Internet
-                    // Nous allons donc vérifier si un module gère l'index, puis on va l'éxecuter
-                    $response = $bdd->query("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess='' AND type='module'")->fetch(PDO::FETCH_ASSOC);
-            
-                    if (!empty($response)) {
-                        // On a trouvé un module qui gère l'index, au cas où cet alias n'existe pas, ce sera ce module qui gérera la page 404
+            if(!empty($isExistAModuleHandleClientRoot)){
+                // Un modèle gère l'index
+                // On va donc l'appeler pour savoir s'il gère cette url
+
+                $rootModuleParameters = $moduleParams; // Je duplique la liste des paramètres pour ce module
+                array_unshift($rootModuleParameters,$moduleAlias); // Et je lui ajoute en premier ce que cette fonction considère comme un alias
+                // J'ai fais ça car vu que ce module gère la racine de l'url, elle n'a pas d'alias. Donc le premier paramètre n'est pas un alias.
+
+                $calledmodule = new module($isExistAModuleHandleClientRoot["name"]);
+                $calledmodule->call($rootModuleParameters, $type); // Ressort simplement 404 s'il ne gère pas cette page
+                $modulePageContent = ob_get_clean(); // Je récupère la sortie pour ensuite la comparer
+
+                if($modulePageContent == "404"){
+                    // Ce module ne gère donc pas l'url
+
+                    // On va donc vérifier s'il existe un module qui gère cet alias
+                    $response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess=? AND type='module'");
+                    $response->execute([$moduleAlias]);
+                    $response = $response->fetch(PDO::FETCH_ASSOC);
+                    
+                    if(!empty($response)){
+                        // Il existe, on va donc l'appeler
                         $calledmodule = new module($response["name"]);
                         $calledmodule->call($moduleParams, $type);
-                        //include $GLOBALS['vbcmsRootPath'].'/vbcms-content/modules'.$response["path"]."/pageHandler.php"; // Le module appelé va se charger du reste
+                        $modulePageContent = ob_get_clean(); // Pour récupérer la sortie
+                        if($modulePageContent == "404"){
+                            // On va afficher sa page 404 si l'extension renvoie 404
+                            array_unshift($moduleParams, "404"); // On ajoute 404 en premier afin que l'ext affiche la page 404
+                            $calledmodule->call($moduleParams, $type);
+                        } else {
+                            echo $modulePageContent;
+                        }
                     } else {
-                        // Si on arrive ici c'est qu'il n'y a vraiment aucun module qui gère cet alias
-                        show404($type);
+                        // Aucune extension ne gère ce lien, on va donc appeler la page 404 de l'extension gérant cet alias
+                        array_unshift($moduleParams, "404"); // On ajoute 404 en premier afin que l'ext affiche la page 404
+                        $calledmodule->call($moduleParams, $type);
                     }
-                    
+                } else {
+                    echo $modulePageContent;
+                }
+            } else {
+                // Aucune extension ne gère l'index
+                // On va donc vérifier s'il existe un module qui gère cet alias
+                $response = $bdd->prepare("SELECT * FROM `vbcms-activatedExtensions` WHERE clientAccess=? AND type='module'");
+                $response->execute([$moduleAlias]);
+                $response = $response->fetch(PDO::FETCH_ASSOC);
+                
+                if(!empty($response)){
+                    // Il existe, on va donc l'appeler
+                    $calledmodule = new module($response["name"]);
+                    $modulePageContent = $calledmodule->call($moduleParams, $type);
+                    if($modulePageContent == "404"){
+                        // On va afficher sa page 404 si l'extension renvoie 404
+                        array_unshift($moduleParams, "404"); // On ajoute 404 en premier afin que l'ext affiche la page 404
+                        $calledmodule->call($moduleParams, $type);
+                    } else {
+                        echo $modulePageContent;
+                    }
+                } else {
+                    // Aucune extension ne gère cet alias
+                    show404($type);
                 }
             }
         } else show404($type);
