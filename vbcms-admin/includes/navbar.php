@@ -117,7 +117,7 @@ $vbcmsVer = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='vbcmsVer
 					}
 					
 				} elseif($navbarItem["parentId"]==$parent['id'] && $parent['access']) {
-					if(verifyUserPermission($_SESSION['user_id'], $parent['name'], 'access-'.$navbarItem["value3"])){
+					if(verifyUserPermission($_SESSION['user_id'], $parent['name'], 'access-'.str_replace("/", "", $navbarItem["value3"]))){
 						echo '<div class="menu-item">
 						<a href="/vbcms-admin/'.$parent['alias'].$navbarItem["value3"].'" class="menu-link">
 							<span class="menu-icon"><i class="fas '.$navbarItem["value1"].'"></i></span>
