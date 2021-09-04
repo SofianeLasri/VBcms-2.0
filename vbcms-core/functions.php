@@ -80,7 +80,8 @@ function loadModule($type, $moduleAlias, $moduleParams){
                     }
                 } else {
                     // Aucune extension ne gère cet alias
-                    show404($type);
+                    if(empty($moduleAlias)) include $GLOBALS['vbcmsRootPath'].'/vbcms-core/defaultPages/index.php';
+                    else show404($type);
                 }
             }
         } else show404($type);
