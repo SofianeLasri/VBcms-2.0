@@ -260,6 +260,28 @@ function getVBcmsPermissions(){
     return $permissions;
 }
 
+// https://gist.github.com/gserrano/4c9648ec9eb293b9377b
+function recursive_copy_if_different($src,$dst) {
+    $dir = opendir($src);
+    @mkdir($dst);
+    while(( $file = readdir($dir)) ) {
+        if (( $file != '.' ) && ( $file != '..' )) {
+            if ( is_dir($src . '/' . $file) ) {
+                recursive_copy($src .'/'. $file, $dst .'/'. $file);
+            } else {
+                if(file_exists($dst .'/'. $file)){
+                    if(hash_file('md5', $dst .'/'. $file)!=hash_file('md5', $src .'/'. $file)){
+                        copy($src .'/'. $file,$dst .'/'. $file);
+                    }
+                }else {
+                    copy($src .'/'. $file,$dst .'/'. $file);
+                }
+            }
+        }
+    }
+    closedir($dir);
+}
+
 /////////////////////////////////
 // FONCTIONS DES MODULES DE BASES
 /////////////////////////////////
