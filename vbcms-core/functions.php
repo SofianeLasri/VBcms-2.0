@@ -267,7 +267,7 @@ function recursive_copy_if_different($src,$dst) {
     while(( $file = readdir($dir)) ) {
         if (( $file != '.' ) && ( $file != '..' )) {
             if ( is_dir($src . '/' . $file) ) {
-                recursive_copy($src .'/'. $file, $dst .'/'. $file);
+                recursive_copy_if_different($src .'/'. $file, $dst .'/'. $file);
             } else {
                 if(file_exists($dst .'/'. $file)){
                     if(hash_file('md5', $dst .'/'. $file)!=hash_file('md5', $src .'/'. $file)){
