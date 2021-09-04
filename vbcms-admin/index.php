@@ -59,7 +59,6 @@ if($_SESSION['auth']=='vbcms.net'){
 	<div class="page-content notTop" leftSidebar="240" rightSidebar="0">
 		<h3>Tableau de bord</h3>
 		<p>Bienvenu sur le paneau d’administration. Voici un bref résumé de l'activité de cette semaine.</p>
-		Ceci est un test. :)
 
 		<!-- Debut de la liste des cartes -->
 		<!--
