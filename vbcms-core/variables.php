@@ -15,7 +15,7 @@ if(isset($_SERVER['HTTPS']) && !isset($http)) $http = "https"; else $http = "htt
 
 // Variables permettant la gestion des pages à afficher
 // $ur est déjà défini si l'on utilise VBcms Connector
-if(isset($url)){
+if(!isset($url)){
     $url = parse_url("$http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+    $urlPath = explode("/", $url["path"]);
 }
-$urlPath = explode("/", $url["path"]);
