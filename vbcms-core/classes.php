@@ -390,6 +390,9 @@ class module {
         $bdd=$this->bdd;
         $extensionFullPath = $this->extensionFullPath;
         global $translation;
+
+        // Ici on ne peut pas récupérer $http et $urlPath, on va réécrire le code ici
+        if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
         include $extensionFullPath."/pageHandler.php"; // Le module appelé va se charger du reste
         
     }
