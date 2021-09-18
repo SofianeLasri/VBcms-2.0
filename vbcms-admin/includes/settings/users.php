@@ -2,6 +2,7 @@
     <div class="flex-grow-1 d-flex flex-column">
         <div class="mt-2">
             <button class="btn btn-sm btn-brown" data-toggle="modal" data-target="#inviteUserModal"><i class="fas fa-envelope"></i> <?=translate('inviteUser')?></button>
+            <button class="btn btn-outline-brown btn-sm" data-toggle="modal" data-target="#createUserModal"><i class="fas fa-user-plus"></i> <?=translate('localAccountCreation')?></button>
             <!--<a href="#" class="btn btn-outline-brown btn-sm"><i class="fas fa-user-plus"></i> <?=translate('localAccountCreation')?></a>-->
         </div>
         <?php
@@ -58,8 +59,8 @@
                                     if($user['id']!=$_SESSION['user_id']){
                                         echo ('<a href="#" onclick="toogle(\'edit-'.$user['username'].'\')" class="text-brown">'.translate("modifyUser").'</a>');
                                     }
-                                    if($user['auth']=='vbcms.net'){
-                                        echo('<a href="#" onclick="editLocalAccount(\''.$user['authId'].'\')" class="text-brown">'.translate("modifyLocalAccount").'</a>');
+                                    if($user['auth']=='vbcms'){
+                                        echo('<a href="#" onclick="editLocalAccount(\''.$user['id'].'\')" class="text-brown">'.translate("modifyLocalAccount").'</a>');
                                     }
                                 echo('</small></div>
                         </div>');
@@ -210,8 +211,8 @@ window.addEventListener('load', function() {
 }, false);
 })();
 
-function editLocalAccount(netId) {
-    $.get("<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks/?getNetIdLocalAccount="+netId, function(data) {
+function editLocalAccount(id) {
+    $.get("<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks/?getNetIdLocalAccount="+id, function(data) {
         var json = JSON.parse(data);
         if(!jQuery.isEmptyObject(json)){
             $("#localUserUsername").val(json.username);
@@ -219,7 +220,7 @@ function editLocalAccount(netId) {
             $("#localUserUsername").val("");
         }
     });
-    $("#registerBtn").attr("onclick", "sendLocalAccountInfos('"+netId+"')");
+    $("#registerBtn").attr("onclick", "sendLocalAccountInfos('"+id+"')");
     $('#localAccountCreationModal').modal('show');
 }
 
@@ -230,8 +231,8 @@ $("#localUserPassword2").change(function() {
     checkPassword();
 });
 
-function sendLocalAccountInfos(netId){
-    $.post( "<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks?setNetIdLocalAccount="+netId, $( "#localAccountCreationForm" ).serialize() )
+function sendLocalAccountInfos(id){
+    $.post( "<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks?setLocalAccount="+id, $( "#localAccountCreationForm" ).serialize() )
     .done(function( data ) {
         if(data!=""){
             SnackBar({

@@ -144,9 +144,9 @@ if (isset($_GET["getNotifications"])) {
 		$fixedAssoc = $bdd->prepare("UPDATE `vbcms-baseModulesAssoc` SET extensionName = ? WHERE name = ?");
 		$fixedAssoc->execute([$extName, $assocName]);
 	}
-} elseif (isset($_GET["getNetIdLocalAccount"])&&!empty($_GET["getNetIdLocalAccount"]) && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')){
-	$localAccountExist = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE netIdAssoc = ?");
-	$localAccountExist->execute([$_GET["getNetIdLocalAccount"]]);
+} elseif (isset($_GET["getLocalAccount"])&&!empty($_GET["getLocalAccount"]) && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')){
+	$localAccountExist = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE userIdAssoc = ?");
+	$localAccountExist->execute([$_GET["getLocalAccount"]]);
 	$localAccountExist = $localAccountExist->fetch(PDO::FETCH_ASSOC);
 	echo json_encode($localAccountExist);
 	
@@ -219,17 +219,17 @@ if (isset($_GET["getNotifications"])) {
 	} else {
 		echo translate('error').': '.translate('thisIsNotJSON');
 	}
-} elseif (isset($_GET["setNetIdLocalAccount"])&&!empty($_GET["setNetIdLocalAccount"]) && (isset($_POST)&&!empty($_POST)) && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')) {
-	$localAccountExist = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE netIdAssoc = ?");
-	$localAccountExist->execute([$_GET["setNetIdLocalAccount"]]);
+} elseif (isset($_GET["setLocalAccount"])&&!empty($_GET["setLocalAccount"]) && (isset($_POST)&&!empty($_POST)) && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')) {
+	$localAccountExist = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE userIdAssoc = ?");
+	$localAccountExist->execute([$_GET["setLocalAccount"]]);
 	$localAccountExist = $localAccountExist->fetch(PDO::FETCH_ASSOC);
 	
 	if(!empty($localAccountExist)){
-		$modify = $bdd->prepare("UPDATE `vbcms-localAccounts` SET username = ?, password = ? WHERE netIdAssoc = ?");
-		$modify->execute([$_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT), $_GET["setNetIdLocalAccount"]]);
+		$modify = $bdd->prepare("UPDATE `vbcms-localAccounts` SET username = ?, password = ? WHERE userIdAssoc = ?");
+		$modify->execute([$_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT), $_GET["setLocalAccount"]]);
 	}else{
-		$query = $bdd->prepare('INSERT INTO `vbcms-localAccounts` (`netIdAssoc`, `username`, `password`, `profilePic`) VALUES (?,?,?,?)');
-		$query->execute([$_GET["setNetIdLocalAccount"], $_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT), VBcmsGetSetting("websiteUrl")."vbcms-admin/images/misc/programmer.png"]);
+		$query = $bdd->prepare('INSERT INTO `vbcms-localAccounts` (`userIdAssoc`, `username`, `password`, `profilePic`) VALUES (?,?,?,?)');
+		$query->execute([$_GET["setLocalAccount"], $_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT), VBcmsGetSetting("websiteUrl")."vbcms-admin/images/misc/programmer.png"]);
 	}
 } elseif(isset($_GET)&&!empty($_GET)){
 	echo "Commande \"".array_key_first($_GET)."(".$_GET[array_key_first($_GET)].")\" non reconnue.";

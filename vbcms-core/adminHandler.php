@@ -16,10 +16,7 @@ if (!isset($_SESSION["user_id"]) && $urlPath[2]!="login") { // Si l'utilisateur 
 	// On va vérifier qu'il a accès au panel admin
 
 	if ($_SESSION['accessAdmin']!= 1){
-		if ($_SERVER['HTTP_HOST'] != "vbcms.net") {
-			session_destroy(); // On détruit la session
-		}
-
+		session_destroy(); // On détruit la session
 		// Le message d'erreur sera à changer, je ne l'ai pas encore fait car je dois refaire le drm
 		header("Location: ".$url["scheme"]."://".$url["host"]."/vbcms-admin/login?err=403");
 		exit(); // Pour être sûr qu'il n'y ai pas de problèmes

@@ -19,15 +19,15 @@ if (isset($_POST['login'])) { // Ne s'éxécute que si le formulaire de connexio
 		$user = $response->fetch(PDO::FETCH_ASSOC);
 		if(!empty($user)){
 			if(hash_equals($user["password"], crypt($_POST["password"], $user["password"]))){
-				$_SESSION['auth'] = "vbcms.net";
+				$_SESSION['auth'] = "vbcms";
 				$_SESSION['loginType'] = "local";
 
-				$userDetails = $bdd->prepare("SELECT * FROM `vbcms-users` WHERE authId=? AND auth='vbcms.net'");
-				$userDetails->execute([$user["netIdAssoc"]]);
+				$userDetails = $bdd->prepare("SELECT * FROM `vbcms-users` WHERE id=? AND auth='vbcms.net'");
+				$userDetails->execute([$user["userIdAssoc"]]);
 				$userDetails = $userDetails->fetch(PDO::FETCH_ASSOC);
 
 				$_SESSION['user_id'] = $userDetails['id'];
-				$_SESSION['netId'] = $user['netIdAssoc'];
+				$_SESSION['netId'] = null;
 				$_SESSION['user_username'] = $user['username'];
 
 				$userProfilPic = $bdd->prepare("SELECT value FROM `vbcms-usersSettings` WHERE userId = ? AND name = 'profilPic'");
