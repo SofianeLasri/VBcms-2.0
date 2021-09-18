@@ -2,7 +2,7 @@
     <div class="flex-grow-1 d-flex flex-column">
         <div class="mt-2">
             <button class="btn btn-sm btn-brown" data-toggle="modal" data-target="#inviteUserModal"><i class="fas fa-envelope"></i> <?=translate('inviteUser')?></button>
-            <button class="btn btn-outline-brown btn-sm" data-toggle="modal" data-target="#createUserModal"><i class="fas fa-user-plus"></i> <?=translate('localAccountCreation')?></button>
+            <button class="btn btn-outline-brown btn-sm" onclick="editLocalAccount()"><i class="fas fa-user-plus"></i> <?=translate('localAccountCreation')?></button>
             <!--<a href="#" class="btn btn-outline-brown btn-sm"><i class="fas fa-user-plus"></i> <?=translate('localAccountCreation')?></a>-->
         </div>
         <?php
@@ -152,7 +152,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-brown text-white">
-                <h5 id="extensionActivationModalTitle" class="modal-title"><?=translate('modifyLocalAccount')?></h5>
+                <h5 id="extensionActivationModalTitle" class="modal-title"><?=translate('createLocalAccount')?></h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -211,15 +211,22 @@ window.addEventListener('load', function() {
 }, false);
 })();
 
-function editLocalAccount(id) {
-    $.get("<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks/?getNetIdLocalAccount="+id, function(data) {
-        var json = JSON.parse(data);
-        if(!jQuery.isEmptyObject(json)){
-            $("#localUserUsername").val(json.username);
-        } else{
-            $("#localUserUsername").val("");
-        }
-    });
+function editLocalAccount(id = 0) {
+    if(id!=0){
+        $.get("<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/backTasks/?getNetIdLocalAccount="+id, function(data) {
+            var json = JSON.parse(data);
+            if(!jQuery.isEmptyObject(json)){
+                $("#localUserUsername").val(json.username);
+            } else{
+                $("#localUserUsername").val("");
+            }
+        });
+        $("#extensionActivationModalTitle").html("<?=translate('modifyLocalAccount')?>");
+    } else {
+        $("#localUserUsername").val("");
+        $("#extensionActivationModalTitle").html("<?=translate('createLocalAccount')?>");
+    }
+    
     $("#registerBtn").attr("onclick", "sendLocalAccountInfos('"+id+"')");
     $('#localAccountCreationModal').modal('show');
 }

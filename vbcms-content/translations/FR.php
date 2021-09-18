@@ -84,6 +84,7 @@ $translation["localAccountCreation_yourPasswordIsTooWeak"] = "Ton mot de passe d
 $translation["whyCreateALocalAccount"] = "Pourquoi créer un compte local?";
 $translation["localAccountCreation_error"] = "Erreur lors de la création du compte local. Check les logs pour plus d'infos (ouai j'ai pas fait de vérification ^^').";
 $translation["localAccountCreation_success"] = "Compte local créé. 🥳";
+$translation["createLocalAccount"] = "Créer un compte local";
 $translation["unknownTranslation"] = "Traduction inconnue";
 $translation["createUser"] = "Créer un utilisateur";
 $translation["modifyUser"] = "Modifier l'utilisateur";

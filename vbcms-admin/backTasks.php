@@ -219,18 +219,40 @@ if (isset($_GET["getNotifications"])) {
 	} else {
 		echo translate('error').': '.translate('thisIsNotJSON');
 	}
-} elseif (isset($_GET["setLocalAccount"])&&!empty($_GET["setLocalAccount"]) && (isset($_POST)&&!empty($_POST)) && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')) {
-	$localAccountExist = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE userIdAssoc = ?");
-	$localAccountExist->execute([$_GET["setLocalAccount"]]);
-	$localAccountExist = $localAccountExist->fetch(PDO::FETCH_ASSOC);
-	
-	if(!empty($localAccountExist)){
-		$modify = $bdd->prepare("UPDATE `vbcms-localAccounts` SET username = ?, password = ? WHERE userIdAssoc = ?");
-		$modify->execute([$_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT), $_GET["setLocalAccount"]]);
+} elseif (isset($_GET["setLocalAccount"]) && (isset($_POST)&&!empty($_POST)) && verifyUserPermission($_SESSION['user_id'], "vbcms", 'manageUsersSettings')) {
+	if($_GET["setLocalAccount"]!=0 || !empty($_GET["setLocalAccount"])){
+		$localAccountExist = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE userIdAssoc = ?");
+		$localAccountExist->execute([$_GET["setLocalAccount"]]);
+		$localAccountExist = $localAccountExist->fetch(PDO::FETCH_ASSOC);
+		$accountId = $_GET["setLocalAccount"];
 	}else{
-		$query = $bdd->prepare('INSERT INTO `vbcms-localAccounts` (`userIdAssoc`, `username`, `password`, `profilePic`) VALUES (?,?,?,?)');
-		$query->execute([$_GET["setLocalAccount"], $_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT), VBcmsGetSetting("websiteUrl")."vbcms-admin/images/misc/programmer.png"]);
+		$accountId = $bdd->query("SELECT id FROM `vbcms-users` ORDER BY id DESC LIMIT 1;")->fetchColumn() + 1;
 	}
+
+	// Si on update un compte alors...
+	if(isset($localAccountExist) && !empty($localAccountExist)){
+		$modify = $bdd->prepare("UPDATE `vbcms-localAccounts` SET username = ?, password = ? WHERE userIdAssoc = ?");
+		$modify->execute([$_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT), $accountId]);
+	}else{
+		// Si on en créé un...
+		// default profil pic = VBcmsGetSetting("websiteUrl")."vbcms-admin/images/misc/programmer.png"
+		$query = $bdd->prepare('INSERT INTO `vbcms-localAccounts` (`userIdAssoc`, `username`, `password`) VALUES (?,?,?)');
+		$query->execute([$accountId, $_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT)]);
+
+		$userGroup = $bdd->query("SELECT groupId FROM `vbcms-userGroups` WHERE groupName = 'users'")->fetch(PDO::FETCH_ASSOC);
+
+		$query = $bdd->prepare('INSERT INTO `vbcms-users` (`id`, `auth`, `authId`, `username`, `groupId`) VALUES (NULL,?,?,?,?)');
+		$query->execute(["vbcms", $accountId, $_POST['localUserUsername'], $userGroup["groupId"]]);
+
+		// On renseigne les paramètres
+		$insertSettings = $bdd->prepare("INSERT INTO `vbcms-usersSettings` (`userId`, `name`, `value`) VALUES (?,?,?)");
+		$insertSettings->execute([$accountId, 'profilPic', VBcmsGetSetting("websiteUrl")."vbcms-admin/images/misc/programmer.png"]);
+		$insertSettings = $bdd->prepare("INSERT INTO `vbcms-usersSettings` (`userId`, `name`, `value`) VALUES (?,?,?)");
+		$insertSettings->execute([$accountId, 'joinedDate', date("Y-m-d H:i:s")]);
+		$insertSettings = $bdd->prepare("INSERT INTO `vbcms-usersSettings` (`userId`, `name`, `value`) VALUES (?,?,?)");
+		$insertSettings->execute([$accountId, 'language', "FR"]);
+	}
+	
 } elseif(isset($_GET)&&!empty($_GET)){
 	echo "Commande \"".array_key_first($_GET)."(".$_GET[array_key_first($_GET)].")\" non reconnue.";
 } else {?>
