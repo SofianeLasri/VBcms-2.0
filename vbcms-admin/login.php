@@ -1,5 +1,7 @@
 <?php
-require_once '../vbcms-core/core.php';
+// On va vérifier si on est appelé par le cms ou par l'url du client
+if(!isset($GLOBALS['vbcmsRootPath']))
+	require_once '../vbcms-core/core.php';
 
 if (isset($_GET["from"])) {
 	$redirect = urlencode($_GET["from"]);

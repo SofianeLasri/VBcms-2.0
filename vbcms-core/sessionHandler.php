@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+/* NOTE 18/09/2021 (création branche pre2.1b) - VBcms ne sera plus dépendant du gestion de licence
+
 if (isset($_GET["session"]) && !empty($_GET["session"])){
     // Ici le panel reçoie une requête de connexion via l'id de session unique, communiqué par le manager
 
@@ -84,6 +86,12 @@ if (isset($_GET["session"]) && !empty($_GET["session"])){
 	}
 
 } elseif (isset($_GET["logout"]) && isset($_SESSION["user_id"])){
+	// Ne s'éxecutera que si l'utilisateur est déjà connecté
+	session_destroy();
+	header("Location: ".$url["scheme"]."://".$url["host"]); // On le redirige vers la page de connexion
+} */
+
+if (isset($_GET["logout"]) && isset($_SESSION["user_id"])){
 	// Ne s'éxecutera que si l'utilisateur est déjà connecté
 	session_destroy();
 	header("Location: ".$url["scheme"]."://".$url["host"]); // On le redirige vers la page de connexion

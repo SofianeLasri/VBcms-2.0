@@ -2,13 +2,16 @@
 // Dans un premier temps, on va vérifier que l'utilisateur est connecté
 // Puis on va vérifier qu'il a bien le droit d'être ici
 
-if (!isset($_SESSION["user_id"])) { // Si l'utilisateur n'est pas connecté
+if (!isset($_SESSION["user_id"]) && $urlPath[2]!="login") { // Si l'utilisateur n'est pas connecté
 
 	// On check que la page actuelle n'est pas la page de login, mais également que le panel n'est pas en train de traiter une connexion
     if (basename($_SERVER['PHP_SELF'])!="login.php" && !isset($sessionData) && !isset($sessionData['error'])) { 
         // On le renvoie vers la page de connexion
-        header("Location: https://vbcms.net/manager/login?from=".urlencode("$http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']));
+        //header("Location: https://vbcms.net/manager/login?from=".urlencode("$http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'])); // Gestionnaire de licence vbcms.net
+		header("Location: ".$url["scheme"]."://".$url["host"]."/vbcms-admin/login");
     }
+} elseif(!isset($_SESSION["user_id"]) && $urlPath[2]=="login"){ // Redirection vers la page de connexion
+	include $GLOBALS['vbcmsRootPath']."/vbcms-admin/login.php";
 } else {
 	// On va vérifier qu'il a accès au panel admin
 
@@ -18,7 +21,7 @@ if (!isset($_SESSION["user_id"])) { // Si l'utilisateur n'est pas connecté
 		}
 
 		// Le message d'erreur sera à changer, je ne l'ai pas encore fait car je dois refaire le drm
-		header("Location: https://vbcms.net/manager/?error=".urlencode("Tu n'as pas le droit de te connecter à ce site <img height=\"16\" src=\"https://vbcms.net/vbcms-content/uploads/emoji/oiseau-pas-content.png\">"));
+		header("Location: ".$url["scheme"]."://".$url["host"]."/vbcms-admin/login?err=403");
 		exit(); // Pour être sûr qu'il n'y ai pas de problèmes
 	}
 
