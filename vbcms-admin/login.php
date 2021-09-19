@@ -22,7 +22,7 @@ if (isset($_POST['login'])) { // Ne s'éxécute que si le formulaire de connexio
 				$_SESSION['auth'] = "vbcms";
 				$_SESSION['loginType'] = "local";
 
-				$userDetails = $bdd->prepare("SELECT * FROM `vbcms-users` WHERE id=? AND auth='vbcms.net'");
+				$userDetails = $bdd->prepare("SELECT * FROM `vbcms-users` WHERE id=? AND auth='vbcms'");
 				$userDetails->execute([$user["userIdAssoc"]]);
 				$userDetails = $userDetails->fetch(PDO::FETCH_ASSOC);
 
