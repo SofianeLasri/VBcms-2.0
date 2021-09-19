@@ -9,16 +9,16 @@ if ($isUpToDate == 1) {
 }
 if($_SESSION['auth']=='vbcms'){
 	$userHasLocalAccount = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE userIdAssoc = ?");
-	$userHasLocalAccount->execute([$_SESSION['id']]);
+	$userHasLocalAccount->execute([$_SESSION['user_id']]);
 	$userHasLocalAccount = $userHasLocalAccount->fetch(PDO::FETCH_ASSOC);
 
 	if(empty($userHasLocalAccount)){
 		if(isset($_POST['localUserUsername']) && !empty($_POST['localUserUsername'])){
 			$query = $bdd->prepare('INSERT INTO `vbcms-localAccounts` (`userIdAssoc`, `username`, `password`) VALUES (?,?,?)');
-			$query->execute([$_SESSION['id'], $_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT)]);
+			$query->execute([$_SESSION['user_id'], $_POST['localUserUsername'], password_hash($_POST['localUserPassword1'], PASSWORD_DEFAULT)]);
 
 			$userHasLocalAccount = $bdd->prepare("SELECT * FROM `vbcms-localAccounts` WHERE netIdAssoc = ?");
-			$userHasLocalAccount->execute([$_SESSION['id']]);
+			$userHasLocalAccount->execute([$_SESSION['user_id']]);
 			$userHasLocalAccount = $userHasLocalAccount->fetch(PDO::FETCH_ASSOC);
 			if(empty($userHasLocalAccount)){
 				$localAccountCreationSuccess=false;
