@@ -164,6 +164,73 @@ function show404($type){
 	}
 }
 
+function checkVBcmsUpdates(){
+    global $bdd;
+    $vbcmsVer = VBcmsGetSetting('vbcmsVersion');
+    $currentUpdateCanal = VBcmsGetSetting('updateCanal');
+
+    if($currentUpdateCanal == "dev"){
+        $updateUrl = "https://api.github.com/repos/SofianeLasri/VBcms-2.0/commits";
+    }else{
+        $updateUrl = "https://api.github.com/repos/SofianeLasri/VBcms-2.0/releases"; 
+    }
+
+    $options  = array('http' => array('user_agent' => 'VBcms Updater'));
+    $context  = stream_context_create($options);
+
+    $updateInfos = file_get_contents($updateUrl, true, $context);
+    if(isJson($updateInfos)){
+        // On le fait ici et pas avant car on souhaite recommencer si l'on ne reçoit pas du JSON 
+        $response = $bdd->prepare("UPDATE `vbcms-settings` SET `value` = ? WHERE `vbcms-settings`.`name` = 'lastUpdateCheck'");
+        $response->execute([date("Y-m-d H:i:s")]);
+
+        $updateInfosData = json_decode($updateInfos, true);
+        unset($updateInfos);
+
+        if(!empty($updateInfosData)){
+            $VBcmsDateFormat = 'Y-m-d H:i:s';
+            $VBcmsActualUpdateCreationDate = new DateTime(VBcmsGetSetting('updateCreationDate'));
+
+            if($currentUpdateCanal == "dev"){
+                $remoteUpdateDate = new DateTime($updateInfosData[0]['commit']['author']['date']);
+                $updateInfos['name'] = "Commit ".substr($updateInfosData[0]['sha'], 0, 7);
+                $updateInfos['description'] = $updateInfosData[0]['commit']['message'];
+                $updateInfos['date'] = $remoteUpdateDate->format("Y-m-d H:i:s");
+            }else{
+                if($updateInfosData[0]['prerelease']){
+                    $remoteUpdateDate = new DateTime($updateInfosData[0]['published_at']);
+                    $updateInfos['name'] = $updateInfosData[0]['name'];
+                    $updateInfos['description'] = $updateInfosData[0]['body'];
+                    $updateInfos['date'] = $remoteUpdateDate->format("Y-m-d H:i:s");
+                }
+                
+            }
+            
+            if($remoteUpdateDate > $VBcmsActualUpdateCreationDate){
+
+                $response = $bdd->query("UPDATE `vbcms-settings` SET `value` = 0 WHERE `vbcms-settings`.`name` = 'upToDate'");
+        
+                $response = $bdd->query("SELECT COUNT(*) FROM `vbcms-notifications` WHERE origin = '[\"vbcms-updater\", \"notifyUpdate\"]'")->fetchColumn();
+                if ($response!=1) {
+                    $response = $bdd->prepare("INSERT INTO `vbcms-notifications` (`id`, `origin`, `link`, `content`, `removable`, `date`, `userId`) VALUES (NULL, '[\"vbcms-updater\", \"notifyUpdate\"]', '/vbcms-admin/updater\"', ?, '0', ?, 0)");
+                    $response->execute([translate("isNotUpToDate"), date("Y-m-d H:i:s")]);
+                }
+                return $updateInfos;
+            } else {
+                $response = $bdd->query("UPDATE `vbcms-settings` SET `value` = 1 WHERE `vbcms-settings`.`name` = 'upToDate'");
+                $bdd->query("DELETE FROM `vbcms-notifications` WHERE origin = '[\"vbcms-updater\", \"notifyUpdate\"]'");
+                return false;
+            }
+        } else {
+            $response = $bdd->query("UPDATE `vbcms-settings` SET `value` = 1 WHERE `vbcms-settings`.`name` = 'upToDate'");
+            $bdd->query("DELETE FROM `vbcms-notifications` WHERE origin = '[\"vbcms-updater\", \"notifyUpdate\"]'");
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
 // Petites fonctions utiles
 function isJson($string) {
 	json_decode($string);

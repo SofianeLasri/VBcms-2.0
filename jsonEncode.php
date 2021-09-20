@@ -1,6 +1,6 @@
 <?php
 // Fichier de test
-$deTest['type'] = "user";
-$deTest['id'] = "1";
+$deTest['branch'] = "pre2.1";
+$deTest['build'] = "114";
 
-echo urlencode(json_encode($deTest));
+echo (json_encode($deTest));

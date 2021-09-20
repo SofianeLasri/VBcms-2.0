@@ -1,36 +1,7 @@
 <?php
-$curentUpdateCanal = VBcmsGetSetting('updateCanal');
-$serverId = VBcmsGetSetting('serverId');
-$key = VBcmsGetSetting('encryptionKey');
-$vbcmsVer = VBcmsGetSetting('vbcmsVersion');
-$curentUpdateCanal = VBcmsGetSetting('updateCanal');
+$hasNewUpdate = checkVBcmsUpdates();
 
-$updateInfos = file_get_contents("https://api.vbcms.net/updater/lastest?serverId=".$serverId."&key=".$key."&version=".$vbcmsVer."&canal=".$curentUpdateCanal);
-if(isJson($updateInfos)){
-    $updateInfosData = json_decode($updateInfos, true);
-    if (!$updateInfosData["upToDate"]) {
-        $response = $bdd->query("UPDATE `vbcms-settings` SET `value` = 0 WHERE `vbcms-settings`.`name` = 'upToDate'");
-    
-        $response = $bdd->query("SELECT COUNT(*) FROM `vbcms-notifications` WHERE origin = '[\"vbcms-updater\", \"notifyUpdate\"]'")->fetchColumn();
-        if ($response!=1) {
-            $response = $bdd->prepare("INSERT INTO `vbcms-notifications` (`id`, `origin`, `link`, `content`, `removable`, `date`, `userId`) VALUES (NULL, '[\"vbcms-updater\", \"notifyUpdate\"]', '/vbcms-admin/updater\"', ?, '0', ?, 0)");
-            $response->execute([translate("isNotUpToDate"), date("Y-m-d H:i:s")]);
-        }
-    } else{
-        $response = $bdd->query("UPDATE `vbcms-settings` SET `value` = 1 WHERE `vbcms-settings`.`name` = 'upToDate'");
-        $bdd->query("DELETE FROM `vbcms-notifications` WHERE origin = '[\"vbcms-updater\", \"notifyUpdate\"]'");
-    } 
-} else {
-    $error = "Impossible de vérifier les mises à jour:".$updateInfos;
-    $updateInfosData['version'] = translate("unknownF");
-}
-
-$response = $bdd->prepare("UPDATE `vbcms-settings` SET `value` = ? WHERE `vbcms-settings`.`name` = 'lastUpdateCheck'");
-$response->execute([date("Y-m-d H:i:s")]);
-
-$isUpToDate = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name = 'upToDate'")->fetchColumn();
-$lastUpdateCheck = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name = 'lastUpdateCheck'")->fetchColumn();
-if ($isUpToDate == 1) {
+if (!$hasNewUpdate) {
     $updateMessage = translate("isUpToDate");
     $textColor = "success";
 } else {
@@ -59,14 +30,12 @@ if ($isUpToDate == 1) {
                 <img src="<?=VBcmsGetSetting("websiteUrl")?>vbcms-admin/images/vbcms-logo/raccoon-in-box-512x.png">
             </div>
             <div class="ml-5">
-                <h4>VBcms <small><?=$vbcmsVer?></small></h4>
+                <h4>VBcms <small><?=VBcmsGetSetting("vbcmsVersion")?></small></h4>
                 <p><strong><?=$updateMessage?></strong><br>
-                    <?=translate("lastChecked")?>: <?=$lastUpdateCheck?></p>
+                    <?=translate("lastChecked")?>: <?=VBcmsGetSetting("lastUpdateCheck")?></p>
 
                 <?php
-                    if ($isUpToDate == 1) {
-                        #
-                    } else {
+                    if ($hasNewUpdate) {
                         echo '<p>Test</p>';
                         echo '<button type="button" onclick="$(\'#updateModal\').modal(\'toggle\');" class="btn btn-light">'.translate("downloadAndInstall").'</button>';
                     }
@@ -80,17 +49,17 @@ if ($isUpToDate == 1) {
         <div class="row">
             <div class="col">
                 <h5>Détail de la mise à jour</h5>
-                <p><span class="text-muted">Installée: </span><span class="text-<?=$textColor?>"><?=$vbcmsVer?></span>
+                <p><span class="text-muted">Installée: </span><span class="text-<?=$textColor?>"><?=VBcmsGetSetting("vbcmsVersion")?></span>
                 <?php
-                if ($isUpToDate == 0) echo '<br><span class="text-muted">Disponible: </span><span class="text-success">'.$updateInfosData["version"].'</span>';
+                if ($hasNewUpdate) echo '<br><span class="text-muted">Disponible: </span><span class="text-success">'.$hasNewUpdate["name"].'</span>';
                 ?>
                 <br><span class="text-muted">Canal de mise à jour: </span>
                 <?php
-                if ($curentUpdateCanal == "release") {
+                if (VBcmsGetSetting("updateCanal") == "release") {
                     echo '<span class="text-success">Release</span>';
-                } elseif ($curentUpdateCanal == "dev") {
+                } elseif (VBcmsGetSetting("updateCanal") == "dev") {
                     echo '<span class="text-danger">Développement</span>';
-                } elseif ($curentUpdateCanal == "nightly") {
+                } elseif (VBcmsGetSetting("updateCanal") == "nightly") {
                     echo '<span class="text-warning">Bêta</span>';
                 }
                 
@@ -100,6 +69,7 @@ if ($isUpToDate == 1) {
             </div>
             <div class="col-8"">
                 <h4>Détail de la mise à jour</h4>
+                <p><?=$hasNewUpdate["description"] ?? ''?></p>
             </div>
             <div class="col">
                 <h5>Obtenir de l'aide</h5>
