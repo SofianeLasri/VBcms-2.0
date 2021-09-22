@@ -39,8 +39,8 @@ $vbcmsVer = $bdd->query("SELECT value FROM `vbcms-settings` WHERE name='vbcmsVer
 						<span class="brand-name">VBcms</span><small class="ml-1"><?=$vbcmsVer?></small>
 					</div>
 					
-					<a class="dropdown-item" target="_blank" href="https://vbcms.net/manager/myaccount"><?=translate("myProfil")?></a>
-				    <a class="dropdown-item" target="_blank" href="https://vbcms.net/manager/myliscence"><?=translate("manageliscence")?></a>
+					<!--<a class="dropdown-item" target="_blank" href="https://vbcms.net/manager/myaccount"><?=translate("myProfil")?></a>
+				    <a class="dropdown-item" target="_blank" href="https://vbcms.net/manager/myliscence"><?=translate("manageliscence")?></a>-->
 				    <a class="dropdown-item" href="?logout"><?=translate("disconnect")?></a>
 				</div>
 			</div>

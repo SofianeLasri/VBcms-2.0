@@ -196,13 +196,16 @@ function checkVBcmsUpdates(){
                 $updateInfos['name'] = "Commit ".substr($updateInfosData[0]['sha'], 0, 7);
                 $updateInfos['description'] = $updateInfosData[0]['commit']['message'];
                 $updateInfos['date'] = $remoteUpdateDate->format("Y-m-d H:i:s");
+                $updateInfos['zip'] = "https://api.github.com/repos/SofianeLasri/VBcms-2.0/zipball";
+                $updateInfos['type'] = "dev";
             }else{
-                if($updateInfosData[0]['prerelease']){
-                    $remoteUpdateDate = new DateTime($updateInfosData[0]['published_at']);
-                    $updateInfos['name'] = $updateInfosData[0]['name'];
-                    $updateInfos['description'] = $updateInfosData[0]['body'];
-                    $updateInfos['date'] = $remoteUpdateDate->format("Y-m-d H:i:s");
-                }
+                $remoteUpdateDate = new DateTime($updateInfosData[0]['published_at']);
+                $updateInfos['name'] = $updateInfosData[0]['name'];
+                $updateInfos['description'] = $updateInfosData[0]['body'];
+                $updateInfos['date'] = $remoteUpdateDate->format("Y-m-d H:i:s");
+                $updateInfos['zip'] = $updateInfosData[0]['zipball_url'];
+                if($updateInfosData[0]['prerelease']) $updateInfos['type'] = "nightly";
+                else $updateInfos['type'] = "stable";
                 
             }
             
@@ -212,7 +215,7 @@ function checkVBcmsUpdates(){
         
                 $response = $bdd->query("SELECT COUNT(*) FROM `vbcms-notifications` WHERE origin = '[\"vbcms-updater\", \"notifyUpdate\"]'")->fetchColumn();
                 if ($response!=1) {
-                    $response = $bdd->prepare("INSERT INTO `vbcms-notifications` (`id`, `origin`, `link`, `content`, `removable`, `date`, `userId`) VALUES (NULL, '[\"vbcms-updater\", \"notifyUpdate\"]', '/vbcms-admin/updater\"', ?, '0', ?, 0)");
+                    $response = $bdd->prepare("INSERT INTO `vbcms-notifications` (`id`, `origin`, `link`, `content`, `dismissible`, `date`, `userId`) VALUES (NULL, '[\"vbcms-updater\", \"notifyUpdate\"]', '/vbcms-admin/updater\"', ?, '0', ?, 0)");
                     $response->execute([translate("isNotUpToDate"), date("Y-m-d H:i:s")]);
                 }
                 return $updateInfos;
