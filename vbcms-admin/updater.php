@@ -111,29 +111,39 @@ if (!$hasNewUpdate) {
         }
         ?>
     });
-    	async function updateVBcms(){
-            <?php
-            $updateKey = getRandomString(5);
-            $query=$bdd->query("SELECT * FROM `vbcms-settings` WHERE name = 'updateKey'")->fetch(PDO::FETCH_ASSOC);
-            if(empty($query)){
-                $query=$bdd->prepare("INSERT INTO `vbcms-settings` (`name`, `value`) VALUES ('updateKey', ?)");
-                $query->execute([$updateKey]);
+    function isJson(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
+    async function updateVBcms(){
+        <?php
+        $updateKey = getRandomString(5);
+        $query=$bdd->query("SELECT * FROM `vbcms-settings` WHERE name = 'updateKey'")->fetch(PDO::FETCH_ASSOC);
+        if(empty($query)){
+            $query=$bdd->prepare("INSERT INTO `vbcms-settings` (`name`, `value`) VALUES ('updateKey', ?)");
+            $query->execute([$updateKey]);
+        }else{
+            $query=$bdd->prepare("UPDATE `vbcms-settings` SET `value` = ? WHERE `name` = 'updateKey'");
+            $query->execute([$updateKey]);
+        }
+        
+        ?>
+        $.get("<?=VBcmsGetSetting("websiteUrl")?>backTasks?updateVBcms=<?=$updateKey?>", function(data) {
+            if (data=="") {
+                SnackBar({
+                    message: "backTasks ne retourne rien: "+data,
+                    status: "danger",
+                    timeout: false
+                });
             }else{
-                $query=$bdd->prepare("UPDATE `vbcms-settings` SET `value` = ? WHERE `name` = 'updateKey'");
-                $query->execute([$updateKey]);
-            }
-            
-            ?>
-    		$.get("<?=VBcmsGetSetting("websiteUrl")?>backTasks?updateVBcms=<?=$updateKey?>", function(data) {
-				if (data=="") {
-					SnackBar({
-                        message: "backTasks ne retourne rien: "+data,
-                        status: "danger",
-                        timeout: false
-                    });
-				}else{
-                    console.log(data);
-					details = JSON.parse(data);
+                console.log("<?=VBcmsGetSetting("websiteUrl")?>backTasks?updateVBcms=<?=$updateKey?> : "+data);
+                
+                if(isJson(data)){
+                    details = JSON.parse(data);
                     if (details.success == true) {
                         window.location.replace(details.link);
                     } else {
@@ -157,9 +167,17 @@ if (!$hasNewUpdate) {
                             });
                         }
                     }
-				}
-			});
-    	}
+                }else{
+                    SnackBar({
+                        message: "Erreur, backTasks ne retourne pas du JSON. Check la console.",
+                        status: "danger",
+                        timeout: false
+                    });
+                }
+                
+            }
+        });
+    }
     </script>
 </body>
 </html>

@@ -7,7 +7,10 @@ if (isset($_GET["updateVBcms"])&&!empty($_GET["updateVBcms"])) {
 		$updateFilename = $GLOBALS['vbcmsRootPath']."/vbcms-content/updates/".basename($newUpdateInfos['zip']);
 		if (!file_exists($GLOBALS['vbcmsRootPath']."/vbcms-content/updates")) mkdir($GLOBALS['vbcmsRootPath']."/vbcms-content/updates", 0755);
 		//echo $updateInfosData["downloadLink"]."?serverId=".VBcmsGetSetting("serverId")."&key=".$key;
-		file_put_contents($updateFilename, file_get_contents($newUpdateInfos["zip"]));
+		$options  = array('http' => array('user_agent' => 'VBcms Updater'));
+    	$context  = stream_context_create($options);
+
+		file_put_contents($updateFilename, file_get_contents($newUpdateInfos["zip"], true, $context));
 		if (file_exists($updateFilename)) {
 			$zip = new ZipArchive;
 			if ($zip->open($updateFilename) === TRUE) {
