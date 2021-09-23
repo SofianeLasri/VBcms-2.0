@@ -41,7 +41,7 @@ if (isset($_GET["updateVBcms"])&&!empty($_GET["updateVBcms"])) {
 				}
 				
 				$response["success"] = true;
-				if(file_exists($GLOBALS['vbcmsRootPath']."install.php"))
+				if(file_exists($GLOBALS['vbcmsRootPath']."/install.php"))
 					$response["link"] = VBcmsGetSetting("websiteUrl")."install.php";
 				else
 					$response["link"] = VBcmsGetSetting("websiteUrl")."vbcms-admin";
