@@ -81,30 +81,23 @@ if (isset($_POST['login'])) { // Ne s'éxécute que si le formulaire de connexio
 		</div>
 		<div class="align-self-center text-center mt-3">
 			<p>Veuillez vous connecter pour accéder à l'administration</p>
-			<a id="connectToVBcmsLink" class="btn btn-brown" href="https://api.vbcms.net/auth.php?login&from=<?=$redirect?>">Connexion</a>
-			<a href="#" id="showLogin" class="text-brown">Utiliser un compte local</a>
-			<div id="loginDiv" class="mt-3" style="display: none;">
+			<!--<a id="connectToVBcmsLink" class="btn btn-brown" href="https://api.vbcms.net/auth.php?login&from=<?=$redirect?>">Connexion</a>-->
+			
 			<?php
 			if(isset($error) && !empty($error)){
 				echo '<div class="alert alert-danger mt-2" role="alert">'.$error.'</div>';
 			}
 			?>
-				<form id="form" method="post" action="login.php?from=<?=$redirect?>">
-					<div class="form-group mt">
-						<input class="form-control" type="text" name="username" placeholder="Nom d'utilisateur/Email" required>
-					</div>
-					<div class="form-group">
-						<input class="form-control" type="password" name="password" placeholder="Mot de passe" required>
-					</div>
-					<button type="submit" name="login" class="btn btn-brown">Se connecter</button>
-				</form>
-			</div>
+			<form id="form" method="post" action="login.php?from=<?=$redirect?>">
+				<div class="form-group mt">
+					<input class="form-control" type="text" name="username" placeholder="Nom d'utilisateur/Email" required>
+				</div>
+				<div class="form-group">
+					<input class="form-control" type="password" name="password" placeholder="Mot de passe" required>
+				</div>
+				<button type="submit" name="login" class="btn btn-brown"><?=translate('connect')?></button>
+			</form>
 		</div>
 	</div>
-	<script type="text/javascript">
-		$("#showLogin").on("click", function(){
-			$("#loginDiv").css("display","block");
-		});
-	</script>
 </body>
 </html>

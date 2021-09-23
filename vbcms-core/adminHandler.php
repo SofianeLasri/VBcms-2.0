@@ -8,7 +8,7 @@ if (!isset($_SESSION["user_id"]) && $urlPath[2]!="login") { // Si l'utilisateur 
     if (basename($_SERVER['PHP_SELF'])!="login.php" && !isset($sessionData) && !isset($sessionData['error'])) { 
         // On le renvoie vers la page de connexion
         //header("Location: https://vbcms.net/manager/login?from=".urlencode("$http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'])); // Gestionnaire de licence vbcms.net
-		header("Location: ".$url["scheme"]."://".$url["host"]."/vbcms-admin/login");
+		header("Location: ".$url["scheme"]."://".$url["host"]."/vbcms-admin/login?from=".urlencode("$http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']));
     }
 } elseif(!isset($_SESSION["user_id"]) && $urlPath[2]=="login"){ // Redirection vers la page de connexion
 	include $GLOBALS['vbcmsRootPath']."/vbcms-admin/login.php";
