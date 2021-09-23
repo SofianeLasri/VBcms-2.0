@@ -1,24 +1,50 @@
 <?php
 if (isset($_GET["updateVBcms"])&&!empty($_GET["updateVBcms"])) {
+	// On va récupérer la clé pour être sûr que ce n'est pas une action mal intentionnée
 	$updateKey=$bdd->query("SELECT * FROM `vbcms-settings` WHERE name = 'updateKey'")->fetch(PDO::FETCH_ASSOC);
 	if($_GET["updateVBcms"]==$updateKey['value']){
+		// On vérifie les mises à jour et on récupère les informations
 		$newUpdateInfos = checkVBcmsUpdates();
 
-		$updateFilename = $GLOBALS['vbcmsRootPath']."/vbcms-content/updates/".basename($newUpdateInfos['zip']);
+		// On génère le nom du fichier de màj
+		$updateFilename = $GLOBALS['vbcmsRootPath']."/vbcms-content/updates/".$newUpdateInfos['name'].".zip";
 		if (!file_exists($GLOBALS['vbcmsRootPath']."/vbcms-content/updates")) mkdir($GLOBALS['vbcmsRootPath']."/vbcms-content/updates", 0755);
-		//echo $updateInfosData["downloadLink"]."?serverId=".VBcmsGetSetting("serverId")."&key=".$key;
+		//On créé le contexte
 		$options  = array('http' => array('user_agent' => 'VBcms Updater'));
     	$context  = stream_context_create($options);
 
+		// Puis on télécharge
 		file_put_contents($updateFilename, file_get_contents($newUpdateInfos["zip"], true, $context));
 		if (file_exists($updateFilename)) {
 			$zip = new ZipArchive;
 			if ($zip->open($updateFilename) === TRUE) {
-				$zip->extractTo($GLOBALS['vbcmsRootPath']);
+				$updateFolder = $GLOBALS['vbcmsRootPath']."/vbcms-content/updates/".$newUpdateInfos['name'];
+				$zip->extractTo($updateFolder);
 				$zip->close();
-	
+
+				// On vérifie si la mise à jour est dans le dossier racine
+				if(file_exists($updateFolder."/index.php")){
+					recursive_copy_if_different($updateFolder, $GLOBALS['vbcmsRootPath']);
+				}else{
+					// La mise a jour est peut-être dans un sous-dossier, on va vérifier
+					$subfolder = scandir($updateFolder);
+					$foundFolder = false;
+					foreach($subfolder as $file){
+						if (( $file != '.' ) && ( $file != '..' )){
+							if(file_exists($updateFolder."/".$subfolder."/index.php")){
+								$foundFolder = true;
+								$updateFolder = $updateFolder."/".$subfolder; // À ce compte là il ne faut pas qu'il y ai 2 dossiers avec des index.php
+							}
+						}
+					}
+					if($foundFolder) recursive_copy_if_different($updateFolder, $GLOBALS['vbcmsRootPath']);
+				}
+				
 				$response["success"] = true;
-				$response["link"] = VBcmsGetSetting("websiteUrl")."update.php";
+				if(file_exists($GLOBALS['vbcmsRootPath']."install.php"))
+					$response["link"] = VBcmsGetSetting("websiteUrl")."install.php";
+				else
+					$response["link"] = VBcmsGetSetting("websiteUrl")."vbcms-admin";
 			} else {
 				$response["success"] = false;
 				$response["code"] = "CANT_OPEN_ARCHIVE"; // Impossible d'ouvrir l'archive
