@@ -31,7 +31,7 @@ if (isset($_GET["updateVBcms"])&&!empty($_GET["updateVBcms"])) {
 					$foundFolder = false;
 					foreach($subfolder as $file){
 						if (( $file != '.' ) && ( $file != '..' )){
-							if(file_exists($updateFolder."/".$file."/index.php")){
+							if(file_exists($updateFolder."/".$file."/index.php?update")){
 								$foundFolder = true;
 								$updateFolder = $updateFolder."/".$file; // À ce compte là il ne faut pas qu'il y ai 2 dossiers avec des index.php
 							}
