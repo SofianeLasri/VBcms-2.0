@@ -1,7 +1,7 @@
 <?php
 if (isset($_GET["updateVBcms"])&&!empty($_GET["updateVBcms"])) {
 	$updateKey=$bdd->query("SELECT * FROM `vbcms-settings` WHERE name = 'updateKey'")->fetch(PDO::FETCH_ASSOC);
-	if($_GET["updateVBcms"]==$updateKey){
+	if($_GET["updateVBcms"]==$updateKey['value']){
 		$newUpdateInfos = checkVBcmsUpdates();
 
 		$updateFilename = $GLOBALS['vbcmsRootPath']."/vbcms-content/updates/".basename($newUpdateInfos['zip']);
