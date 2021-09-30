@@ -565,7 +565,8 @@ header .menu-item{
 	flex-shrink: 0;
 	height: 100%;
 	width: 110px;
-	background:linear-gradient(0deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75))
+	background:linear-gradient(0deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75));
+	background-size: cover!important;
 }
 .workshop-suscribedCard .addonDetails{
 	align-self: center;
