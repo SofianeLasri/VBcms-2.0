@@ -43,7 +43,7 @@ if (isset($_GET["getNotifications"])) {
 	// Maintenant on va créer l'instance de l'extension et l'activer
 	if($extensionInfos["type"]=="module"){
 		$calledmodule = new module($extensionInfos["name"]);
-    	$calledmodule->initModule($extensionInfos["name"], $extensionInfos["path"], $extensionInfos["adminAccess"], $extensionInfos["clientAccess"], $extensionInfos["compatible"], $extensionInfos["workshopId"]);
+    	$calledmodule->initModule($extensionInfos["name"], $extensionInfos["path"], $extensionToEnable["adminAccess"], $extensionToEnable["clientAccess"], $extensionInfos["compatible"], $extensionInfos["workshopId"]);
 	}
 	
 } elseif (isset($_GET["disableExtension"])&&!empty($_GET["disableExtension"])){
