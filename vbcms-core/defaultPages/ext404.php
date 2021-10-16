@@ -1,7 +1,11 @@
 <?php
-if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
-$url = parse_url("$http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
-$websiteUrl = $url["scheme"]."://".$url["host"]."/";
+if(isset($bdd)){
+    $websiteUrl = VBcmsGetSetting("websiteUrl");
+}else{
+    if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
+    $url = parse_url("$http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+    $websiteUrl = $url["scheme"]."://".$url["host"]."/";
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">

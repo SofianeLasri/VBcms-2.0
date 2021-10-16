@@ -14,5 +14,8 @@ if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
 if(isset($_SERVER['HTTPS'])) $http = "https"; else $http = "http";
 
 // Variables permettant la gestion des pages à afficher
-$url = parse_url("$http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");	
-$urlPath = explode("/", $url["path"]);
+$url = parse_url("$http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+if(!isset($urlPath)){
+    $urlPath = explode("/", $url["path"]);
+}
+

@@ -152,6 +152,7 @@ function show404($type){
 	if ($type=="client") {
 		// Affiche la page 404 du site client
         // A savoir que les pages 404 des modules sont gérées par ces derniers
+        global $bdd;
 		include $GLOBALS['vbcmsRootPath'].'/vbcms-core/defaultPages/404.php';
         
 	} elseif($type=="admin") {
